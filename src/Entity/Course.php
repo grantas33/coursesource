@@ -31,6 +31,7 @@ class Course
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotNull()
      * @Assert\Length(
      *     max = 2000,
      *     maxMessage="The description cannot be longer than 2000 characters"
@@ -40,6 +41,7 @@ class Course
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotNull(message="Creation date is required")
      * @Assert\DateTime(
      *     format = "Y-m-d H:i:s"
      * )
@@ -51,39 +53,54 @@ class Course
         return $this->id;
     }
 
+    /**
+     * @return mixed
+     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    /**
+     * @param mixed $title
+     */
+    public function setTitle($title): void
     {
         $this->title = $title;
 
-        return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description): void
     {
         $this->description = $description;
 
-        return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getCreationDate(): ?\DateTimeInterface
     {
         return $this->creation_date;
     }
 
-    public function setCreationDate(\DateTimeInterface $creation_date): self
+    /**
+     * @param mixed $creation_date
+     */
+    public function setCreationDate($creation_date): void
     {
         $this->creation_date = $creation_date;
 
-        return $this;
     }
 }

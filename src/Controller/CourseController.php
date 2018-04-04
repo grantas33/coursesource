@@ -26,7 +26,7 @@ class CourseController extends Controller
         $course = new Course();
         $course->setTitle($request->request->get('title'));
         $course->setDescription($request->request->get('description'));
-        $course->setCreationDate($request->request->get('creationDate'));
+        $course->setCreationDate(new \DateTime('now'));
 
         $titleError = $validator->validateProperty($course, 'title');
         $descriptionError = $validator->validateProperty($course, 'description');
