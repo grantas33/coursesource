@@ -40,7 +40,9 @@ class Course
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\DateTime()
+     * @Assert\DateTime(
+     *     format = "Y-m-d H:i:s"
+     * )
      */
     private $creation_date;
 

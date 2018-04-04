@@ -9,7 +9,6 @@
 namespace App\Controller;
 use App\Entity\Course;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,9 +19,9 @@ class CourseController extends Controller
 {
 
     /**
-     * @Route("api/course", name="api_course")
+     * @Route("api/course", name="api_course", methods="POST")
      */
-    public function setCourse(Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
+    public function setCourse(Request $request, ValidatorInterface $validator)
     {
         $course = new Course();
         $course->setTitle($request->request->get('title'));
@@ -46,12 +45,34 @@ class CourseController extends Controller
             return new JsonResponse($formErrors);
         }
 
+        $em = $this->getDoctrine()->getManager();
         $em->persist($course);
         $em->flush();
         return new JsonResponse([
             'success_message' => 'Successfully created new course'
         ]);
 
+    }
+
+    /**
+     * @Route("api/course/{id}", name="api_course_get", methods="GET")
+     */
+    public function getCourse(int $id){
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
+
+        if (!$course) {
+            throw $this->createNotFoundException(
+                'No product found for id '.$id
+            );
+        }
+
+        return new JSONResponse([
+            'title' => $course->getTitle(),
+            'description' => $course->getDescription(),
+            'creationDate' => $course->getCreationDate()->format('Y-m-d')
+        ]);
     }
 
 }
