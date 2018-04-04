@@ -1,14 +1,4 @@
-import React from 'react';
-import BigCalendar from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-
-// Setup the localizer by providing the moment (or globalize) Object
-// to the correct localizer.
-BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
-const allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
-
-const events = [
+export default [
   {
     id: 0,
     title: 'All Day Event very long title',
@@ -108,17 +98,3 @@ const events = [
     end: new Date(new Date().setHours(new Date().getHours() + 3)),
   },
 ];
-
-const MyCalendar = props => (
-  <div>
-    <BigCalendar
-      events={events}
-      views={allViews}
-      step={60}
-      showMultiDayTimes
-      defaultDate={new Date(2015, 3, 1)}
-    />
-  </div>
-);
-
-export default MyCalendar;
