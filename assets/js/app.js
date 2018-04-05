@@ -1,10 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Button from "./Components/Button";
+import Calendar from "./Components/Calendar/Calendar";
 
 class App extends React.Component {
     render(){
-        return <Button/>;
+        return (
+        <div>
+            <Button />
+            <Calendar />
+        </div>
+        )
     }
 }
 
