@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class CourseController extends Controller
@@ -23,39 +22,30 @@ class CourseController extends Controller
     /**
      * @Route("api/course", name="api_course_create", methods="POST")
      */
-    public function setCourse(Request $request, ValidatorInterface $validator)
+    public function setCourse(Request $request)
     {
         $course = new Course();
         $form = $this->createForm(CourseType::class, $course);
-        $form->submit($request->request->get($form->getName()));
-        //$form->submit($request);
-        //$course->setTitle($request->request->get('title'));
-       // $course->setDescription($request->request->get('description'));
-       // $course->setCreationDate(new \DateTime('now'));
+        $data = json_decode($request->getContent(), true);
+        $form->submit($data);
 
-       // $titleError = $validator->validateProperty($course, 'title');
-       // $descriptionError = $validator->validateProperty($course, 'description');
-       // $creationDateError = $validator->validateProperty($course, 'creation_date');
-//        $formErrors = [];
-//        if (count($titleError) > 0) {
-//            $formErrors['titleError'] = $titleError[0]->getMessage();
-//        }
-//        if (count($descriptionError) > 0) {
-//            $formErrors['descriptionError'] = $descriptionError[0]->getMessage();
-//        }
-//        if (count($creationDateError) > 0) {
-//            $formErrors['creationDateError'] = $creationDateError[0]->getMessage();
-//        }
-//        if ($formErrors) {
-//            return new JsonResponse($formErrors, Response::HTTP_BAD_REQUEST);
-//        }
         if($form->isSubmitted() && $form->isValid()){
             $course = $form->getData();
             $course->setCreationDate();
         }
         else{
-             $formErrors = $form->getErrors(true, false);
-             return new JsonResponse($form->getData(), Response::HTTP_BAD_REQUEST);
+            $errors = array();
+
+            foreach ($form as $child) {
+                if (!$child->isValid()) {
+                    $error = $child->getErrors()[0];
+                    $errors[$child->getName()] = $error->getMessage();
+                }
+            }
+
+            return new JsonResponse([
+                 'error_message' => $errors
+             ], Response::HTTP_BAD_REQUEST);
         }
 
         try {
