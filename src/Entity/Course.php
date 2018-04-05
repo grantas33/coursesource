@@ -41,10 +41,6 @@ class Course
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\NotNull(message="Creation date is required")
-     * @Assert\DateTime(
-     *     format = "Y-m-d H:i:s"
-     * )
      */
     private $creation_date;
 
@@ -95,12 +91,9 @@ class Course
         return $this->creation_date;
     }
 
-    /**
-     * @param mixed $creation_date
-     */
-    public function setCreationDate($creation_date): void
+    public function setCreationDate(): void
     {
-        $this->creation_date = $creation_date;
+        $this->creation_date = new \DateTime('now');
 
     }
 }
