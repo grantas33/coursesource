@@ -1,7 +1,7 @@
 import React from 'react';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
-import '/home/matt/Documents/coursesource/node_modules/react-big-calendar/lib/css/react-big-calendar.css';
+import '/home/matt/Documents/coursesource/node_modules/react-big-calendar/lib/css/react-big-calendar.css'
 import './Calendar.css';
 import events from './events';
 
