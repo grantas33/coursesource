@@ -20,14 +20,14 @@ class CourseController extends Controller
 {
 
     /**
-     * @Route("api/course", name="api_course_create", methods="POST")
+     * @Route("api/courses", name="api_course_create", methods="POST")
      */
     public function setCourse(Request $request)
     {
         $course = new Course();
         $form = $this->createForm(CourseType::class, $course);
         $data = json_decode($request->getContent(), true);
-        $form->submit($data);
+        $form->submit($data, false);
 
         if($form->isSubmitted() && $form->isValid()){
             $course = $form->getData();
@@ -38,7 +38,7 @@ class CourseController extends Controller
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    $error = $child->getErrors()[0];
+                    foreach($child->getErrors() as $error)
                     $errors[$child->getName()] = $error->getMessage();
                 }
             }
@@ -55,35 +55,28 @@ class CourseController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                'error_message' => $e],
-                Response::HTTP_INTERNAL_SERVER_ERROR);
+                     'error_message' => $e,
+               ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
             'success_message' => 'Successfully created new course'
-        ]);
+        ], Response::HTTP_CREATED);
 
     }
 
     /**
-     * @Route("api/course/{id}", name="api_course_get", methods="GET")
+     * @Route("api/courses/{id}", name="api_course_get", methods="GET")
      */
     public function getCourse(int $id)
     {
         $course = null;
-        try {
-            $course = $this->getDoctrine()
-                ->getRepository(Course::class)
-                ->find($id);
-        }
-        catch (\Exception $e) {
-            return new JsonResponse([
-                'error_message' => $e],
-                Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
 
         if (!$course) {
             return new JsonResponse([
-                'error_message' => 'No product found for id '. $id
+                'error_message' => 'No course found for id '. $id
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -91,6 +84,56 @@ class CourseController extends Controller
             'title' => $course->getTitle(),
             'description' => $course->getDescription(),
             'creationDate' => $course->getCreationDate()->format('Y-m-d')
+        ]);
+    }
+
+    /**
+     * @Route("api/courses/{id}", name="api_course_update", methods="PUT")
+     */
+    public function editCourse(int $id, Request $request){
+
+        $em = $this->getDoctrine()->getManager();
+        $course = $em->getRepository(Course::class)
+            ->find($id);
+
+        if (!$course) {
+            return new JsonResponse([
+                'error_message' => 'No course found for id '. $id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        $form = $this->createForm(CourseType::class, $course);
+        $data = json_decode($request->getContent(), true);
+        $form->submit($data, false);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $course = $form->getData();
+        }
+        else{
+            $errors = array();
+
+            foreach ($form as $child) {
+                if (!$child->isValid()) {
+                    foreach($child->getErrors() as $error)
+                        $errors[$child->getName()] = $error->getMessage();
+                }
+            }
+
+            return new JsonResponse([
+                'error_message' => $errors
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $em->persist($course);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse([
+            'success_message' => 'Successfully updated course '. $id
         ]);
     }
 }

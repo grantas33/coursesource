@@ -31,7 +31,6 @@ class Course
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotNull()
      * @Assert\Length(
      *     max = 2000,
      *     maxMessage="The description cannot be longer than 2000 characters"
