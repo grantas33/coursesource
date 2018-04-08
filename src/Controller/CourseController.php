@@ -136,4 +136,17 @@ class CourseController extends Controller
             'success_message' => 'Successfully updated course '. $id
         ]);
     }
+
+    /**
+     * @Route("api/courses", name="api_course_getAll", methods="GET")
+     */
+    public function getCourses(){
+        $courses = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->findAll();
+
+        return new JSONResponse(
+            $courses
+        );
+    }
 }
