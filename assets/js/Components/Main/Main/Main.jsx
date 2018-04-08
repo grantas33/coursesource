@@ -1,28 +1,51 @@
 import React from 'react';
 import './Main.css';
-import { Link } from 'react-router-dom'; 
+import CourseItem from './CourseItem';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchCourses } from '../../../modules/courses';
+import { Link } from 'react-router-dom';
 
-const Main = () => (
-  <div className="landing-page-container">
-    <h1 className="">Get back to learning!</h1>
-    <h3>Your Coursesource courses:</h3>
-    <div className="course-card">
-      <h2>Test Course</h2>
-      <p>0 unread notifications</p>
-      <p>A test course description</p>
-      <p>Last activity: 2016-11-30</p>
-      <Link to="/course/testcourse/"><input className="login-register-button" type="button" value="Open course" /></Link>
-    </div>
-    <div className="course-card">
-      <h2>Learnify programming academy</h2>
-      <p>3 unread notifications</p>
-      <p>Learn new things every week</p>
-      <p>Last activity: 2017-04-02</p>
-      <Link to="/course/learnify/"><input className="login-register-button" type="button" value="Open course"/></Link>
-    </div>
-    <h3>For mentors:</h3>
-    <Link to="/main/create-new-course"><input className="login-register-button" type="button" value="Create a new course"/></Link>
-  </div>
-);
+class Main extends React.Component {
+  componentWillMount() {
+    this.props.fetchCourses();
+  }
 
-export default Main;
+  render() {
+    if (this.props.courses.loading === true) {
+      return <h3>Loading...</h3>
+    } else if (this.props.courses.loading === false && this.props.courses.error === true) {
+      return <h3>Error</h3>
+    }
+    return(
+      <div className="landing-page-container">
+        <h1 className="">Get back to learning!</h1>
+        <h3>Your Coursesource courses:</h3>
+        <div className="landing-page-container">
+          {this.props.courses.items.map(course => <CourseItem key={course.id}
+                                                      id={course.id}
+                                                      title={course.title}
+                                                      description={course.description}
+                                                      creation_date={course.creation_date.date.substring(0,10)}
+                                                    />
+          )}
+        </div>
+        <h3> Are you a mentor? </h3>
+        <Link to="/main/create-new-course"><input className="login-register-button" type="button" value="Create new course"/></Link>
+      </div>
+    )
+  }
+}
+
+const mapStateToProps = state => ({
+  courses: state.courses.allCourses,
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchCourses
+}, dispatch)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Main)
