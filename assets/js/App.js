@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import { slide as Menu } from 'react-burger-menu'
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 import SideMenu from './Components/Course/SideMenu/SideMenu';
 import Home from './Components/Course/Home/Home';
@@ -37,7 +37,4 @@ class App extends React.Component {
     }
 }
 
-ReactDOM.render((<BrowserRouter>
-                    <App />
-                </BrowserRouter>
-), document.getElementById('root'));
+export default App;
