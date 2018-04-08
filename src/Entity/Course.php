@@ -43,16 +43,13 @@ class Course
      */
     private $creation_date;
 
-    public function __construct($title, $description, $creation_date)
-    {
-        $this->title = $title;
-        $this->description = $description;
-        $this->creation_date = $creation_date;
-    }
-
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId(int $id){
+        $this->id = $id;
     }
 
     /**
@@ -100,6 +97,12 @@ class Course
     public function setCreationDate(): void
     {
         $this->creation_date = new \DateTime('now');
+
+    }
+
+    public function setCreationDateManually(string $date): void
+    {
+        $this->creation_date = \DateTime::createFromFormat("Y-m-d", $date);
 
     }
 }
