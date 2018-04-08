@@ -43,6 +43,13 @@ class Course
      */
     private $creation_date;
 
+    public function __construct($title, $description, $creation_date)
+    {
+        $this->title = $title;
+        $this->description = $description;
+        $this->creation_date = $creation_date;
+    }
+
     public function getId()
     {
         return $this->id;
