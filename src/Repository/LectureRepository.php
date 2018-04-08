@@ -25,13 +25,6 @@ class LectureRepository extends ServiceEntityRepository
 
     public function findByCourse($course)
     {
-//        return $this->createQueryBuilder('l')
-//            ->andWhere('l.course = :courseId')
-//            ->setParameter('courseId', $course)
-//            ->orderBy('l.start_date', 'ASC')
-//            ->getQuery()
-//            ->getArrayResult()
-//        ;
           return $this->findBy(['course' => $course]);
     }
 

@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LectureRepository")
  */
-class Lecture
+class Lecture implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -134,7 +135,7 @@ class Lecture
 
     public function setCreationDateManually(string $date): void
     {
-        $this->creation_date = \DateTime::createFromFormat("Y-m-d H:m:s", $date);
+        $this->creation_date = \DateTime::createFromFormat("Y-m-d H:i:s", $date);
 
     }
 
@@ -160,5 +161,18 @@ class Lecture
         $this->end_date = $end_date;
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'teacher' => $this->teacher,
+            'course' => $this->course,
+            'creationDate' => $this->creation_date->format("Y-m-d H:i:s"),
+            'startDate' => $this->start_date->format("Y-m-d H:i:s"),
+            'endDate' => $this->end_date ? $this->getEndDate()->format("Y-m-d H:i:s") : null
+            ];
     }
 }

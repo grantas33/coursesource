@@ -78,13 +78,7 @@ class LectureController extends Controller
         }
 
         return new JSONResponse([
-            'title' => $lecture->getTitle(),
-            'description' => $lecture->getDescription(),
-            'teacher' => $lecture->getTeacher(),
-            'course' => $lecture->getCourse(),
-            'creationDate' => $lecture->getCreationDate()->format("Y-m-d H:m:s"),
-            'startDate' => $lecture->getStartDate()->format("Y-m-d H:m:s"),
-            'endDate' => $lecture->getEndDate() ? $lecture->getEndDate()->format("Y-m-d H:m:s") : null
+                $lecture
         ]);
     }
 
