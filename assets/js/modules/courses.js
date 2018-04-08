@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const FETCH_COURSES_STARTED = 'courses/FETCH_COURSES_STARTED'
 export const FETCH_COURSES_ERROR = 'courses/FETCH_COURSES_ERROR'
 export const FETCH_COURSES_RECEIVED = 'courses/FETCH_COURSES_RECEIVED'
@@ -32,6 +34,7 @@ export default (state = initialState, action) => {
 
 export const fetchCourses = () => 
 dispatch => {
+  console.log("num");
   dispatch({
     type: FETCH_COURSES_STARTED
   })
@@ -41,5 +44,10 @@ dispatch => {
       type: FETCH_COURSES_RECEIVED,
       payload: res.data
     });
-  });
+  })
+  .catch((err) => {
+    dispatch({
+      type: FETCH_COURSES_ERROR
+    })
+  })
 }
