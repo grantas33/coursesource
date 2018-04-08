@@ -45,7 +45,6 @@ class LectureController extends Controller
             return new JsonResponse([
                 'error_message' => $errors
             ], Response::HTTP_BAD_REQUEST);
-        //    return new Response(var_dump($form->getData()));
         }
 
         try {
@@ -149,8 +148,8 @@ class LectureController extends Controller
         $repository = $this->getDoctrine()->getRepository(Lecture::class);
         $lectures = $repository->findByCourse($courseId);
 
-        return new JsonResponse([
+        return new JsonResponse(
             $lectures
-        ]);
+        );
     }
 }

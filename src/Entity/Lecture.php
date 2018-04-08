@@ -68,6 +68,10 @@ class Lecture
         return $this->id;
     }
 
+    public function setId(int $id){
+        $this->id = $id;
+    }
+
     public function getTitle(): ?string
     {
         return $this->title;
@@ -126,6 +130,12 @@ class Lecture
         $this->creation_date = new \DateTime('now');
 
         return $this;
+    }
+
+    public function setCreationDateManually(string $date): void
+    {
+        $this->creation_date = \DateTime::createFromFormat("Y-m-d H:m:s", $date);
+
     }
 
     public function getStartDate(): ?\DateTimeInterface
