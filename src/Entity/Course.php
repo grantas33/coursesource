@@ -48,6 +48,10 @@ class Course
         return $this->id;
     }
 
+    public function setId(int $id){
+        $this->id = $id;
+    }
+
     /**
      * @return mixed
      */
@@ -93,6 +97,12 @@ class Course
     public function setCreationDate(): void
     {
         $this->creation_date = new \DateTime('now');
+
+    }
+
+    public function setCreationDateManually(string $date): void
+    {
+        $this->creation_date = \DateTime::createFromFormat("Y-m-d", $date);
 
     }
 }

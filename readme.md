@@ -11,6 +11,11 @@ yarn install
 yarn run encore dev --watch
 ```
 
+Load test data in the database:
+```
+php bin/console doctrine:fixtures:load
+```
+
 ### Built With
 
 * PHP 7.2.0
