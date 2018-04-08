@@ -50,7 +50,14 @@ class CreateNewCourse extends React.Component {
       <div className="landing-page-container">
         <h1 className="">Create a new course</h1>
         <input className="form-input" name="title" placeholder="Title" value={this.state.newCourse.title} onChange={this.updateInputData}/>
+        {this.state.newCourse.title.length < 3 ? <span className="validaton-error">The title should be at least 3 characters long</span> : <span />}
+        {this.state.newCourse.title.length > 25 ? <span className="validaton-error">The title cannot be longer than 25 characters</span> : <span />}
+        <br />
+
         <input className="form-input" name="description" placeholder="Description" value={this.state.newCourse.description} onChange={this.updateInputData}/>
+        {this.state.newCourse.description.length > 2000 ? <span className="validaton-error">The title cannot be longer than 2000 characters</span> : <span />}
+        <br />
+        
         <input className="login-register-button" type="button" value="Create" onClick={this.handleButton}/>
       </div>
     )
