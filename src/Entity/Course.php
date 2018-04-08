@@ -30,7 +30,7 @@ class Course
     private $title;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      * @Assert\Length(
      *     max = 2000,
      *     maxMessage="The description cannot be longer than 2000 characters"
