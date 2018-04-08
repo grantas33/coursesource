@@ -1,10 +1,10 @@
 import React from 'react';
 import './Main.css';
-import { Link } from 'react-router-dom'; 
 import CourseItem from './CourseItem';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchCourses } from '../../../modules/courses';
+import { Link } from 'react-router-dom';
 
 class Main extends React.Component {
   componentWillMount() {
@@ -22,7 +22,7 @@ class Main extends React.Component {
         <h1 className="">Get back to learning!</h1>
         <h3>Your Coursesource courses:</h3>
         <div className="landing-page-container">
-          {this.props.courses.courses.map(course => <CourseItem key={course.id}
+          {this.props.courses.items.map(course => <CourseItem key={course.id}
                                                       id={course.id}
                                                       title={course.title}
                                                       description={course.description}
@@ -30,13 +30,15 @@ class Main extends React.Component {
                                                     />
           )}
         </div>
+        <h3> Are you a mentor? </h3>
+        <Link to="/main/create-new-course"><input className="login-register-button" type="button" value="Create new course"/></Link>
       </div>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  courses: state.courses,
+  courses: state.courses.allCourses,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

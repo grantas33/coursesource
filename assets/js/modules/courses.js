@@ -4,29 +4,74 @@ export const FETCH_COURSES_STARTED = 'courses/FETCH_COURSES_STARTED'
 export const FETCH_COURSES_ERROR = 'courses/FETCH_COURSES_ERROR'
 export const FETCH_COURSES_RECEIVED = 'courses/FETCH_COURSES_RECEIVED'
 
+export const CREATE_COURSE_STARTED = 'courses/CREATE_COURSE_STARTED'
+export const CREATE_COURSE_ERROR = 'courses/CREATE_COURSE_ERROR'
+export const CREATE_COURSE_RECEIVED = 'courses/CREATE_COURSE_RECEIVED'
+
+axios.defaults.baseURL = '/';
+
 const initialState = {
-  courses: [],
-  loading: true,
-  error: false
+  allCourses: {
+    courses: [],
+    loading: true,
+    error: false
+  },
+  newCourse: {
+    response: '',
+    loading: false,
+    error: false
+  }
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case FETCH_COURSES_STARTED:
       return {
-        loading: true
+        ...state,
+        allCourses: {
+            loading: true,
+        }
       }
     case FETCH_COURSES_ERROR:
-      return {
-        loading: false,
-        error: true
+    return {
+      ...state,
+      allCourses: {
+          loading: false,
+          error: true
       }
+    }
     case FETCH_COURSES_RECEIVED:
-      return {
-        loading: false,
-        error: false,
-        courses: action.payload
+    return {
+      ...state,
+      allCourses: {
+          loading: false,
+          error: false,
+          items: action.payload
       }
+    }
+    case CREATE_COURSE_STARTED:
+    return {
+      ...state,
+      newCourse: {
+          loading: true,
+      }
+    }
+    case CREATE_COURSE_ERROR:
+    return {
+      ...state,
+      newCourse: {
+          loading: false,
+          error: true
+      }
+    }
+    case CREATE_COURSE_RECEIVED:
+    return {
+      ...state,
+      newCourse: {
+          loading: false,
+          error: false
+      }
+    }
     default:
       return state
   }
@@ -34,7 +79,6 @@ export default (state = initialState, action) => {
 
 export const fetchCourses = () => 
 dispatch => {
-  console.log("num");
   dispatch({
     type: FETCH_COURSES_STARTED
   })
@@ -48,6 +92,24 @@ dispatch => {
   .catch((err) => {
     dispatch({
       type: FETCH_COURSES_ERROR
+    })
+  })
+}
+
+export const createCourse = (newCourse) => 
+dispatch => {
+  dispatch({
+    type: CREATE_COURSE_STARTED
+  })
+  axios.post('api/courses', newCourse)
+  .then((res) => {
+    dispatch({
+      type: CREATE_COURSE_RECEIVED,
+    });
+  })
+  .catch((err) => {
+    dispatch({
+      type: CREATE_COURSE_ERROR
     })
   })
 }
