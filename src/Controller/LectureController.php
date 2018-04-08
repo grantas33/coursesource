@@ -30,7 +30,6 @@ class LectureController extends Controller
         $form->submit($data, false);
 
         if($form->isSubmitted() && $form->isValid()){
-            $lecture = $form->getData();
             $lecture->setCreationDate();
         }
         else{
@@ -68,7 +67,6 @@ class LectureController extends Controller
      */
     public function getLecture(int $id)
     {
-        $lecture = null;
         $lecture = $this->getDoctrine()
             ->getRepository(Lecture::class)
             ->find($id);
@@ -108,10 +106,7 @@ class LectureController extends Controller
         $data = json_decode($request->getContent(), true);
         $form->submit($data, false);
 
-        if($form->isSubmitted() && $form->isValid()){
-            $lecture = $form->getData();
-        }
-        else{
+        if(!($form->isSubmitted() && $form->isValid())){
             $errors = array();
 
             foreach ($form as $child) {
