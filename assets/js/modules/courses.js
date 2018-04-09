@@ -7,6 +7,7 @@ export const FETCH_COURSES_RECEIVED = 'courses/FETCH_COURSES_RECEIVED'
 export const CREATE_COURSE_STARTED = 'courses/CREATE_COURSE_STARTED'
 export const CREATE_COURSE_ERROR = 'courses/CREATE_COURSE_ERROR'
 export const CREATE_COURSE_RECEIVED = 'courses/CREATE_COURSE_RECEIVED'
+export const CLEAR_CREATE_COURSE = 'courses/CLEAR_CREATE_COURSE'
 
 axios.defaults.baseURL = '/';
 
@@ -61,7 +62,8 @@ export default (state = initialState, action) => {
       ...state,
       newCourse: {
           loading: false,
-          error: true
+          error: true,
+          response: action.payload
       }
     }
     case CREATE_COURSE_RECEIVED:
@@ -70,6 +72,14 @@ export default (state = initialState, action) => {
       newCourse: {
           loading: false,
           error: false
+      }
+    }
+    case CLEAR_CREATE_COURSE: {
+      return {
+        ...state,
+        newCourse: {
+          ...initialState.newCourse
+        } 
       }
     }
     default:
@@ -108,8 +118,17 @@ dispatch => {
     });
   })
   .catch((err) => {
+    console.log(err);
     dispatch({
-      type: CREATE_COURSE_ERROR
+      type: CREATE_COURSE_ERROR,
+      payload: err.response.data.error_message.title
     })
+  })
+}
+
+export const clearState = () => 
+dispatch => {
+  dispatch({
+    type: CLEAR_CREATE_COURSE
   })
 }
