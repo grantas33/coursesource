@@ -23,10 +23,14 @@ class LectureRepository extends ServiceEntityRepository
      * @return Lecture[] Returns an array of Lecture objects
      */
 
-    public function findByCourse($course)
+    public function filter($course, $teacher)
     {
-          return $this->findBy(['course' => $course]);
+        if($teacher != null){
+            return $this->findBy(['course' => $course, 'teacher' => $teacher]);
+        }
+        return $this->findBy(['course' => $course]);
     }
+
 
 
     /*

@@ -130,15 +130,19 @@ class LectureController extends Controller
     }
 
     /**
-     * @Route("api/lectures", name="api_lecture_findByCourse", methods="GET")
+     * @Route("api/lectures", name="api_lecture_filter", methods="GET")
      */
-    public function findByCourse(Request $request){
-        $courseId = $request->query->get('course');
+    public function filterLectures(Request $request){
+
         $repository = $this->getDoctrine()->getRepository(Lecture::class);
-        $lectures = $repository->findByCourse($courseId);
+        $course = $request->query->get('course');
+        $teacher = $request->query->get('teacher');
+
+        $lectures = $repository->filter($course, $teacher) ;
 
         return new JsonResponse(
             $lectures
         );
     }
+
 }
