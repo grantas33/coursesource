@@ -30,7 +30,6 @@ class CourseController extends Controller
         $form->submit($data, false);
 
         if($form->isSubmitted() && $form->isValid()){
-            $course = $form->getData();
             $course->setCreationDate();
         }
         else{
@@ -81,9 +80,7 @@ class CourseController extends Controller
         }
 
         return new JSONResponse([
-            'title' => $course->getTitle(),
-            'description' => $course->getDescription(),
-            'creationDate' => $course->getCreationDate()->format('Y-m-d')
+            $course
         ]);
     }
 
@@ -105,10 +102,7 @@ class CourseController extends Controller
         $data = json_decode($request->getContent(), true);
         $form->submit($data, false);
 
-        if($form->isSubmitted() && $form->isValid()){
-            $course = $form->getData();
-        }
-        else{
+        if(!($form->isSubmitted() && $form->isValid())){
             $errors = array();
 
             foreach ($form as $child) {

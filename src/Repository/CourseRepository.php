@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 /**
  * @method Course|null find($id, $lockMode = null, $lockVersion = null)
  * @method Course|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Course[]    findAll()
  * @method Course[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class CourseRepository extends ServiceEntityRepository
@@ -18,10 +19,10 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-    public function findAll(){
-        return $this->createQueryBuilder('c')
-            ->getQuery()->getArrayResult();
-    }
+//    public function findAll(){
+//        return $this->createQueryBuilder('c')
+//            ->getQuery()->getArrayResult();
+//    }
 
 //    /**
 //     * @return Course[] Returns an array of Course objects

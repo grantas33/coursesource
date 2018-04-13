@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseRepository")
  */
-class Course
+class Course implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -104,5 +105,14 @@ class Course
     {
         $this->creation_date = \DateTime::createFromFormat("Y-m-d", $date);
 
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'creationDate' => $this->creation_date->format("Y-m-d"),
+        ];
     }
 }
