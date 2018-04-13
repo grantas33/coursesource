@@ -166,6 +166,7 @@ class Lecture implements JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
             'teacher' => $this->teacher,
