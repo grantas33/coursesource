@@ -38,8 +38,6 @@ services:
       - .docker/mysql-data/:/var/lib/mysql
     ports:
       - 127.0.0.1:3307:3306 # Connect to it via -h127.0.0.1 --port=3307
-    expose:
-      - 3307
   frontend.symfony:
     build: .docker/frontend/
     container_name: frontend.symfony
