@@ -112,7 +112,7 @@ class Course implements JsonSerializable
         return [
             'title' => $this->title,
             'description' => $this->description,
-            'creationDate' => $this->creation_date->format("Y-m-d"),
+            'creation_date' => $this->creation_date->format("Y-m-d"),
         ];
     }
 }
