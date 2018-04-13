@@ -9,6 +9,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Course;
+use App\Entity\Lecture;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -52,24 +53,103 @@ class AppFixtures extends Fixture
 
         ];
 
+        $lectures = [
+            [
+                'id' => 1,
+                'title' => 'Pots and flowers',
+                'description' => '',
+                'teacher' => 4,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 9:00:02',
+                'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-18 17:00:00'),
+                'endDate' => null
+            ],
+            [
+                'id' => 2,
+                'title' => 'Gardening hose basics',
+                'description' => 'Gardening is the practice of growing and cultivating plants as part of horticulture. In gardens, ornamental plants are often grown for their flowers, foliage, or overall appearance; useful plants, such as root vegetables, leaf vegetables, fruits, and herbs, are grown for consumption, for use as dyes, or for medicinal or cosmetic use. Gardening is considered by many people to be a relaxing activity.',
+                'teacher' => 5,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 9:00:02',
+                'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-20 19:00:00'),
+                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-20 21:05:00')
+            ],
+            [
+                'id' => 3,
+                'title' => 'Herbs',
+                'description' => 'The Middle Age represented a period of decline in gardens for aesthetic purposes, with regard to gardening. After the fall of Rome, gardening was done for the purpose of growing medicinal herbs and/or decorating church altars. Monasteries carried on a tradition of garden design and intense horticultural techniques during the medieval period in Europe. Generally, monastic garden types consisted of kitchen gardens, infirmary gardens, cemetery orchards, cloister garths and vineyards. Individual monasteries might also have had a "green court", a plot of grass and trees where horses could graze, as well as a cellarer\'s garden or private gardens for obedientiaries, monks who held specific posts within the monastery.',
+                'teacher' => 5,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 9:00:02',
+                'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 13:00:00'),
+                'endDate' => null
+            ],
+            [
+                'id' => 4,
+                'title' => 'Herbs part 2',
+                'description' => 'In the 18th century, gardens were laid out more naturally, without any walls. This style of smooth undulating grass, which would run straight to the house, clumps, belts and scattering of trees and his serpentine lakes formed by invisibly damming small rivers, were a new style within the English landscape, a "gardenless" form of landscape gardening, which swept away almost all the remnants of previous formally patterned styles. The English garden usually included a lake, lawns set against groves of trees, and often contained shrubberies, grottoes, pavilions, bridges and follies such as mock temples, Gothic ruins, bridges, and other picturesque architecture, designed to recreate an idyllic pastoral landscape.',
+                'teacher' => 5,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 9:00:02',
+                'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 17:00:00'),
+                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 19:30:00')
+            ],
+            [
+                'id' => 5,
+                'title' => 'Vines and bugs',
+                'description' => 'Gardening also takes place in non-residential green areas, such as parks, public or semi-public gardens (botanical gardens or zoological gardens), amusement parks, along transportation corridors, and around tourist attractions and garden hotels. In these situations, a staff of gardeners or groundskeepers maintains the gardens.',
+                'teacher' => 1,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 9:00:02',
+                'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-27 17:00:00'),
+                'endDate' => null
+            ],
+            [
+                'id' => 6,
+                'title' => 'Optional lecture - mastering hosing',
+                'description' => 'Container gardening is concerned with growing plants in any type of container either indoors or outdoors. Common containers are pots, hanging baskets, and planters. Container gardening is usually used in atriums and on balconies, patios, and roof tops.',
+                'teacher' => 3,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 9:00:02',
+                'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-28 15:00:00'),
+                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-28 18:00:00')
+            ],
+            [
+                'id' => 7,
+                'title' => 'Finances introduction',
+                'description' => 'A bank is a financial institution that accepts deposits from the public and creates credit.',
+                'teacher' => 9,
+                'course' => 2,
+                'creationDateManually' => '2018-04-07 18:25:22',
+                'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-21 20:00:00'),
+                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-21 21:30:00')
+            ],
 
-        foreach ($courses as $courseData) {
-            $course = new Course();
+        ];
 
-            foreach ($courseData as $key => $value) {
+        $this->insertToDatabase(get_class(new Course()), $courses, $manager);
+        $this->insertToDatabase(get_class(new Lecture()), $lectures, $manager);
+
+        $manager->flush();
+    }
+
+    public function insertToDatabase($classType, $array, $manager){
+        foreach ($array as $data) {
+            $object = new $classType();
+
+            foreach ($data as $key => $value) {
                 $method = 'set' . ucfirst($key);
 
-                if (method_exists($course, $method)) {
-                    $course->$method($value);
+                if (method_exists($object, $method)) {
+                    $object->$method($value);
                 }
             }
 
-            $manager->persist($course);
+            $manager->persist($object);
             //    temporarily disable auto id generation
-            $metadata = $manager->getClassMetaData(get_class($course));
+            $metadata = $manager->getClassMetaData(get_class($object));
             $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
         }
-        $manager->flush();
     }
 }
 
