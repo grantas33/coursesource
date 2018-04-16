@@ -8,6 +8,7 @@
 
 namespace App\Form;
 use App\Entity\Assignment;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,7 +25,8 @@ class AssignmentType extends AbstractType
             ->add('course')
             ->add('deadline_date', DateTimeType::class, array(
                 'widget' => 'single_text'))
-        ;
+            ->add('is_gradeable', CheckboxType::class)
+            ->add('is_submittable', CheckboxType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

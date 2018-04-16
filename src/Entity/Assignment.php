@@ -58,13 +58,23 @@ class Assignment implements \JsonSerializable
      */
     private $deadline_date;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_gradeable;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_submittable;
+
     public function getId()
     {
         return $this->id;
     }
 
     public function setId(int $id){
-        
+
         $this->id = $id;
     }
 
@@ -146,6 +156,30 @@ class Assignment implements \JsonSerializable
         return $this;
     }
 
+    public function getIsGradeable(): ?bool
+    {
+        return $this->is_gradeable;
+    }
+
+    public function setIsGradeable(bool $is_gradeable): self
+    {
+        $this->is_gradeable = $is_gradeable;
+
+        return $this;
+    }
+
+    public function getIsSubmittable(): ?bool
+    {
+        return $this->is_submittable;
+    }
+
+    public function setIsSubmittable(bool $is_submittable): self
+    {
+        $this->is_submittable = $is_submittable;
+
+        return $this;
+    }
+
     public function jsonSerialize()
     {
         return [
@@ -154,8 +188,10 @@ class Assignment implements \JsonSerializable
             'description' => $this->description,
             'teacher' => $this->teacher,
             'course' => $this->course,
-            'creationDate' => $this->creation_date->format("Y-m-d H:i:s"),
-            'deadlineDate' => $this->deadline_date->format("Y-m-d H:i:s"),
+            'creation_date' => $this->creation_date->format("Y-m-d H:i:s"),
+            'deadline_date' => $this->deadline_date->format("Y-m-d H:i:s"),
+            'is_gradeable' => $this->is_gradeable,
+            'is_submittable' => $this->is_submittable
         ];
     }
 }

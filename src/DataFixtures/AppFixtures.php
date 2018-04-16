@@ -136,7 +136,9 @@ class AppFixtures extends Fixture
                 'teacher' => 4,
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 10:02:00',
-                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-19 23:59:59')
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-19 23:59:59'),
+                'isGradeable' => true,
+                'isSubmittable' => true
             ],
             [
                 'id' => 2,
@@ -145,7 +147,9 @@ class AppFixtures extends Fixture
                 'teacher' => 4,
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 10:02:00',
-                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-20 23:59:59')
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-20 23:59:59'),
+                'isGradeable' => true,
+                'isSubmittable' => true
             ],
             [
                 'id' => 3,
@@ -154,7 +158,9 @@ class AppFixtures extends Fixture
                 'teacher' => 4,
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 10:02:00',
-                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-23 23:59:59')
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-23 23:59:59'),
+                'isGradeable' => true,
+                'isSubmittable' => true
             ],
             [
                 'id' => 4,
@@ -163,7 +169,9 @@ class AppFixtures extends Fixture
                 'teacher' => 5,
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 10:02:00',
-                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 12:59:59')
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 12:59:59'),
+                'isGradeable' => false,
+                'isSubmittable' => false
             ],
             [
                 'id' => 5,
@@ -172,7 +180,9 @@ class AppFixtures extends Fixture
                 'teacher' => 9,
                 'course' => 2,
                 'creationDateManually' => '2018-04-10 10:00:00',
-                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-14 23:59:59')
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-14 23:59:59'),
+                'isGradeable' => true,
+                'isSubmittable' => true
             ],
         ];
 
