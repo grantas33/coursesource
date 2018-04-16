@@ -1,3 +1,8 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+routing:
+    path: /{reactRouting}
+    defaults: { _controller: App\Controller\DefaultController::indexAction, reactRouting: null }
+    requirements:
+        reactRouting: ".+"
