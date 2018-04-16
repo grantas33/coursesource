@@ -171,9 +171,9 @@ class Lecture implements JsonSerializable
             'description' => $this->description,
             'teacher' => $this->teacher,
             'course' => $this->course,
-            'creationDate' => $this->creation_date->format("Y-m-d H:i:s"),
-            'startDate' => $this->start_date->format("Y-m-d H:i:s"),
-            'endDate' => $this->end_date ? $this->getEndDate()->format("Y-m-d H:i:s") : null
+            'creation_date' => $this->creation_date->format("Y-m-d H:i:s"),
+            'start_date' => $this->start_date->format("Y-m-d H:i:s"),
+            'end_date' => $this->end_date ? $this->getEndDate()->format("Y-m-d H:i:s") : null
             ];
     }
 }
