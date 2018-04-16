@@ -8,6 +8,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Assignment;
 use App\Entity\Course;
 use App\Entity\Lecture;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -127,8 +128,57 @@ class AppFixtures extends Fixture
 
         ];
 
+        $assignments = [
+            [
+                'id' => 1,
+                'title' => 'Craft a hose',
+                'description' => 'Students must craft a hose using 3D rendering software and submit the model file',
+                'teacher' => 4,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 10:02:00',
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-19 23:59:59')
+            ],
+            [
+                'id' => 2,
+                'title' => 'Plant a flower and send its picture',
+                'description' => 'Students must plant their flower and send a picture with the flower visible',
+                'teacher' => 4,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 10:02:00',
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-20 23:59:59')
+            ],
+            [
+                'id' => 3,
+                'title' => 'Complete and submit seed quiz',
+                'description' => 'Students must submit the seed quiz',
+                'teacher' => 4,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 10:02:00',
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-23 23:59:59')
+            ],
+            [
+                'id' => 4,
+                'title' => 'Dig a hole',
+                'description' => 'Students must have a hole to plant seeds',
+                'teacher' => 5,
+                'course' => 3,
+                'creationDateManually' => '2018-04-05 10:02:00',
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 12:59:59')
+            ],
+            [
+                'id' => 5,
+                'title' => 'Application to NASDAQ banking course',
+                'description' => 'In order to apply, submit your essay about modern bank infrastructure',
+                'teacher' => 9,
+                'course' => 2,
+                'creationDateManually' => '2018-04-10 10:00:00',
+                'deadlineDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-14 23:59:59')
+            ],
+        ];
+
         $this->insertToDatabase(get_class(new Course()), $courses, $manager);
         $this->insertToDatabase(get_class(new Lecture()), $lectures, $manager);
+        $this->insertToDatabase(get_class(new Assignment()), $assignments, $manager);
 
         $manager->flush();
     }
