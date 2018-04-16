@@ -13,13 +13,17 @@ Encore
 
     // uncomment to define the assets of the project
      .addEntry('js/index', './assets/js/index.js')
+     .addEntry('js/jquery.min', './assets/Resources/js/jquery.min.js')
+     .addEntry('js/adminlte.min', './assets/Resources/js/adminlte.min.js')
+     .addEntry('js/bootstrap.min', './assets/Resources/js/bootstrap.min.js')
+     .addEntry('js/jquery.slimscroll.min', './assets/Resources/js/jquery.slimscroll.min.js')
     // .addStyleEntry('css/app', './assets/css/app.scss')
 
     // uncomment if you use Sass/SCSS files
     // .enableSassLoader()
 
     // uncomment for legacy applications that require $/jQuery as a global variable
-    // .autoProvidejQuery()
+    .autoProvidejQuery()
 ;
 
 module.exports = Encore.getWebpackConfig();
