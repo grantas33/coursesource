@@ -1,11 +1,11 @@
 import React from 'react';
-import Header from '../../common/Header';
+import PageHeader from '../../common/PageHeader';
 
 const Lectures = () => (
   <div>
-    <Header>
-    Lectures
-    </Header>
+    <PageHeader 
+      title="Lectures"
+    />
   </div>
 );
 

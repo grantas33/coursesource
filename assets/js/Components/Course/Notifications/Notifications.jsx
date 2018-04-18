@@ -1,11 +1,11 @@
 import React from 'react';
-import Header from '../../common/Header';
+import PageHeader from '../../common/PageHeader';
 
 const Notifications = () => (
   <div>
-    <Header>
-      Notifications
-    </Header>
+    <PageHeader 
+      title="Notifications"
+    />
   </div>
 );
 

@@ -4,9 +4,6 @@ import Calendar from './Calendar/Calendar';
 
 const Schedule = () => (
   <div>
-    <Header>
-      Schedule
-    </Header>
     <Calendar />
   </div>
 );

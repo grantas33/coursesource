@@ -3,7 +3,7 @@ import './LoginRegister.css';
 import { Link } from 'react-router-dom'; 
 
 const Login = () => (
-  <div className="landing-page-container">
+  <div className="landing-page-container content-wrapper">
     <h2>Member Login</h2>
     <input className="form-input" placeholder="Email"/>
     <br />
