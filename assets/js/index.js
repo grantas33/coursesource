@@ -9,6 +9,7 @@ import "../Resources/css/_all-skins.min.css"
 import "../Resources/css/bootstrap.min.css"
 import "../Resources/css/AdminLTE.css"
 import "../Resources/css/ionicons.min.css"
+import "../Resources/skins/all.css"
 
 render(
     <Provider store={store}>

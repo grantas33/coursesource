@@ -1,5 +1,4 @@
 import React from 'react';
-import './Main.css';
 import CourseItem from './CourseItem';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -26,7 +25,6 @@ class Main extends React.Component {
                                                       id={course.id}
                                                       title={course.title}
                                                       description={course.description}
-                                                      creation_date={course.creation_date.date.substring(0,10)}
                                                     />
           )}
         </div>

@@ -7,7 +7,7 @@ import Home from './Components/Course/Home/Home';
 import Notifications from './Components/Course/Notifications/Notifications';
 import Schedule from './Components/Course/Schedule/Schedule';
 import Lectures from './Components/Course/Lectures/Lectures';
-import Homework from './Components/Course/Homework/Homework';
+import Assignments from './Components/Course/Assignments/Assignments';
 import LandingPage from './Components/Main/LandingPage/LandingPage';
 import Login from './Components/Main/LoginRegister/Login';
 import Register from './Components/Main/LoginRegister/Register';
@@ -35,7 +35,7 @@ class App extends React.Component {
                     <Route path='/course/:course/notifications' component={Notifications}/>
                     <Route path='/course/:course/schedule' component={Schedule}/>
                     <Route path='/course/:course/lectures' component={Lectures}/>
-                    <Route path='/course/:course/homework' component={Homework}/>
+                    <Route path='/course/:course/assignments' component={Assignments}/>
                 </Switch>  
             </div>
         </div>               

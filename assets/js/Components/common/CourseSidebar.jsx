@@ -46,7 +46,7 @@ const CourseSidebar = () => (
             </li>
             
             <li>
-                <Link to="/course/testcourse/homework" className="navigation-item"><i className="fas fa-briefcase fa-fw"></i> <span>Homework</span></Link>
+                <Link to="/course/testcourse/assignments" className="navigation-item"><i className="fas fa-briefcase fa-fw"></i> <span>Assignments</span></Link>
             </li>
             
             <li>
