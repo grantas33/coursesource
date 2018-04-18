@@ -1,11 +1,12 @@
 import React from 'react';
-import Header from '../../common/Header';
+import PageHeader from '../../common/PageHeader';
 
 const Homework = () => (
   <div>
-    <Header>
-      Homework
-    </Header>
+    <PageHeader 
+      title="Homework"
+    />
+    
   </div>
 );
 
