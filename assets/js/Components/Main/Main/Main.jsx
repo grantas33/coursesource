@@ -25,6 +25,7 @@ class Main extends React.Component {
                                                       id={course.id}
                                                       title={course.title}
                                                       description={course.description}
+                                                      creation_date={course.creation_date}
                                                     />
           )}
         </div>
