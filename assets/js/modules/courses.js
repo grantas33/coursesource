@@ -118,7 +118,6 @@ dispatch => {
     });
   })
   .catch((err) => {
-    console.log(err);
     dispatch({
       type: CREATE_COURSE_ERROR,
       payload: err.response.data.error_message.title

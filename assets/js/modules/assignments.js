@@ -13,7 +13,10 @@ axios.defaults.baseURL = '/';
 const initialState = {
   items: [],
   loading: true,
-  error: false
+  error: false,
+  newloading: false,
+  newerror: false,
+  newresponse: null,
 }
 
 export default (state = initialState, action) => {
@@ -32,9 +35,29 @@ export default (state = initialState, action) => {
     }
     case FETCH_ASSIGNMENTS_RECEIVED:
     return {
+      ...state,
       items: action.payload,
       loading: false,
       error: false
+    }
+    case CREATE_ASSIGNMENT_STARTED:
+    return {
+      ...state,
+      newloading: true
+    }
+    case CREATE_ASSIGNMENT_ERROR:
+    return {
+      ...state,
+      newloading: false,
+      newresponse: action.payload,
+      newerror: true
+    }
+    case CREATE_ASSIGNMENT_RECEIVED:
+    return {
+      ...state,
+      newloading: false,
+      newresponse: action.payload,
+      newerror: false
     }
     default:
       return state
@@ -69,12 +92,13 @@ dispatch => {
   .then((res) => {
     dispatch({
       type: CREATE_ASSIGNMENT_RECEIVED,
+      payload: res.data
     });
   })
   .catch((err) => {
     dispatch({
       type: CREATE_ASSIGNMENT_ERROR,
-      payload: err.response.data.error_message.title
+      payload: err.data
     })
   })
 }

@@ -49,7 +49,6 @@ class CreateNewCourse extends React.Component {
   }
 
   render() {
-    console.log(this.props.newCourse);
     if (this.props.newCourse.loading === true) {
       return <h3>Loading...</h3>
     }
