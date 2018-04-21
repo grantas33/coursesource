@@ -16,6 +16,7 @@ import Header from './Components/common/Header';
 import MainSidebar from './Components/common/MainSidebar';
 import CourseSidebar from './Components/common/CourseSidebar';
 import CreateNewAssignment from './Components/Course/Assignments/CreateNewAssignment';
+import CreateNewLecture from './Components/Course/Lectures/CreateNewLecture';
 
 class App extends React.Component {
     render(){
@@ -35,6 +36,7 @@ class App extends React.Component {
                     <Route path='/course/:course/notifications' component={Notifications}/>
                     <Route path='/course/:course/schedule' component={Schedule}/>
                     <Route path='/course/:course/lectures' component={Lectures}/>
+                    <Route path='/course/:course/create-new-lecture' component={CreateNewLecture}/>
                     <Route path='/course/:course/assignments' component={Assignments}/>
                     <Route path='/course/:course/create-new-assignment' component={CreateNewAssignment}/>
                 </Switch>  
