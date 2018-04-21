@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
-const CourseSidebar = () => (
+const CourseSidebar = (props) => (
 <aside className="main-sidebar">
     <section className="sidebar">
         <div className="user-panel">
@@ -26,27 +26,27 @@ const CourseSidebar = () => (
             <li className="header">MAIN NAVIGATION</li>
             <li>
                 <Link 
-                    to="/course/testcourse" 
+                    to={`/course/${props.match.params.course}`}
                     className="navigation-item"
                 >
                     <i className="fas fa-home fa-fw"></i> 
                     <span> Home</span>
                 </Link>
-            </li>
+            </li>   
             <li>
-                <Link to="/course/testcourse/notifications" className="navigation-item"><i className="fas fa-bell fa-fw"></i> <span>Notifications</span></Link>
+                <Link to={`/course/${props.match.params.course}/notifications`} className="navigation-item"><i className="fas fa-bell fa-fw"></i> <span>Notifications</span></Link>
             </li>
 
             <li>
-                <Link to="/course/testcourse/schedule" className="navigation-item"><i className="fas fa-calendar-alt fa-fw"></i> <span>Schedule</span></Link>
+                <Link to={`/course/${props.match.params.course}/schedule`} className="navigation-item"><i className="fas fa-calendar-alt fa-fw"></i> <span>Schedule</span></Link>
             </li>
             
             <li>
-                <Link to="/course/testcourse/lectures" className="navigation-item"><i className="fas fa-id-badge fa-fw"></i> <span>Lectures</span></Link>
+                <Link to={`/course/${props.match.params.course}/lectures`} className="navigation-item"><i className="fas fa-id-badge fa-fw"></i> <span>Lectures</span></Link>
             </li>
             
             <li>
-                <Link to="/course/testcourse/assignments" className="navigation-item"><i className="fas fa-briefcase fa-fw"></i> <span>Assignments</span></Link>
+                <Link to={`/course/${props.match.params.course}/assignments`} className="navigation-item"><i className="fas fa-briefcase fa-fw"></i> <span>Assignments</span></Link>
             </li>
             
             <li>

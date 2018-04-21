@@ -1,27 +1,24 @@
 import React from 'react';
 import PageHeader from '../../common/PageHeader';
 import AssignmentItem from './AssignmentItem';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { fetchAssignments } from '../../../modules/assignments';
+import { bindActionCreators } from 'redux';
 
 class Assignments extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       filter: {
-        showSubmitted: false,
-        showPrevious: false
+        showSubmitted: true,
+        showPrevious: true
       }
     }
-    this.items = [
-      {
-        done: true,
-      },
-      {
-        done: false,
-      },
-      {
-        done: false
-      }
-    ]
+  }
+
+  componentWillMount = () =>{
+    this.props.fetchAssignments(this.props.match.params.course);
   }
 
   render () {
@@ -29,10 +26,11 @@ class Assignments extends React.Component {
       <div>
         <PageHeader 
           title={"Assignments"}
+          subtitle={<Link to={`/course/${this.props.match.params.course}/create-new-assignment`}> Create a new assignment</Link>}
           links={[
             {
               name: "Home",
-              url: "/course/1"
+              url: `/course/${this.props.match.params.course}`
             }
           ]}
         />
@@ -98,10 +96,10 @@ class Assignments extends React.Component {
               </div>
             </div>    
           </div>
-          {this.items.map((assignment, i) => 
+          {this.props.assignments.items.map((assignment) => 
             <AssignmentItem 
-              key={i}
-              isDone={assignment.done}
+              key={assignment.id}
+              assignment={assignment}
             /> 
           )}
         </div>
@@ -110,4 +108,15 @@ class Assignments extends React.Component {
   }
 };
 
-export default Assignments;
+const mapStateToProps = state => ({
+  assignments: state.assignments
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchAssignments
+}, dispatch)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Assignments)
