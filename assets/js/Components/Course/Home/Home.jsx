@@ -18,7 +18,7 @@ const Home = () => (
         </div>
         {/* /.user-block */}
         <div className="box-tools">
-          <button type="button" className="btn btn-box-tool" data-toggle="tooltip" title data-original-title="Mark as read">
+          <button type="button" className="btn btn-box-tool" data-toggle="tooltip" data-original-title="Mark as read">
             <i className="fa fa-circle-o" /></button>
           <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
           </button>
@@ -91,7 +91,7 @@ const Home = () => (
         </div>
         {/* /.user-block */}
         <div className="box-tools">
-          <button type="button" className="btn btn-box-tool" data-toggle="tooltip" title data-original-title="Mark as read">
+          <button type="button" className="btn btn-box-tool" data-toggle="tooltip" data-original-title="Mark as read">
             <i className="fa fa-circle-o" /></button>
           <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
           </button>

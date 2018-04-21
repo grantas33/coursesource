@@ -121,7 +121,7 @@ class CreateNewAssignment extends React.Component {
             this.props.assignments.newresponse && 
             this.state.submitted &&
             <div className="alert alert-success alert-dismissible">
-              <button type="button" className="close" data-dismiss="alert" >×</button>
+              <button type="button" className="close" onClick={() => this.setState({...this.state, submitted: false})}>×</button>
               <h4><i className="icon fa fa-check" /> Success!</h4>
               {this.props.assignments.newresponse.success_message}
             </div>
@@ -132,7 +132,7 @@ class CreateNewAssignment extends React.Component {
             this.props.assignments.newresponse && 
             this.state.submitted &&
             <div className="alert alert-danger alert-dismissible">
-              <button type="button" className="close" data-dismiss="alert" >×</button>
+              <button type="button" className="close" onClick={() => this.setState({...this.state, submitted: false})}>×</button>
               <h4><i className="icon fa fa-ban" /> Error!</h4>
               {this.props.assignments.newresponse.error_message}
             </div>
