@@ -1,37 +1,39 @@
-import React from 'react';
-import PageHeader from '../../common/PageHeader';
-import AssignmentItem from './AssignmentItem';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { fetchAssignments } from '../../../modules/assignments';
-import { bindActionCreators } from 'redux';
+import React from 'react'
+import PageHeader from '../../common/PageHeader'
+import AssignmentItem from './AssignmentItem'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { fetchAssignments } from '../../../modules/assignments'
+import { bindActionCreators } from 'redux'
 
 class Assignments extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       filter: {
         showSubmitted: true,
-        showPrevious: true
-      }
+        showPrevious: true,
+      },
     }
   }
 
-  componentWillMount = () =>{
-    this.props.fetchAssignments(this.props.match.params.course);
+  componentWillMount = () => {
+    this.props.fetchAssignments(this.props.match.params.course)
   }
 
-  render () {
+  render() {
     return (
       <div>
-        <PageHeader 
-          title={"Assignments"}
-          subtitle={<Link to={`/course/${this.props.match.params.course}/create-new-assignment`}> Create a new assignment</Link>}
+        <PageHeader
+          title={'Assignments'}
+          subtitle={
+            <Link to={`/course/${this.props.match.params.course}/create-new-assignment`}> Create a new assignment</Link>
+          }
           links={[
             {
-              name: "Home",
-              url: `/course/${this.props.match.params.course}`
-            }
+              name: 'Home',
+              url: `/course/${this.props.match.params.course}`,
+            },
           ]}
         />
         <div className="content">
@@ -41,82 +43,115 @@ class Assignments extends React.Component {
                 <div className="box-header with-border ">
                   <h3 className="box-title">Filter</h3>
                   <div className="box-tools pull-right">
-                    <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-plus" />
+                    <button type="button" className="btn btn-box-tool" data-widget="collapse">
+                      <i className="fa fa-plus" />
                     </button>
                   </div>
                 </div>
-                <div className="box-body" style={{"display":"none"}}>
+                <div className="box-body" style={{ display: 'none' }}>
                   <div className="form-group">
-                    <label >
-                      <div 
-                        className={"icheckbox_flat-green" + (this.state.filter.showPrevious ? " checked" : "")} 
-                        style={{position: 'relative'}}
+                    <label>
+                      <div
+                        className={'icheckbox_flat-green' + (this.state.filter.showPrevious ? ' checked' : '')}
+                        style={{ position: 'relative' }}
                       >
-                        <input 
-                          type="checkbox" 
-                          className="flat-red" 
-                          style={{position: 'absolute', opacity: 0}} 
-                          onClick={(evt) => {
-                            this.setState({filter: {
-                              ...this.state.filter,
-                              showPrevious: !this.state.filter.showPrevious
-                            }})
-                          }} 
+                        <input
+                          type="checkbox"
+                          className="flat-red"
+                          style={{ position: 'absolute', opacity: 0 }}
+                          onClick={evt => {
+                            this.setState({
+                              filter: {
+                                ...this.state.filter,
+                                showPrevious: !this.state.filter.showPrevious,
+                              },
+                            })
+                          }}
                         />
 
-                        <ins className="iCheck-helper" style={{position: 'absolute', top: '0%', left: '0%', display: 'block', width: '100%', height: '100%', margin: 0, padding: 0, background: 'rgb(255, 255, 255)', border: 0, opacity: 0}} />
+                        <ins
+                          className="iCheck-helper"
+                          style={{
+                            position: 'absolute',
+                            top: '0%',
+                            left: '0%',
+                            display: 'block',
+                            width: '100%',
+                            height: '100%',
+                            margin: 0,
+                            padding: 0,
+                            background: 'rgb(255, 255, 255)',
+                            border: 0,
+                            opacity: 0,
+                          }}
+                        />
                       </div>
                       Show previous assignments
                     </label>
                   </div>
                   <div className="form-group">
-                    <label >
-                      <div 
-                        className={"icheckbox_flat-green" + (this.state.filter.showSubmitted ? " checked" : "")} 
-                        style={{position: 'relative'}}
+                    <label>
+                      <div
+                        className={'icheckbox_flat-green' + (this.state.filter.showSubmitted ? ' checked' : '')}
+                        style={{ position: 'relative' }}
                       >
-                        <input 
-                          type="checkbox" 
-                          className="flat-red" 
-                          style={{position: 'absolute', opacity: 0}} 
-                          onClick={(evt) => {
-                            this.setState({filter: {
-                              ...this.state.filter,
-                              showSubmitted: !this.state.filter.showSubmitted
-                            }})
-                          }} 
+                        <input
+                          type="checkbox"
+                          className="flat-red"
+                          style={{ position: 'absolute', opacity: 0 }}
+                          onClick={evt => {
+                            this.setState({
+                              filter: {
+                                ...this.state.filter,
+                                showSubmitted: !this.state.filter.showSubmitted,
+                              },
+                            })
+                          }}
                         />
 
-                        <ins className="iCheck-helper" style={{position: 'absolute', top: '0%', left: '0%', display: 'block', width: '100%', height: '100%', margin: 0, padding: 0, background: 'rgb(255, 255, 255)', border: 0, opacity: 0}} />
+                        <ins
+                          className="iCheck-helper"
+                          style={{
+                            position: 'absolute',
+                            top: '0%',
+                            left: '0%',
+                            display: 'block',
+                            width: '100%',
+                            height: '100%',
+                            margin: 0,
+                            padding: 0,
+                            background: 'rgb(255, 255, 255)',
+                            border: 0,
+                            opacity: 0,
+                          }}
+                        />
                       </div>
                       Show submitted assignments
                     </label>
                   </div>
                 </div>
               </div>
-            </div>    
+            </div>
           </div>
-          {this.props.assignments.items.map((assignment) => 
-            <AssignmentItem 
-              key={assignment.id}
-              assignment={assignment}
-            /> 
-          )}
+          {this.props.assignments.items.map(assignment => (
+            <AssignmentItem key={assignment.id} assignment={assignment} />
+          ))}
         </div>
       </div>
-   )
+    )
   }
-};
+}
 
 const mapStateToProps = state => ({
-  assignments: state.assignments
+  assignments: state.assignments,
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchAssignments
-}, dispatch)
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      fetchAssignments,
+    },
+    dispatch
+  )
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Assignments)
+export default connect(mapStateToProps, mapDispatchToProps)(Assignments)
