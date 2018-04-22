@@ -15,8 +15,7 @@ class Schedule extends React.Component {
   eventStyleGetter =(event, start, end, isSelected) => {
     return {
       style: {
-        backgroundColor: '#' + event.hexColor,
-        display: 'block'
+        backgroundColor: '#' + event.hexColor
       }
     }
   }
