@@ -137,8 +137,9 @@ class LectureController extends Controller
         $repository = $this->getDoctrine()->getRepository(Lecture::class);
         $course = $request->query->get('course');
         $teacher = $request->query->get('teacher');
+        $is_future = $request->query->get('is_future');
 
-        $lectures = $repository->filter($course, $teacher) ;
+        $lectures = $repository->filter($course, $teacher, $is_future) ;
 
         return new JsonResponse(
             $lectures
