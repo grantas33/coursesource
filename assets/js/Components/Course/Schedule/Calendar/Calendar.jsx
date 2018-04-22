@@ -16,7 +16,14 @@ BigCalendar.momentLocalizer(moment) // or globalizeLocalizer
 
 const Calendar = props => (
   <div>
-    <BigCalendar events={props.events} views={['month', 'week', 'day', 'agenda']} step={60} defaultDate={new Date()} />
+    <BigCalendar 
+      events={props.events} 
+      views={['month', 'week', 'day', 'agenda']} 
+      step={60} 
+      defaultDate={new Date()}
+      eventPropGetter={(props.eventStyleGetter)}
+    />
+      
   </div>
 )
 

@@ -12,6 +12,15 @@ class Schedule extends React.Component {
     this.props.fetchLectures(this.props.match.params.course)
   }
 
+  eventStyleGetter =(event, start, end, isSelected) => {
+    return {
+      style: {
+        backgroundColor: '#' + event.hexColor,
+        display: 'block'
+      }
+    }
+  }
+
   render() {
     let events = [
       ...this.props.lectures.items.map(lecture => ({
@@ -22,6 +31,7 @@ class Schedule extends React.Component {
           moment(lecture.start_date)
             .add(2, 'hours')
             .toDate(),
+        hexColor: "0000FF",
       })),
       ...this.props.assignments.items.map(assignement => ({
         title: 'Deadline for ' + assignement.title,
@@ -29,11 +39,15 @@ class Schedule extends React.Component {
         start: moment(assignement.deadline_date)
           .add(-1, 'hours')
           .toDate(),
+        hexColor: "FF0000",          
       })),
     ]
     return (
       <div>
-        <Calendar events={events} />
+        <Calendar 
+          events={events} 
+          eventStyleGetter={this.eventStyleGetter}
+        />
       </div>
     )
   }
