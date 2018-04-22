@@ -44,6 +44,11 @@ class Course implements JsonSerializable
      */
     private $creation_date;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_public;
+
     public function getId()
     {
         return $this->id;
@@ -107,6 +112,19 @@ class Course implements JsonSerializable
 
     }
 
+    public function getIsPublic(): ?bool
+    {
+        return $this->is_public;
+    }
+
+    public function setIsPublic($is_public): self
+    {
+        $this->is_public = $is_public;
+
+        return $this;
+    }
+
+
     public function jsonSerialize()
     {
         return [
@@ -114,6 +132,7 @@ class Course implements JsonSerializable
             'title' => $this->title,
             'description' => $this->description,
             'creation_date' => $this->creation_date->format("Y-m-d"),
+            'is_public' => $this->is_public
         ];
     }
 }
