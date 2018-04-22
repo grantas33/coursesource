@@ -53,7 +53,7 @@ class AssignmentController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                'error_message' => $e,
+                'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
@@ -121,7 +121,7 @@ class AssignmentController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                'error_message' => $e,
+                'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
@@ -137,11 +137,43 @@ class AssignmentController extends Controller
         $repository = $this->getDoctrine()->getRepository(Assignment::class);
         $course = $request->query->get('course');
         $teacher = $request->query->get('teacher');
+        $is_future = $request->query->get('is_future');
 
-        $assignments = $repository->filter($course, $teacher) ;
+        $assignments = $repository->filter($course, $teacher, $is_future) ;
 
         return new JsonResponse(
             $assignments
         );
+    }
+
+    /**
+     * @Route("api/assignments/{id}", name="api_assignment_delete", methods="DELETE")
+     */
+    public function deleteAssignment(int $id){
+
+        $assignment = $this->getDoctrine()
+            ->getRepository(Assignment::class)
+            ->find($id);
+
+        if (!$assignment) {
+            return new JsonResponse([
+                'error_message' => 'No assignment found for id '. $id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        try {
+            $em->remove($assignment);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JSONResponse([
+            'success_message' => 'Successfully deleted assignment '. $id
+        ]);
     }
 }

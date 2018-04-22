@@ -27,6 +27,8 @@ class LectureType extends AbstractType
                 'widget' => 'single_text'))
             ->add('end_date', DateTimeType::class, array(
                 'widget' => 'single_text'))
+            ->add('preparation_tasks')
+            ->add('location')
         ;
     }
 

@@ -53,7 +53,7 @@ class LectureController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                'error_message' => $e,
+                'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
@@ -121,7 +121,7 @@ class LectureController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                'error_message' => $e,
+                'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
@@ -137,12 +137,44 @@ class LectureController extends Controller
         $repository = $this->getDoctrine()->getRepository(Lecture::class);
         $course = $request->query->get('course');
         $teacher = $request->query->get('teacher');
+        $is_future = $request->query->get('is_future');
 
-        $lectures = $repository->filter($course, $teacher) ;
+        $lectures = $repository->filter($course, $teacher, $is_future) ;
 
         return new JsonResponse(
             $lectures
         );
+    }
+
+    /**
+     * @Route("api/lectures/{id}", name="api_lecture_delete", methods="DELETE")
+     */
+    public function deleteLecture(int $id){
+
+        $lecture = $this->getDoctrine()
+            ->getRepository(Lecture::class)
+            ->find($id);
+
+        if (!$lecture) {
+            return new JsonResponse([
+                'error_message' => 'No lecture found for id '. $id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        try {
+            $em->remove($lecture);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JSONResponse([
+            'success_message' => 'Successfully deleted lecture '. $id
+        ]);
     }
 
 }

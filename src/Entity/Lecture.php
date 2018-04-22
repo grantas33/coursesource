@@ -61,8 +61,32 @@ class Lecture implements JsonSerializable
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Assert\Expression(
+     * "this.getStartDate() < value",
+     * message="The end date must be after the start date"
+     * )
      */
     private $end_date;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Assert\Length(
+     *     max = 2000,
+     *     maxMessage="Preparation task description cannot be longer than 2000 characters"
+     * )
+     */
+    private $preparation_tasks;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     min = 3,
+     *     minMessage="The location name should be at least 3 characters long",
+     *     max = 25,
+     *     maxMessage="The location name cannot be longer than 25 characters"
+     * )
+     */
+    private $location;
 
     public function getId()
     {
@@ -163,6 +187,31 @@ class Lecture implements JsonSerializable
         return $this;
     }
 
+    public function getPreparationTasks(): ?string
+    {
+        return $this->preparation_tasks;
+    }
+
+    public function setPreparationTasks($preparation_tasks): self
+    {
+        $this->preparation_tasks = $preparation_tasks;
+
+        return $this;
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation($location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+
     public function jsonSerialize()
     {
         return [
@@ -173,7 +222,9 @@ class Lecture implements JsonSerializable
             'course' => $this->course,
             'creation_date' => $this->creation_date->format("Y-m-d H:i:s"),
             'start_date' => $this->start_date->format("Y-m-d H:i:s"),
-            'end_date' => $this->end_date ? $this->getEndDate()->format("Y-m-d H:i:s") : null
+            'end_date' => $this->end_date ? $this->getEndDate()->format("Y-m-d H:i:s") : null,
+            'preparation_tasks' => $this->preparation_tasks,
+            'location' => $this->location
             ];
     }
 }

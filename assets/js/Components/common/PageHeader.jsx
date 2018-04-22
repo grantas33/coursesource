@@ -1,16 +1,22 @@
-import React from 'react';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const PageHeader = ({title, subtitle}) => (
-<section className="content-header">
+const PageHeader = ({ title, subtitle, links }) => (
+  <section className="content-header">
     <h1>
-    {title}
-    <small>{subtitle}</small>
+      {title}
+      <small>{subtitle}</small>
     </h1>
     <ol className="breadcrumb">
-    <li><a href="#"><i className="fa fa-dashboard"></i> Home</a></li>
-    <li className="active">Dashboard</li>
+      {links &&
+        links.map((link, i) => (
+          <li key={i}>
+            <Link to={link.url}>{link.name}</Link>
+          </li>
+        ))}
+      <li className="active">{title}</li>
     </ol>
-</section>
-);
+  </section>
+)
 
-export default PageHeader;
+export default PageHeader

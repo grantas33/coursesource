@@ -1,38 +1,71 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; 
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 const LandingPage = () => (
-      <section className="content-header">
-          <div className="row">
-              <div className="col-md-12">
-                  <div className="box">
-                      <div className="box-header with-border">
-                          <h3 className="box-title">Dashboard</h3>
-                      </div>
-                      <div className="box-body">
-                          <div className="row">
-                              <div className="col-md-8">
-                                  <p className="text-center">
-                                      <strong>This is text</strong>
-                                  </p>
-                              </div>
-                          </div>
-                      </div>
-                      <div className="box-footer">
-                          <div className="row">
-                              <div className="col-sm-3 col-xs-6">
-                                  <div className="description-block border-right">
-                                      <span className="description-percentage text-green"><i className="fa fa-caret-up"></i> 17%</span>
-                                      <h5 className="description-header">$35,210.43</h5>
-                                      <span className="description-text">TOTAL REVENUE</span>
-                                  </div>
-                              </div>    
-                          </div>
-                      </div>
-                  </div>
-              </div>
+  <section className="content">
+    <div className="row">
+      <div className="col-md-3 col-sm-6 col-xs-12">
+        <div className="info-box">
+          <span className="info-box-icon bg-aqua">
+            <i className="ion ion-ios-gear-outline" />
+          </span>
+          <div className="info-box-content">
+            <span className="info-box-text">CPU Traffic</span>
+            <span className="info-box-number">
+              90<small>%</small>
+            </span>
           </div>
-      </section>
-);
+          {/* /.info-box-content */}
+        </div>
+        {/* /.info-box */}
+      </div>
+      {/* /.col */}
+      <div className="col-md-3 col-sm-6 col-xs-12">
+        <div className="info-box">
+          <span className="info-box-icon bg-red">
+            <i className="fa fa-google-plus" />
+          </span>
+          <div className="info-box-content">
+            <span className="info-box-text">Likes</span>
+            <span className="info-box-number">41,410</span>
+          </div>
+          {/* /.info-box-content */}
+        </div>
+        {/* /.info-box */}
+      </div>
+      {/* /.col */}
+      {/* fix for small devices only */}
+      <div className="clearfix visible-sm-block" />
+      <div className="col-md-3 col-sm-6 col-xs-12">
+        <div className="info-box">
+          <span className="info-box-icon bg-green">
+            <i className="ion ion-ios-cart-outline" />
+          </span>
+          <div className="info-box-content">
+            <span className="info-box-text">Sales</span>
+            <span className="info-box-number">760</span>
+          </div>
+          {/* /.info-box-content */}
+        </div>
+        {/* /.info-box */}
+      </div>
+      {/* /.col */}
+      <div className="col-md-3 col-sm-6 col-xs-12">
+        <div className="info-box">
+          <span className="info-box-icon bg-yellow">
+            <i className="ion ion-ios-people-outline" />
+          </span>
+          <div className="info-box-content">
+            <span className="info-box-text">New Members</span>
+            <span className="info-box-number">2,000</span>
+          </div>
+          {/* /.info-box-content */}
+        </div>
+        {/* /.info-box */}
+      </div>
+      {/* /.col */}
+    </div>
+  </section>
+)
 
-export default LandingPage;
+export default LandingPage

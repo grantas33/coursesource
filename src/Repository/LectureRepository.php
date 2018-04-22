@@ -23,12 +23,25 @@ class LectureRepository extends ServiceEntityRepository
      * @return Lecture[] Returns an array of Lecture objects
      */
 
-    public function filter($course, $teacher)
+    public function filter($course, $teacher, $is_future)
     {
-        if($teacher != null){
-            return $this->findBy(['course' => $course, 'teacher' => $teacher]);
+
+        $qb = $this->createQueryBuilder('l')
+            ->andWhere('l.course = :course')
+                ->setParameter('course', $course);
+
+        if(!empty($teacher)){
+            $qb->andWhere('l.teacher = :teacher')
+                ->setParameter('teacher', $teacher);
         }
-        return $this->findBy(['course' => $course]);
+        if($is_future){
+            $qb->andWhere('l.end_date >= :today')
+                ->setParameter('today', new \DateTime('now'));
+        }
+
+        return $qb->orderBy('l.start_date', 'ASC')
+        ->getQuery()
+        ->getResult();
     }
 
 

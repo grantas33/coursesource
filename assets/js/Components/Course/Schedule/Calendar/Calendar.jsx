@@ -1,9 +1,8 @@
-import React from 'react';
-import BigCalendar from 'react-big-calendar';
-import moment from 'moment';
+import React from 'react'
+import BigCalendar from 'react-big-calendar'
+import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import './Calendar.css';
-import events from './events';
+import './Calendar.css'
 
 // Setup the localizer by providing the moment (or globalize) Object
 // to the correct localizer.
@@ -12,23 +11,20 @@ moment.locale('ko', {
     dow: 1,
     doy: 1,
   },
-});
-BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
+})
+BigCalendar.momentLocalizer(moment) // or globalizeLocalizer
 
-const Calendar = () => (
+const Calendar = props => (
   <div>
-    <BigCalendar
-      events={events}
-      views={[
-        'month',
-        'week',
-        'day',
-        'agenda',
-      ]}
-      step={60}
-      defaultDate={new Date(2015, 3, 1)}
+    <BigCalendar 
+      events={props.events} 
+      views={['month', 'week', 'day', 'agenda']} 
+      step={60} 
+      defaultDate={new Date()}
+      eventPropGetter={(props.eventStyleGetter)}
     />
+      
   </div>
-);
+)
 
-export default Calendar;
+export default Calendar
