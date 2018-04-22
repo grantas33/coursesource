@@ -68,7 +68,9 @@ class AppFixtures extends Fixture
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 9:00:02',
                 'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-18 17:00:00'),
-                'endDate' => null
+                'endDate' => null,
+                'preparationTasks' => 'Bring a pot and seeds',
+                'location' => 'Kernville 56H, ground floor'
             ],
             [
                 'id' => 2,
@@ -78,7 +80,9 @@ class AppFixtures extends Fixture
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 9:00:02',
                 'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-20 19:00:00'),
-                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-20 21:05:00')
+                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-20 21:05:00'),
+                'preparationTasks' => 'Bring a hose',
+                'location' => 'Kernville 56H, ground floor'
             ],
             [
                 'id' => 3,
@@ -88,7 +92,9 @@ class AppFixtures extends Fixture
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 9:00:02',
                 'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 13:00:00'),
-                'endDate' => null
+                'endDate' => null,
+                'preparationTasks' => null,
+                'location' => 'Kernville 56H, 2nd floor'
             ],
             [
                 'id' => 4,
@@ -98,7 +104,9 @@ class AppFixtures extends Fixture
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 9:00:02',
                 'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 17:00:00'),
-                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 19:30:00')
+                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-25 19:30:00'),
+                'preparationTasks' => 'Bring fresh ranarr seeds',
+                'location' => 'Kernville 56H, 2nd floor'
             ],
             [
                 'id' => 5,
@@ -108,7 +116,9 @@ class AppFixtures extends Fixture
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 9:00:02',
                 'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-27 17:00:00'),
-                'endDate' => null
+                'endDate' => null,
+                'preparationTasks' => null,
+                'location' => 'Kernville 58H, room 2A'
             ],
             [
                 'id' => 6,
@@ -118,7 +128,9 @@ class AppFixtures extends Fixture
                 'course' => 3,
                 'creationDateManually' => '2018-04-05 9:00:02',
                 'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-28 15:00:00'),
-                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-28 18:00:00')
+                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-28 18:00:00'),
+                'preparationTasks' => 'Bring a fine hose',
+                'location' => 'Kernville 56H, ground floor'
             ],
             [
                 'id' => 7,
@@ -128,7 +140,9 @@ class AppFixtures extends Fixture
                 'course' => 2,
                 'creationDateManually' => '2018-04-07 18:25:22',
                 'startDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-21 20:00:00'),
-                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-21 21:30:00')
+                'endDate' => \DateTime::createFromFormat("Y-m-d H:i:s", '2018-04-21 21:30:00'),
+                'preparationTasks' => null,
+                'location' => 'Massascushets office, cabinet 405'
             ],
 
         ];
