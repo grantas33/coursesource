@@ -25,9 +25,9 @@ class Schedule extends React.Component {
       })),
       ...this.props.assignments.items.map(assignement => ({
         title: 'Deadline for ' + assignement.title,
-        start: new Date(assignement.deadline_date),
-        end: moment(assignement.deadline_date)
-          .add(1, 'hours')
+        end: new Date(assignement.deadline_date),
+        start: moment(assignement.deadline_date)
+          .add(-1, 'hours')
           .toDate(),
       })),
     ]
