@@ -53,7 +53,7 @@ class AssignmentController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                'error_message' => $e,
+                'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
@@ -121,7 +121,7 @@ class AssignmentController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                'error_message' => $e,
+                'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
