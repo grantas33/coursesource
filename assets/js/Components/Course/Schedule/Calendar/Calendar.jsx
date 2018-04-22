@@ -15,10 +15,10 @@ moment.locale('ko', {
 });
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
-const Calendar = () => (
+const Calendar = (props) => (
   <div>
     <BigCalendar
-      events={events}
+      events={props.events}
       views={[
         'month',
         'week',
@@ -26,7 +26,7 @@ const Calendar = () => (
         'agenda',
       ]}
       step={60}
-      defaultDate={new Date(2015, 3, 1)}
+      defaultDate={new Date()}
     />
   </div>
 );
