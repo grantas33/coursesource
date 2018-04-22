@@ -22,12 +22,25 @@ class AssignmentRepository extends ServiceEntityRepository
     /**
      * @return Assignment[]
      */
-    public function filter($course, $teacher)
+    public function filter($course, $teacher, $is_future)
     {
-        if($teacher != null){
-            return $this->findBy(['course' => $course, 'teacher' => $teacher]);
+
+        $qb = $this->createQueryBuilder('a')
+            ->andWhere('a.course = :course')
+            ->setParameter('course', $course);
+
+        if(!empty($teacher)){
+            $qb->andWhere('a.teacher = :teacher')
+                ->setParameter('teacher', $teacher);
         }
-        return $this->findBy(['course' => $course]);
+        if($is_future){
+            $qb->andWhere('a.deadline_date >= :today')
+                ->setParameter('today', new \DateTime('now'));
+        }
+
+        return $qb->orderBy('a.deadline_date', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

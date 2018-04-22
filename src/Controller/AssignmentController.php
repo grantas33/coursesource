@@ -137,8 +137,9 @@ class AssignmentController extends Controller
         $repository = $this->getDoctrine()->getRepository(Assignment::class);
         $course = $request->query->get('course');
         $teacher = $request->query->get('teacher');
+        $is_future = $request->query->get('is_future');
 
-        $assignments = $repository->filter($course, $teacher) ;
+        $assignments = $repository->filter($course, $teacher, $is_future) ;
 
         return new JsonResponse(
             $assignments
