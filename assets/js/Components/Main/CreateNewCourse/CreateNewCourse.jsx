@@ -12,6 +12,7 @@ class CreateNewCourse extends React.Component {
       newCourse: {
         title: '',
         description: '',
+        is_public: true
       },
       submitted: false,
       editted: false,
