@@ -54,7 +54,7 @@ class CourseController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                     'error_message' => $e,
+                     'error_message' => $e->getMessage(),
                ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
@@ -123,7 +123,7 @@ class CourseController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse([
-                'error_message' => $e,
+                'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
@@ -143,4 +143,37 @@ class CourseController extends Controller
             $courses
         );
     }
+
+    /**
+     * @Route("api/courses/{id}", name="api_course_delete", methods="DELETE")
+     */
+    public function deleteLecture(int $id){
+
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
+
+        if (!$course) {
+            return new JsonResponse([
+                'error_message' => 'No course found for id '. $id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        try {
+            $em->remove($course);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JSONResponse([
+            'success_message' => 'Successfully deleted course '. $id
+        ]);
+    }
+
+
 }
