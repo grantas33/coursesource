@@ -12,8 +12,7 @@ import Login from './Components/Main/LoginRegister/Login';
 import Register from './Components/Main/LoginRegister/Register';
 import Main from './Components/Main/Main/Main';
 import CreateNewCourse from './Components/Main/CreateNewCourse/CreateNewCourse';
-import Header from './Components/common/Header';
-import MainSidebar from './Components/common/MainSidebar';
+import MainTopNavigation from './Components/common/MainTopNavigation';
 import CourseSidebar from './Components/common/CourseSidebar';
 import CreateNewAssignment from './Components/Course/Assignments/CreateNewAssignment';
 import CreateNewLecture from './Components/Course/Lectures/CreateNewLecture';
@@ -22,9 +21,10 @@ class App extends React.Component {
     render(){
         return (
         <div>
-            <Route path='/' component={Header}/>
-            <Route path='/' component={MainSidebar}/>
-            <Route path='/course/:course' component={CourseSidebar}/>
+            <Switch>
+                <Route path='/course/:course' component={CourseSidebar}/>
+                <Route path='/' component={MainTopNavigation}/>
+            </Switch>
             <div className="content-wrapper">
                 <Switch>
                     <Route exact path='/' component={LandingPage}/>

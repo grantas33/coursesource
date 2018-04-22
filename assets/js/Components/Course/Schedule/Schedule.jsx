@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from '../../common/Header';
 import Calendar from './Calendar/Calendar';
 import { connect } from 'react-redux';
 import { fetchLectures } from '../../../modules/lectures';

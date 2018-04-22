@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Header = () => (
+const CourseSidebarHeader = () => (
 <header className="main-header">
     <a href="#" className="logo">
         <span className="logo-mini"><b>C</b>S</span>
@@ -43,4 +43,4 @@ const Header = () => (
 </header>
 );
 
-export default Header;
+export default CourseSidebarHeader;
