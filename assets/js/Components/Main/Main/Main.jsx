@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchCourses } from '../../../modules/courses'
 import { Link } from 'react-router-dom'
+import PageHeader from '../../common/PageHeader';
 
 class Main extends React.Component {
   componentWillMount() {
@@ -17,24 +18,31 @@ class Main extends React.Component {
       return <h3>Error</h3>
     }
     return (
-      <div className="landing-page-container">
-        <h1 className="">Get back to learning!</h1>
-        <h3>Your Coursesource courses:</h3>
-        <div className="landing-page-container">
-          {this.props.courses.items.map(course => (
-            <CourseItem
-              key={course.id}
-              id={course.id}
-              title={course.title}
-              description={course.description}
-              creation_date={course.creation_date}
-            />
-          ))}
+      <div className="container">
+        <PageHeader
+          title={'Your courses'}
+          links={[
+            {
+              name: 'Home',
+              url: `/`,
+            },
+          ]}
+        />
+        <div className="content">
+          <div className="row">
+              {this.props.courses.items.map(course => (
+                <CourseItem 
+                  key={course.id} 
+                  course={course} />
+              ))}
+          </div>
         </div>
         <h3> Are you a mentor? </h3>
+        <div className="row col-sm-3">
         <Link to="/main/create-new-course">
-          <input className="login-register-button" type="button" value="Create new course" />
+          <button type="button" className="btn btn-block btn-primary">Create new course</button>
         </Link>
+        </div>
       </div>
     )
   }

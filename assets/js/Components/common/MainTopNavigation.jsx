@@ -5,6 +5,7 @@ import user2img from '../../../Resources/img/user2-160x160.jpg'
 class MainTopNavigation extends React.Component {
   componentDidMount = () => {
     document.body.classList.toggle('layout-top-nav', true)
+    document.body.classList.toggle('sidebar-collapse', false)
   }
 
   componentWillUnmount = () => {
