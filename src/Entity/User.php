@@ -3,12 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\AttributeOverride;
+use Doctrine\ORM\Mapping\AttributeOverrides;
+use Doctrine\ORM\Mapping\Column;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+
  */
 class User extends BaseUser
 {
@@ -48,21 +52,6 @@ class User extends BaseUser
      * )
      */
     protected $surname;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\Email(
-     *     message = "The email is not a valid email.",
-     *     checkMX = true
-     * )
-     */
-    protected $email;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Password is required")
-     */
-    protected $password;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -105,30 +94,6 @@ class User extends BaseUser
     public function setSurname($surname): self
     {
         $this->surname = $surname;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail($email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword($password): self
-    {
-        $this->password = $password;
 
         return $this;
     }
