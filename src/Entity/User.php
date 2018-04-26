@@ -36,8 +36,9 @@ class User extends BaseUser
      *     min = 2,
      *     minMessage="Name should be at least 3 characters long",
      *     max = 25,
-     *     maxMessage="Name cannot be longer than 25 characters"
+     *     maxMessage="Name cannot be longer than 25 characters",
      * )
+     *
      */
     protected $name;
 
@@ -48,7 +49,7 @@ class User extends BaseUser
      *     min = 2,
      *     minMessage="Surname should be at least 3 characters long",
      *     max = 25,
-     *     maxMessage="Surname cannot be longer than 25 characters"
+     *     maxMessage="Surname cannot be longer than 25 characters",
      * )
      */
     protected $surname;
@@ -57,11 +58,6 @@ class User extends BaseUser
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $avatar;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $register_date;
 
 
     public function getId()
@@ -108,23 +104,6 @@ class User extends BaseUser
         $this->avatar = $avatar;
 
         return $this;
-    }
-
-    public function getRegisterDate(): ?\DateTimeInterface
-    {
-        return $this->register_date;
-    }
-
-    public function setRegisterDate(): self
-    {
-        $this->register_date = new \DateTime('now');
-
-        return $this;
-    }
-
-    public function setRegisterDateManually(string $date): void
-    {
-        $this->register_date = \DateTime::createFromFormat("Y-m-d H:i:s", $date);
     }
 
 
