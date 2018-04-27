@@ -8,10 +8,12 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\RegistrationType;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
+use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -78,6 +80,64 @@ class UserController extends Controller
             'success_message' => 'Successfully registered new user'
         ], Response::HTTP_CREATED);
 
+    }
+
+    /**
+     * @Route("api/login", name="api_user_login", methods="POST")
+     */
+    public function loginUser(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'];
+        $password = $data['password'];
+
+        $repository = $this->getDoctrine()->getRepository(User::class);
+
+        $user = $repository->findOneBy(['email' => $email]);
+
+        if (!$user) {
+            return new JsonResponse([
+                'error_message' => 'Cannot find user'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $isValid = $this->get('security.password_encoder')
+            ->isPasswordValid($user, $password);
+
+        if (!$isValid) {
+            return new JsonResponse([
+                'error_message' => 'Bad credentials'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $token = $this->getToken($user);
+
+        return new JsonResponse([
+            'token' => $token
+        ]);
+    }
+
+
+    public function getToken(User $user)
+    {
+        return $this->get('lexik_jwt_authentication.encoder')
+            ->encode([
+                'email' => $user->getEmail(),
+                'exp' => $this->getTokenExpiryDateTime(),
+            ]);
+    }
+
+
+    private function getTokenExpiryDateTime()
+    {
+        $tokenTtl = $this->container->getParameter('lexik_jwt_authentication.token_ttl');
+        $now = new \DateTime('now');
+        try {
+            $now->add(new \DateInterval('PT'.$tokenTtl.'S'));
+        } catch (\Exception $e) {
+            return $now;
+        }
+        return $now->format('U');
     }
 
 }
