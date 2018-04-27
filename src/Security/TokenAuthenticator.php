@@ -13,6 +13,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -142,13 +143,12 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      * @throws AuthenticationException
      *
      * @return UserInterface|null
-     * @throws \Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $data = $this->jwtEncoder->decode($credentials);
-
-        if ($data === false) {
+        try {
+            $data = $this->jwtEncoder->decode($credentials);
+        } catch (JWTDecodeFailureException $e) {
             throw new CustomUserMessageAuthenticationException('Invalid Token');
         }
 
@@ -196,7 +196,11 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        // TODO: Implement onAuthenticationFailure() method.
+        $data = array(
+            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
+        );
+
+        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -216,7 +220,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        // TODO: Implement onAuthenticationSuccess() method.
+        return null;
     }
 
     /**

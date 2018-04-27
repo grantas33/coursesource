@@ -14,11 +14,13 @@ use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
 use JMS\Serializer\SerializationContext;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 class UserController extends Controller
 {
@@ -62,7 +64,6 @@ class UserController extends Controller
                         $errors[$child->getName()] = $error->getMessage();
                 }
             }
-        //    var_dump((string) $form->getErrors(true));
             return new JsonResponse([
                 'error_message' => $errors
             ], Response::HTTP_BAD_REQUEST);
@@ -120,11 +121,15 @@ class UserController extends Controller
 
     public function getToken(User $user)
     {
-        return $this->get('lexik_jwt_authentication.encoder')
-            ->encode([
-                'email' => $user->getEmail(),
-                'exp' => $this->getTokenExpiryDateTime(),
-            ]);
+        try {
+            return $this->get('lexik_jwt_authentication.encoder')
+                ->encode([
+                    'email' => $user->getEmail(),
+                    'exp' => $this->getTokenExpiryDateTime(),
+                ]);
+        } catch (JWTEncodeFailureException $e) {
+            throw new CustomUserMessageAuthenticationException('Failed to encode the token');
+        }
     }
 
 
