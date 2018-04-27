@@ -12,7 +12,6 @@ use FOS\UserBundle\Model\User as BaseUser;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
-
  */
 class User extends BaseUser
 {
@@ -38,13 +37,12 @@ class User extends BaseUser
      *     max = 25,
      *     maxMessage="Name cannot be longer than 25 characters",
      * )
-     *
      */
     protected $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Name is required")
+     * @Assert\NotBlank(message="Surname is required")
      * @Assert\Length(
      *     min = 2,
      *     minMessage="Surname should be at least 3 characters long",
@@ -58,7 +56,6 @@ class User extends BaseUser
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $avatar;
-
 
     public function getId()
     {

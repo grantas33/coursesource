@@ -14,4 +14,4 @@ fos_user:
     use_username_form_type: false
     registration:
         form:
-            name: app_user_registration
+            type: App\Form\RegistrationType
