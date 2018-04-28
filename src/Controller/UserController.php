@@ -118,6 +118,22 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @Route("api/user/current", name="api_user_get_current", methods="GET")
+     */
+    public function getCurrentUser(){
+        if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
+        {
+            $user = $this->container->get('security.token_storage')->getToken()->getUser();
+            return new JsonResponse(
+                $user
+            );
+        }
+        return new JsonResponse([
+            'error_message' => 'Cannot retrieve the user'
+        ]);
+    }
+
 
     public function getToken(User $user)
     {

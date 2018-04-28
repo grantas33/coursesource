@@ -13,7 +13,7 @@ use FOS\UserBundle\Model\User as BaseUser;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User extends BaseUser
+class User extends BaseUser implements JsonSerializable
 {
 
     /**
@@ -103,7 +103,14 @@ class User extends BaseUser
         return $this;
     }
 
-
-
-
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'surname' => $this->surname,
+            'email' => $this->getEmail(),
+            'avatar' => $this->avatar,
+        ];
+    }
 }
