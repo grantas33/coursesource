@@ -27,9 +27,9 @@ class UserController extends Controller
 
 
     /**
-     * @Route("api/users", name="api_user_create", methods="POST")
+     * @Route("api/register", name="api_user_register", methods="POST")
      */
-    public function setUser(Request $request)
+    public function registerUser(Request $request)
     {
         $userManager = $this->get('fos_user.user_manager');
         $dispatcher = $this->get('event_dispatcher');
