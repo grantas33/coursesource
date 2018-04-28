@@ -33,7 +33,7 @@ class User extends BaseUser implements JsonSerializable
      * @Assert\NotBlank(message="Name is required")
      * @Assert\Length(
      *     min = 2,
-     *     minMessage="Name should be at least 3 characters long",
+     *     minMessage="Name should be at least 2 characters long",
      *     max = 25,
      *     maxMessage="Name cannot be longer than 25 characters",
      * )
@@ -45,7 +45,7 @@ class User extends BaseUser implements JsonSerializable
      * @Assert\NotBlank(message="Surname is required")
      * @Assert\Length(
      *     min = 2,
-     *     minMessage="Surname should be at least 3 characters long",
+     *     minMessage="Surname should be at least 2 characters long",
      *     max = 25,
      *     maxMessage="Surname cannot be longer than 25 characters",
      * )

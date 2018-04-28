@@ -13,17 +13,61 @@ use App\Form\RegistrationType;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
-use JMS\Serializer\SerializationContext;
+use FOS\UserBundle\Model\UserManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 class UserController extends Controller
 {
+    /**
+     * @var UserManagerInterface
+     */
+    private $userManager;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorizationChecker;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
+     * @var JWTEncoderInterface
+     */
+    private $jwtEncoder;
+
+    /**
+     * UserController constructor.
+     * @param UserManagerInterface $userManager
+     * @param EventDispatcherInterface $dispatcher
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param TokenStorageInterface $tokenStorage
+     * @param JWTEncoderInterface $jwtEncoder
+     */
+    public function __construct(UserManagerInterface $userManager, EventDispatcherInterface $dispatcher, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, JWTEncoderInterface $jwtEncoder)
+    {
+        $this->userManager = $userManager;
+        $this->dispatcher = $dispatcher;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->tokenStorage = $tokenStorage;
+        $this->jwtEncoder = $jwtEncoder;
+    }
 
 
     /**
@@ -31,11 +75,9 @@ class UserController extends Controller
      */
     public function registerUser(Request $request)
     {
-        $userManager = $this->get('fos_user.user_manager');
-        $dispatcher = $this->get('event_dispatcher');
-        $user = $userManager->createUser();
+        $user = $this->userManager->createUser();
         $event = new GetResponseUserEvent($user, $request);
-        $dispatcher->dispatch(FOSUserEvents::REGISTRATION_INITIALIZE, $event);
+        $this->dispatcher->dispatch(FOSUserEvents::REGISTRATION_INITIALIZE, $event);
 
         if (null !== $event->getResponse()) {
             return new JsonResponse([
@@ -50,7 +92,7 @@ class UserController extends Controller
 
         if($form->isSubmitted() && $form->isValid()){
             $event = new FormEvent($form, $request);
-            $dispatcher->dispatch(
+            $this->dispatcher->dispatch(
                 FOSUserEvents::REGISTRATION_SUCCESS, $event
             );
             $user->setEnabled(true);
@@ -70,7 +112,7 @@ class UserController extends Controller
         }
 
         try {
-            $userManager->updateUser($user);
+            $this->userManager->updateUser($user);
         }
         catch(\Exception $e){
             return new JsonResponse([
@@ -122,9 +164,9 @@ class UserController extends Controller
      * @Route("api/user/current", name="api_user_get_current", methods="GET")
      */
     public function getCurrentUser(){
-        if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
+        if( $this->authorizationChecker->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
-            $user = $this->container->get('security.token_storage')->getToken()->getUser();
+            $user = $this->tokenStorage->getToken()->getUser();
             return new JsonResponse(
                 $user
             );
@@ -134,11 +176,26 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @Route("api/user/{id}", name="api_user_get", methods="GET")
+     */
+    public function getUser($id){
+        $user = $this->userManager->findUserBy(array('id'=>$id));
+        if(!$user){
+            return new JsonResponse([
+                'error_message' => 'No user for id '.$id
+            ]);
+        }
+        return new JsonResponse(
+            $user
+        );
+    }
+
 
     public function getToken(User $user)
     {
         try {
-            return $this->get('lexik_jwt_authentication.encoder')
+            return $this->jwtEncoder
                 ->encode([
                     'email' => $user->getEmail(),
                     'exp' => $this->getTokenExpiryDateTime(),
