@@ -109,7 +109,7 @@ class User extends BaseUser implements JsonSerializable
             'id' => $this->id,
             'name' => $this->name,
             'surname' => $this->surname,
-            'email' => $this->getEmail(),
+            'email' => $this->email,
             'avatar' => $this->avatar,
         ];
     }

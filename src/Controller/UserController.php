@@ -173,24 +173,23 @@ class UserController extends Controller
         }
         return new JsonResponse([
             'error_message' => 'Cannot retrieve the user'
-        ]);
+        ], Response::HTTP_UNAUTHORIZED);
     }
 
     /**
      * @Route("api/user/{id}", name="api_user_get", methods="GET")
      */
-    public function getUser($id){
+    public function getUserById($id){
         $user = $this->userManager->findUserBy(array('id'=>$id));
         if(!$user){
             return new JsonResponse([
                 'error_message' => 'No user for id '.$id
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
         return new JsonResponse(
             $user
         );
     }
-
 
     public function getToken(User $user)
     {
