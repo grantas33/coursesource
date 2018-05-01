@@ -1,0 +1,17 @@
+framework:
+    translator: ~
+    templating: { engines: [twig] }
+
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: App\Entity\User
+    service:
+        user_manager: fos_user.user_manager.default
+    from_email:
+        address: "coursesource@coursesource.com"
+        sender_name: "coursesource"
+    use_username_form_type: false
+    registration:
+        form:
+            type: App\Form\RegistrationType

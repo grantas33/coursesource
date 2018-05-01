@@ -9,6 +9,7 @@
 namespace App\Controller;
 use App\Entity\Course;
 use App\Form\CourseType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
