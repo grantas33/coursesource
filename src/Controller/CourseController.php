@@ -8,6 +8,7 @@
 
 namespace App\Controller;
 use App\Entity\Course;
+use App\Entity\CourseUser;
 use App\Form\CourseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,8 +18,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-class CourseController extends Controller
+class CourseController extends BaseController
 {
+
 
     /**
      * @Route("api/courses", name="api_course_create", methods="POST")
@@ -47,9 +49,18 @@ class CourseController extends Controller
              ], Response::HTTP_BAD_REQUEST);
         }
 
+        $courseUser = new CourseUser();
+        $courseUser->setUser($this->getCurrentUserId());
+        $courseUser->setRole('admin');
+        $courseUser->setCourseStatus('active');
+
         try {
             $em = $this->getDoctrine()->getManager();
             $em->persist($course);
+            $em->flush();
+
+            $courseUser->setCourse($course->getId());
+            $em->persist($courseUser);
             $em->flush();
         }
         catch (\Exception $e) {
@@ -174,6 +185,7 @@ class CourseController extends Controller
             'success_message' => 'Successfully deleted course '. $id
         ]);
     }
+
 
 
 }

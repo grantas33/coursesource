@@ -11,7 +11,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CourseUserRepository")
+ * @ORM\Entity()
  */
 class CourseUser implements \JsonSerializable
 {
@@ -51,7 +51,7 @@ class CourseUser implements \JsonSerializable
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_notifiable;
+    private $is_notifiable = true;
 
     public function getId(): ?int
     {
