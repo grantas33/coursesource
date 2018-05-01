@@ -60,7 +60,12 @@ class UserController extends Controller
      * @param TokenStorageInterface $tokenStorage
      * @param JWTEncoderInterface $jwtEncoder
      */
-    public function __construct(UserManagerInterface $userManager, EventDispatcherInterface $dispatcher, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, JWTEncoderInterface $jwtEncoder)
+    public function __construct(
+        UserManagerInterface $userManager,
+        EventDispatcherInterface $dispatcher,
+        AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $tokenStorage,
+        JWTEncoderInterface $jwtEncoder)
     {
         $this->userManager = $userManager;
         $this->dispatcher = $dispatcher;
