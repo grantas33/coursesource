@@ -42,7 +42,6 @@ class CourseController extends Controller
                     $errors[$child->getName()] = $error->getMessage();
                 }
             }
-
             return new JsonResponse([
                  'error_message' => $errors
              ], Response::HTTP_BAD_REQUEST);
