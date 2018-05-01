@@ -247,17 +247,6 @@ class CreateNewAssignment extends React.Component {
                       <span className="help-block">{this.state.validations.deadline_date}</span>
                     )}
                 </div>
-
-                <div className="form-group">
-                  <label>Choose students</label>
-                  <select multiple defaultValue={['1']} className="form-control" size={'10'}>
-                    <option value="1">Student 1</option>
-                    <option value="1">Student 2</option>
-                    <option value="1">Student 3</option>
-                    <option value="1">Student 4</option>
-                    <option value="1">Student 5</option>
-                  </select>
-                </div>
               </form>
             </div>
             <div className="box-footer">

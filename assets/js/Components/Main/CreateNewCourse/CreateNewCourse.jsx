@@ -1,11 +1,14 @@
 import React from 'react'
-import './CreateNewCourse.css'
+import PageHeader from '../../common/PageHeader'
+import Datetime from 'react-datetime'
+import { isLength, isBefore } from 'validator'
 import { connect } from 'react-redux'
+import { createCourse } from '../../../modules/courses'
 import { bindActionCreators } from 'redux'
-import { createCourse, clearState } from '../../../modules/courses'
-import { withRouter } from 'react-router-dom'
+import moment from 'moment'
 
 class CreateNewCourse extends React.Component {
+
   constructor(props) {
     super(props)
     this.state = {
@@ -14,103 +17,248 @@ class CreateNewCourse extends React.Component {
         description: '',
         is_public: true
       },
-      submitted: false,
-      editted: false,
-    }
-  }
-
-  updateInputData = event => {
-    this.setState({
-      ...this.state,
-      newCourse: {
-        ...this.state.newCourse,
-        [event.target.name]: event.target.value,
+      editted: {
       },
-      editted: true,
-      submitted: false,
-    })
+    }
+
+    this.state.validations ={...this.getValidationsObject()};
   }
 
-  handleButton = () => {
-    this.props.createCourse(this.state.newCourse)
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.courses.newCourse.response && !nextProps.courses.newCourse.error) {
+      return {
+        newCourse: {
+          title: '',
+          description: '',
+          teacher: '1',
+          start_date: '',
+          duration: '',
+          course: nextProps.match.params.course,
+        },
+        validations: {},
+        editted: {
+          title: false,
+          start_date: false,
+        },
+      }
+    } else {
+      return prevState
+    }
+  }
+
+  handleUpdateField = (name, value) => {
+    this.setState(
+      {
+        ...this.state,
+        newCourse: {
+          ...this.state.newCourse,
+          [name]: value,
+        },
+        editted: {
+          ...this.state.editted,
+          [name]: true,
+        },
+      },
+      this.validateInput
+    )
+  }
+
+  getValidationsObject = () => {
+    let validations = {}
+    if (!isLength(this.state.newCourse.title, { min: 3 })) {
+      validations.title = 'The title should be at least 3 characters long'
+    }
+    if (!isLength(this.state.newCourse.title, { min: undefined, max: 25 })) {
+      validations.title = 'The title cannot be longer than 25 characters'
+    }
+    if (!isLength(this.state.newCourse.description, { min: undefined, max: 2000 })) {
+      validations.description = 'The description cannot be longer than 2000 characters'
+    }
+    return validations;
+  }
+
+  validateInput = () => {
     this.setState({
       ...this.state,
-      submitted: true,
+      validations: {
+        ...this.getValidationsObject(),
+      },
     })
-  }
-
-  componentWillUnmount = () => {
-    this.props.clearState()
-  }
-
-  componentWillReceiveProps = nextProps => {
-    if (this.state.submitted && !nextProps.newCourse.error && !nextProps.newCourse.loading) {
-      this.props.history.push('/course/' + 1)
-    }
   }
 
   render() {
-    if (this.props.newCourse.loading === true) {
-      return <h3>Loading...</h3>
-    }
     return (
-      <div className="landing-page-container">
-        <h1 className="">Create a new course</h1>
-        <input
-          className="form-input"
-          name="title"
-          placeholder="Title"
-          value={this.state.newCourse.title}
-          onChange={this.updateInputData}
+      <div>
+        <PageHeader
+          title={'Create a new course'}
+          links={[
+            {
+              name: 'Main',
+              url: `/`,
+            },
+            {
+              name: 'Your courses',
+              url: `/main/`,
+            },
+          ]}
         />
-        {this.state.editted && this.state.newCourse.title.length < 3 ? (
-          <span className="validaton-error">The title should be at least 3 characters long</span>
-        ) : (
-          <span />
-        )}
-        {this.state.editted && this.state.newCourse.title.length > 25 ? (
-          <span className="validaton-error">The title cannot be longer than 25 characters</span>
-        ) : (
-          <span />
-        )}
-        <br />
+        <div className="content">
+          {!this.props.courses.newCourse.loading &&
+            !this.props.courses.newCourse.error &&
+            this.props.courses.newCourse.response &&
+            this.state.submitted && (
+              <div className="alert alert-success alert-dismissible">
+                <button
+                  type="button"
+                  className="close"
+                  onClick={() => this.setState({ ...this.state, submitted: false })}
+                >
+                  ×
+                </button>
+                <h4>
+                  <i className="icon fa fa-check" /> Success!
+                </h4>
+                {this.props.courses.newCourse.response.success_message}
+              </div>
+            )}
+          {!this.props.courses.newCourse.loading &&
+            this.props.courses.newCourse.error &&
+            this.props.courses.newCourse.response &&
+            this.state.submitted && (
+              <div className="alert alert-danger alert-dismissible">
+                <button
+                  type="button"
+                  className="close"
+                  onClick={() => this.setState({ ...this.state, submitted: false })}
+                >
+                  ×
+                </button>
+                <h4>
+                  <i className="icon fa fa-ban" /> Error!
+                </h4>
+                {this.props.courses.newCourse.response}
+              </div>
+            )}
+          <div className="box box-warning">
+            <div className="box-header with-border">
+              <h3 className="box-title">New Course</h3>
+            </div>
+            {/* /.box-header */}
+            <div className="box-body">
+              <form role="form">
+                <div
+                  className={
+                    'form-group' + (this.state.editted.title && this.state.validations.title ? ' has-error' : '')
+                  }
+                >
+                  <label>Title</label>
+                  <input
+                    value={this.state.newCourse.title}
+                    onChange={event => this.handleUpdateField('title', event.target.value)}
+                    className={'form-control'}
+                    placeholder="Enter ..."
+                  />
+                  {this.state.editted.title &&
+                    this.state.validations.title && <span className="help-block">{this.state.validations.title}</span>}
+                </div>
 
-        <input
-          className="form-input"
-          name="description"
-          placeholder="Description"
-          value={this.state.newCourse.description}
-          onChange={this.updateInputData}
-        />
-        {this.state.editted && this.state.newCourse.description.length > 2000 ? (
-          <span className="validaton-error">The title cannot be longer than 2000 characters</span>
-        ) : (
-          <span />
-        )}
-        <br />
+                <div className={'form-group' + (this.state.validations.description ? ' has-error' : '')}>
+                  <label>Description</label>
+                  <textarea
+                    value={this.state.newCourse.description}
+                    onChange={event => this.handleUpdateField('description', event.target.value)}
+                    className={'form-control'}
+                    rows={3}
+                    placeholder="Enter ..."
+                  />
+                  {this.state.editted.description &&
+                    this.state.validations.description && (
+                      <span className="help-block">{this.state.validations.description}</span>
+                    )}
+                </div>
+              </form>
+            </div>
 
-        <input className="login-register-button" type="button" value="Create" onClick={this.handleButton} />
-        {this.state.submitted && this.props.newCourse.loading === false && this.props.newCourse.error === true ? (
-          <h3 className="validaton-error">Error: {this.props.newCourse.response}</h3>
-        ) : (
-          <span />
-        )}
+            <div className="form-group">
+              <div className="radio">
+                <label>
+                  Visibility
+                  <input type="radio" name="optionsRadios" defaultChecked={this.state.newCourse.is_public} onChange={() => 
+                                                                                          this.setState({
+                                                                                            ...this.state,
+                                                                                            newCourse: {
+                                                                                              ...this.state.newCourse,
+                                                                                              is_public: true
+                                                                                            }
+                                                                                          })}
+                  />
+                    Public course
+                </label>
+              </div>
+              <div className="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" defaultChecked={!this.state.newCourse.is_public} onChange={() => 
+                                                                                          this.setState({
+                                                                                            ...this.state,
+                                                                                            newCourse: {
+                                                                                              ...this.state.newCourse,
+                                                                                              is_public: false
+                                                                                            }
+                                                                                          })}/>
+                    Private course
+                </label>
+              </div>
+            </div>
+
+
+            <div className="box-footer">
+              <button
+                onClick={() => {
+                  this.setState({
+                    ...this.state,
+                    editted: {
+                      title: true,
+                      description: true
+                    },
+                  })
+                  if (
+                    Object.keys(this.state.validations).filter(x => this.state.validations[x] !== null).length === 0
+                  ) {
+                      this.props.createCourse(this.state.newCourse)
+                      this.setState({
+                        ...this.state,
+                        submitted: true,
+                      })
+                  }
+                }}
+                type="submit"
+                className="btn btn-info pull-right"
+              >
+                Create
+              </button>
+            </div>
+            {this.props.courses.newCourse.loading && (
+              <div className="overlay">
+                <i className="fa fa-refresh fa-spin" />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  newCourse: state.courses.newCourse,
+  courses: state.courses,
 })
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       createCourse,
-      clearState,
     },
     dispatch
   )
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateNewCourse))
+export default connect(mapStateToProps, mapDispatchToProps)(CreateNewCourse)
