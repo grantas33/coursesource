@@ -1,11 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import user2img from '../../../Resources/img/user2-160x160.jpg'
+import { getCurrent, signout } from '../../modules/user';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 class MainTopNavigation extends React.Component {
   componentDidMount = () => {
     document.body.classList.toggle('layout-top-nav', true)
     document.body.classList.toggle('sidebar-collapse', false)
+    this.props.getCurrent();
   }
 
   componentWillUnmount = () => {
@@ -85,56 +89,51 @@ class MainTopNavigation extends React.Component {
                     {/* The user image in the navbar*/}
                     <img src={user2img} className="user-image" alt="User Image" />
                     {/* hidden-xs hides the username on small devices so only the image appears. */}
-                    <span className="hidden-xs">Alexander Pierce</span>
+                    <span className="hidden-xs">{this.props.user.current.name + ' ' + this.props.user.current.surname}</span>
                   </a>
                   <ul className="dropdown-menu">
                     {/* The user image in the menu */}
                     <li className="user-header">
                       <img src={user2img} className="img-circle" alt="User Image" />
                       <p>
-                        Alexander Pierce - Web Developer
-                        <small>Member since Nov. 2012</small>
+                        {this.props.user.current.name + ' ' + this.props.user.current.surname}
                       </p>
                     </li>
-                    {/* Menu Body */}
-                    <li className="user-body">
-                      <div className="row">
-                        <div className="col-xs-4 text-center">
-                          <a href="#">Followers</a>
-                        </div>
-                        <div className="col-xs-4 text-center">
-                          <a href="#">Sales</a>
-                        </div>
-                        <div className="col-xs-4 text-center">
-                          <a href="#">Friends</a>
-                        </div>
-                      </div>
-                      {/* /.row */}
-                    </li>
-                    {/* Menu Footer*/}
+                   
                     <li className="user-footer">
                       <div className="pull-left">
                         <a href="#" className="btn btn-default btn-flat">
-                          Profile
+                          Settings
                         </a>
                       </div>
                       <div className="pull-right">
-                        <a href="#" className="btn btn-default btn-flat">
+                        <button className="btn btn-default btn-flat" onClick={this.props.signout}>
                           Sign out
-                        </a>
+                        </button>
                       </div>
                     </li>
                   </ul>
                 </li>
               </ul>
             </div>
-            {/* /.navbar-custom-menu */}
           </div>
-          {/* /.container-fluid */}
         </nav>
       </header>
     )
   }
 }
 
-export default MainTopNavigation
+const mapStateToProps = state => ({
+  user: state.user
+})
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      getCurrent,
+      signout
+    },
+    dispatch
+  )
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainTopNavigation)

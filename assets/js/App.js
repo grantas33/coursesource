@@ -16,29 +16,31 @@ import MainTopNavigation from './Components/common/MainTopNavigation'
 import CourseSidebar from './Components/common/CourseSidebar'
 import CreateNewAssignment from './Components/Course/Assignments/CreateNewAssignment'
 import CreateNewLecture from './Components/Course/Lectures/CreateNewLecture'
+import PrivateRoute from './Components/common/PrivateRoute';
 
 class App extends React.Component {
   render() {
     return (
       <div>
         <Switch>
-          <Route path="/course/:course" component={CourseSidebar} />
-          <Route path="/" component={MainTopNavigation} />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <PrivateRoute path="/course/:course" component={CourseSidebar} />
+          <PrivateRoute path="/" component={MainTopNavigation} />
         </Switch>
+        
         <div className="content-wrapper">
           <Switch>
-            <Route exact path="/" component={LandingPage} />
-            <Route exact path="/main" component={Main} />
-            <Route exact path="/main/create-new-course" component={CreateNewCourse} />
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Register} />
-            <Route exact path="/course/:course" component={Home} />
-            <Route path="/course/:course/notifications" component={Notifications} />
-            <Route path="/course/:course/schedule" component={Schedule} />
-            <Route path="/course/:course/lectures" component={Lectures} />
-            <Route path="/course/:course/create-new-lecture" component={CreateNewLecture} />
-            <Route path="/course/:course/assignments" component={Assignments} />
-            <Route path="/course/:course/create-new-assignment" component={CreateNewAssignment} />
+            <PrivateRoute exact path="/" component={LandingPage} />
+            <PrivateRoute exact path="/main" component={Main} />
+            <PrivateRoute exact path="/main/create-new-course" component={CreateNewCourse} />
+            <PrivateRoute exact path="/course/:course" component={Home} />
+            <PrivateRoute path="/course/:course/notifications" component={Notifications} />
+            <PrivateRoute path="/course/:course/schedule" component={Schedule} />
+            <PrivateRoute path="/course/:course/lectures" component={Lectures} />
+            <PrivateRoute path="/course/:course/create-new-lecture" component={CreateNewLecture} />
+            <PrivateRoute path="/course/:course/assignments" component={Assignments} />
+            <PrivateRoute path="/course/:course/create-new-assignment" component={CreateNewAssignment} />
           </Switch>
         </div>
       </div>
