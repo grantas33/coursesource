@@ -4,6 +4,11 @@ import { push } from "react-router-redux";
 export const LOGIN_STARTED = "user/LOGIN_STARTED";
 export const LOGIN_ERROR = "user/LOGIN_ERROR";
 export const LOGIN_RECEIVED = "user/LOGIN_RECEIVED";
+
+export const REGISTER_STARTED = "user/REGISTER_STARTED";
+export const REGISTER_ERROR = "user/REGISTER_ERROR";
+export const REGISTER_RECEIVED = "user/REGISTER_RECEIVED";
+
 export const CURRENT_USER_RECEIVED = "user/CURRENT_USER_RECEIVED";
 export const LOGOUT_RECEIVED = "user/LOGOUT_RECEIVED";
 
@@ -33,7 +38,8 @@ export default (state = initialState, action) => {
         ...state,
         login: {
           loading: false,
-          error: action.payload
+          error: action.payload,
+          response: null,
         }
       };
     case LOGIN_RECEIVED:
@@ -42,9 +48,37 @@ export default (state = initialState, action) => {
         login: {
           token: action.payload,
           loading: false,
-          error: false
+          error: null
         }
       };
+
+    case REGISTER_STARTED:
+      return {
+        ...state,
+        register: {
+          loading: true,
+          error: null
+        }
+      };
+    case REGISTER_ERROR:
+      return {
+        ...state,
+        register: {
+          loading: false,
+          error: action.payload,
+          response: null
+        }
+      };
+    case REGISTER_RECEIVED:
+      return {
+        ...state,
+        register: {
+          response: action.payload,
+          loading: false,
+          error: null
+        }
+      };
+
     case CURRENT_USER_RECEIVED:
       return {
         ...state,
@@ -71,7 +105,6 @@ export const login = object => dispatch => {
         type: LOGIN_RECEIVED,
         payload: res.data.token
       });
-      console.log(window.localStorage.getItem("userToken"));
       dispatch(push("/"));
     })
     .catch(err => {
@@ -82,19 +115,40 @@ export const login = object => dispatch => {
     });
 };
 
-export const getCurrent = () => dispatch => {
-  axios.get("api/user/current", 
-  {
-    headers: {
-      Authorization: "Bearer " + window.localStorage.getItem("userToken")
-    }
-  }
-).then(res => {
-    dispatch({
-      type: CURRENT_USER_RECEIVED,
-      payload: res.data
-    });
+export const register = object => dispatch => {
+  dispatch({
+    type: REGISTER_STARTED
   });
+  axios
+    .post("api/register", object)
+    .then(res => {
+      dispatch({
+        type: REGISTER_RECEIVED,
+        payload: res.data.token
+      });
+      dispatch(push("/login"));
+    })
+    .catch(err => {
+      dispatch({
+        type: REGISTER_ERROR,
+        payload: err.response.data.error_message
+      });
+    });
+};
+
+export const getCurrent = () => dispatch => {
+  axios
+    .get("api/user/current", {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
+    })
+    .then(res => {
+      dispatch({
+        type: CURRENT_USER_RECEIVED,
+        payload: res.data
+      });
+    });
 };
 
 export const signout = object => dispatch => {

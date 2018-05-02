@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { register } from '../../../modules/user';
 
 class Register extends React.Component {
   componentDidMount = () => {
@@ -11,6 +14,23 @@ class Register extends React.Component {
     document.body.classList.toggle("layout-top-nav", false);
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      userObject: {
+        name: "",
+        surname: "",
+        username: "",
+        email: "",
+        plainPassword: {
+          first: "",
+          second: ""
+        }
+      },
+      showError: false
+    };
+  }
+
   render() {
     return (
       <div className="register-box">
@@ -21,20 +41,81 @@ class Register extends React.Component {
         </div>
         <div className="register-box-body">
           <p className="login-box-msg">Register a new membership</p>
+
+          {this.state.showError &&
+          this.props.user.register.error &&
+          !this.props.user.register.loading ? (
+            Object.keys(this.props.user.register.error).map((key, index) => (
+              <div className="alert alert-danger alert-dismissible" key={index}>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="alert"
+                  aria-hidden="true"
+                >
+                  ×
+                </button>
+                <h4>
+                  <i className="icon fa fa-ban" /> {this.props.user.register.error[key]}
+                </h4>
+              </div>
+            ))
+          ) : (
+            <div />
+          )}
+
           <form method="post">
             <div className="form-group has-feedback">
               <input
                 type="text"
                 className="form-control"
-                placeholder="Full name"
+                placeholder="Name"
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    userObject: {
+                      ...this.state.userObject,
+                      name: e.target.value
+                    }
+                  })
+                }
               />
               <span className="glyphicon glyphicon-user form-control-feedback" />
             </div>
+
+            <div className="form-group has-feedback">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Surname"
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    userObject: {
+                      ...this.state.userObject,
+                      surname: e.target.value
+                    }
+                  })
+                }
+              />
+              <span className="glyphicon glyphicon-user form-control-feedback" />
+            </div>
+
             <div className="form-group has-feedback">
               <input
                 type="email"
                 className="form-control"
                 placeholder="Email"
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    userObject: {
+                      ...this.state.userObject,
+                      email: e.target.value,
+                      username: e.target.value
+                    }
+                  })
+                }
               />
               <span className="glyphicon glyphicon-envelope form-control-feedback" />
             </div>
@@ -43,6 +124,18 @@ class Register extends React.Component {
                 type="password"
                 className="form-control"
                 placeholder="Password"
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    userObject: {
+                      ...this.state.userObject,
+                      plainPassword: {
+                        ...this.state.userObject.plainPassword,
+                        first: e.target.value
+                      }
+                    }
+                  })
+                }
               />
               <span className="glyphicon glyphicon-lock form-control-feedback" />
             </div>
@@ -51,6 +144,18 @@ class Register extends React.Component {
                 type="password"
                 className="form-control"
                 placeholder="Retype password"
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    userObject: {
+                      ...this.state.userObject,
+                      plainPassword: {
+                        ...this.state.userObject.plainPassword,
+                        second: e.target.value
+                      }
+                    }
+                  })
+                }
               />
               <span className="glyphicon glyphicon-log-in form-control-feedback" />
             </div>
@@ -105,6 +210,11 @@ class Register extends React.Component {
                 <button
                   type="submit"
                   className="btn btn-primary btn-block btn-flat"
+                  onClick={e => {
+                    this.props.register(this.state.userObject);
+                    e.preventDefault();
+                    this.setState({ ...this.state, showError: true });
+                  }}
                 >
                   Register
                 </button>
@@ -120,4 +230,16 @@ class Register extends React.Component {
   }
 }
 
-export default Register;
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      register
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
