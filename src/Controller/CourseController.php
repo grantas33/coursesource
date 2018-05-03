@@ -10,6 +10,8 @@ namespace App\Controller;
 use App\Entity\Course;
 use App\Entity\CourseUser;
 use App\Form\CourseType;
+use App\Interfaces\RoleInterface;
+use App\Interfaces\StatusInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-class CourseController extends BaseController
+class CourseController extends BaseController implements RoleInterface, StatusInterface
 {
 
 
@@ -51,8 +53,8 @@ class CourseController extends BaseController
 
         $courseUser = new CourseUser();
         $courseUser->setUser($this->getCurrentUserId());
-        $courseUser->setRole('admin');
-        $courseUser->setCourseStatus('active');
+        $courseUser->setRole(RoleInterface::ADMIN);
+        $courseUser->setCourseStatus(StatusInterface::ACTIVE);
 
         try {
             $em = $this->getDoctrine()->getManager();
