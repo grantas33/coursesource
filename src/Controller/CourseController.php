@@ -341,7 +341,7 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
 
         if(!$user){
             return new JsonResponse([
-                'error_message' => 'User does not exist or has not submitted an application'
+                'error_message' => 'User does not participate in this course or has not submitted an application'
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -395,6 +395,68 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
         }
         return new JsonResponse([
             'success_message' => 'Successfully accepted invitation to course '.$id
+        ]);
+    }
+
+    /**
+     * @Route("api/courses/{id}/assignrole", name="api_course_assignRole", methods="PUT")
+     */
+    public function assignRole(int $id, Request $request){
+
+        $courseAdmin = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy(array(
+                'user'=>$this->getCurrentUserId(),
+                'course'=>$id,
+                'role'=>RoleInterface::ADMIN));
+
+        if(!$courseAdmin){
+            return new JsonResponse([
+                'error_message' => 'You do not have the rights to assign roles'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $adminCount = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->count(array(
+                'course'=>$id,
+                'role'=>RoleInterface::ADMIN));
+
+        if($data['user'] == $this->getCurrentUserId() && $adminCount < 2){
+            return new JsonResponse([
+                'error_message' => 'You can not assign this role to yourself'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy(array(
+                'user'=>$data['user'],
+                'course'=>$id,
+                'course_status'=>StatusInterface::ACTIVE));
+
+        if(!$user){
+            return new JsonResponse([
+                'error_message' => 'User does not participate in this course'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user->setRole($data['role']);
+
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse([
+            'success_message' => 'Successfully assigned role to user'
         ]);
     }
 
