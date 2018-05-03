@@ -89,6 +89,20 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        if(!$course->getIsPublic()){
+            $isCourseVisible = $this->getDoctrine()
+                ->getRepository(CourseUser::class)
+                ->findOneBy(array(
+                    'user'=>$this->getCurrentUserId(),
+                    'course'=>$id));
+
+            if(!$isCourseVisible){
+                return new JsonResponse([
+                    'error_message' => 'No permissions to view course '. $id
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+        }
+
         return new JSONResponse([
             $course
         ]);
