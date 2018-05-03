@@ -268,11 +268,25 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
             ->getRepository(CourseUser::class)
             ->findOneBy(array(
                 'user'=>$data['user'],
+                'course'=>$id,
                 'course_status'=>StatusInterface::ACTIVE));
 
         if($activeUser){
             return new JsonResponse([
-                'error_message' => 'User is already enrolled in the course'
+                'error_message' => 'User is already enrolled in this course'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $invitedUser = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy(array(
+                'user'=>$data['user'],
+                'course'=>$id,
+                'course_status'=>StatusInterface::INVITED));
+
+        if($invitedUser){
+            return new JsonResponse([
+                'error_message' => 'User is already invited to this course'
             ], Response::HTTP_BAD_REQUEST);
         }
 

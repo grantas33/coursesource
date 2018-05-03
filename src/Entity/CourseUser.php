@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseUserRepository")
  */
-class CourseUser implements \JsonSerializable
+class CourseUser
 {
 
     /**
@@ -137,10 +137,4 @@ class CourseUser implements \JsonSerializable
         return $this;
     }
 
-
-
-    public function jsonSerialize()
-    {
-        // TODO: Implement jsonSerialize() method.
-    }
 }
