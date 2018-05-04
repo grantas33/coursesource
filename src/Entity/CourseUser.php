@@ -24,12 +24,12 @@ class CourseUser
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="courseUsers")
      */
     private $user;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Course", inversedBy="courseUsers")
      */
     private $course;
 
@@ -46,12 +46,12 @@ class CourseUser
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $course_status;
+    private $status;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_notifiable = true;
+    private $isNotifiable = true;
 
     public function getId(): ?int
     {
@@ -113,26 +113,26 @@ class CourseUser
         return $this;
     }
 
-    public function getCourseStatus(): ?string
+    public function getStatus(): ?string
     {
-        return $this->course_status;
+        return $this->status;
     }
 
-    public function setCourseStatus(string $course_status): self
+    public function setStatus(string $status): self
     {
-        $this->course_status = $course_status;
+        $this->status = $status;
 
         return $this;
     }
 
     public function getIsNotifiable(): ?bool
     {
-        return $this->is_notifiable;
+        return $this->isNotifiable;
     }
 
-    public function setIsNotifiable($is_notifiable): self
+    public function setIsNotifiable($isNotifiable): self
     {
-        $this->is_notifiable = $is_notifiable;
+        $this->isNotifiable = $isNotifiable;
 
         return $this;
     }

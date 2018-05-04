@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -11,6 +12,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Course implements JsonSerializable
 {
+
+    public function __construct()
+    {
+        $this->courseUsers = new ArrayCollection();
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -48,6 +55,11 @@ class Course implements JsonSerializable
      * @ORM\Column(type="boolean")
      */
     private $is_public;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="course", orphanRemoval=true)
+     */
+    private $courseUsers;
 
     public function getId()
     {

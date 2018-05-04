@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\AttributeOverride;
 use Doctrine\ORM\Mapping\AttributeOverrides;
@@ -26,6 +27,7 @@ class User extends BaseUser implements JsonSerializable
     public function __construct()
     {
         parent::__construct();
+        $this->courseUsers = new ArrayCollection();
     }
 
     /**
@@ -56,6 +58,11 @@ class User extends BaseUser implements JsonSerializable
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $avatar;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="user", orphanRemoval=true)
+     */
+    protected $courseUsers;
 
     public function getId()
     {

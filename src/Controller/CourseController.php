@@ -7,6 +7,7 @@
  */
 
 namespace App\Controller;
+
 use App\Entity\Course;
 use App\Entity\CourseUser;
 use App\Entity\User;
@@ -17,9 +18,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 
-class CourseController extends BaseController implements RoleInterface, StatusInterface
+class CourseController extends Controller implements RoleInterface, StatusInterface
 {
     /**
      * @Route("api/courses", name="api_course_create", methods="POST")
@@ -49,16 +51,16 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
         }
 
         $courseUser = new CourseUser();
-        $courseUser->setUser($this->getCurrentUserId());
+        $courseUser->setUser($this->getUser());
         $courseUser->setRole(RoleInterface::ADMIN);
-        $courseUser->setCourseStatus(StatusInterface::ACTIVE);
+        $courseUser->setStatus(StatusInterface::ACTIVE);
 
         try {
             $em = $this->getDoctrine()->getManager();
             $em->persist($course);
             $em->flush();
 
-            $courseUser->setCourse($course->getId());
+            $courseUser->setCourse($course);
             $em->persist($courseUser);
             $em->flush();
         }
@@ -192,7 +194,7 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
 
         $course = $this->getDoctrine()
             ->getRepository(Course::class)
-            ->findOneBy(array('id'=>$id));
+            ->find($id);
 
         if(!$course || !$course->getIsPublic()){
             return new JsonResponse([
@@ -200,13 +202,12 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $currentUserId = $this->getCurrentUserId();
         $user = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$currentUserId,
-                'course'=>$id,
-                'course_status'=>StatusInterface::PENDING));
+            ->findOneBy([
+                'user'=>$this->getUser(),
+                'course'=>$course,
+                'status'=>StatusInterface::PENDING]);
 
         if($user){
             return new JsonResponse([
@@ -215,10 +216,10 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
         }
 
         $courseUser = new CourseUser();
-        $courseUser->setUser($currentUserId);
-        $courseUser->setCourse($id);
+        $courseUser->setUser($this->getUser());
+        $courseUser->setCourse($course);
         $courseUser->setRole(RoleInterface::APPLICANT);
-        $courseUser->setCourseStatus(StatusInterface::PENDING);
+        $courseUser->setStatus(StatusInterface::PENDING);
 
         try {
             $em = $this->getDoctrine()->getManager();
@@ -240,12 +241,22 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
      */
     public function inviteToCourse(int $id, Request $request){
 
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'No course found for id '.$id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $courseAdmin = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$this->getCurrentUserId(),
-                'course'=>$id,
-                'role'=>RoleInterface::ADMIN));
+            ->findOneBy([
+                'user'=>$this->getUser(),
+                'course'=>$course,
+                'role'=>RoleInterface::ADMIN]);
 
         if(!$courseAdmin){
             return new JsonResponse([
@@ -256,7 +267,7 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
         $data = json_decode($request->getContent(), true);
         $user = $this->getDoctrine()
             ->getRepository(User::class)
-            ->findOneBy(array('id'=>$data['user']));
+            ->find($data['userId']);
 
         if(!$user){
             return new JsonResponse([
@@ -266,10 +277,10 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
 
         $activeUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$data['user'],
-                'course'=>$id,
-                'course_status'=>StatusInterface::ACTIVE));
+            ->findOneBy([
+                'user'=>$user,
+                'course'=>$course,
+                'status'=>StatusInterface::ACTIVE]);
 
         if($activeUser){
             return new JsonResponse([
@@ -279,10 +290,10 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
 
         $invitedUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$data['user'],
-                'course'=>$id,
-                'course_status'=>StatusInterface::INVITED));
+            ->findOneBy([
+                'user'=>$user,
+                'course'=>$course,
+                'status'=>StatusInterface::INVITED]);
 
         if($invitedUser){
             return new JsonResponse([
@@ -291,10 +302,10 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
         }
 
         $courseUser = new CourseUser();
-        $courseUser->setUser($data['user']);
-        $courseUser->setCourse($id);
+        $courseUser->setUser($user);
+        $courseUser->setCourse($course);
         $courseUser->setRole($data['role']);
-        $courseUser->setCourseStatus(StatusInterface::INVITED);
+        $courseUser->setStatus(StatusInterface::INVITED);
 
         try {
             $em = $this->getDoctrine()->getManager();
@@ -317,12 +328,22 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
      */
     public function acceptSubmission(int $id, Request $request){
 
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'No course found for id '.$id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $courseAdmin = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$this->getCurrentUserId(),
-                'course'=>$id,
-                'role'=>RoleInterface::ADMIN));
+            ->findOneBy([
+                'user'=>$this->getUser(),
+                'course'=>$course,
+                'role'=>RoleInterface::ADMIN]);
 
         if(!$courseAdmin){
             return new JsonResponse([
@@ -333,24 +354,34 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
         $data = json_decode($request->getContent(), true);
 
         $user = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$data['user'],
-                'course'=>$id,
-                'course_status'=>StatusInterface::PENDING));
+            ->getRepository(User::class)
+            ->find($data['userId']);
 
         if(!$user){
+            return new JsonResponse([
+                'error_message' => 'User does not exist'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $courseUser = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy([
+                'user'=>$user,
+                'course'=>$course,
+                'status'=>StatusInterface::PENDING]);
+
+        if(!$courseUser){
             return new JsonResponse([
                 'error_message' => 'User does not participate in this course or has not submitted an application'
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $user->setRole(RoleInterface::STUDENT);
-        $user->setCourseStatus(StatusInterface::ACTIVE);
+        $courseUser->setRole(RoleInterface::STUDENT);
+        $courseUser->setStatus(StatusInterface::ACTIVE);
 
         try {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
+            $em->persist($courseUser);
             $em->flush();
         }
         catch (\Exception $e) {
@@ -368,12 +399,22 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
      */
     public function acceptInvitation(int $id){
 
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'No course found for id '.$id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $user = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$this->getCurrentUserId(),
-                'course'=>$id,
-                'course_status'=>StatusInterface::INVITED));
+            ->findOneBy([
+                'user'=>$this->getUser(),
+                'course'=>$course,
+                'status'=>StatusInterface::INVITED]);
 
         if(!$user){
             return new JsonResponse([
@@ -381,7 +422,7 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $user->setCourseStatus(StatusInterface::ACTIVE);
+        $user->setStatus(StatusInterface::ACTIVE);
 
         try {
             $em = $this->getDoctrine()->getManager();
@@ -403,12 +444,22 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
      */
     public function assignRole(int $id, Request $request){
 
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'No course found for id '.$id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $courseAdmin = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$this->getCurrentUserId(),
-                'course'=>$id,
-                'role'=>RoleInterface::ADMIN));
+            ->findOneBy([
+                'user'=>$this->getUser(),
+                'course'=>$course,
+                'role'=>RoleInterface::ADMIN]);
 
         if(!$courseAdmin){
             return new JsonResponse([
@@ -418,36 +469,46 @@ class CourseController extends BaseController implements RoleInterface, StatusIn
 
         $data = json_decode($request->getContent(), true);
 
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->find($data['userId']);
+
+        if(!$user){
+            return new JsonResponse([
+                'error_message' => 'User does not exist'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $adminCount = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->count(array(
-                'course'=>$id,
-                'role'=>RoleInterface::ADMIN));
+            ->count([
+                'course'=>$course,
+                'role'=>RoleInterface::ADMIN]);
 
-        if($data['user'] == $this->getCurrentUserId() && $adminCount < 2){
+        if($user == $this->getUser() && $adminCount < 2){
             return new JsonResponse([
                 'error_message' => 'You can not assign this role to yourself'
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = $this->getDoctrine()
+        $courseUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(array(
-                'user'=>$data['user'],
-                'course'=>$id,
-                'course_status'=>StatusInterface::ACTIVE));
+            ->findOneBy([
+                'user'=>$user,
+                'course'=>$course,
+                'status'=>StatusInterface::ACTIVE]);
 
-        if(!$user){
+        if(!$courseUser){
             return new JsonResponse([
                 'error_message' => 'User does not participate in this course'
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $user->setRole($data['role']);
+        $courseUser->setRole($data['role']);
 
         try {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
+            $em->persist($courseUser);
             $em->flush();
         }
         catch (\Exception $e) {
