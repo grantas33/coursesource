@@ -65,24 +65,24 @@ class CourseUser
         return $this;
     }
 
-    public function getUser(): ?int
+    public function getUser()
     {
         return $this->user;
     }
 
-    public function setUser(int $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getCourse(): ?int
+    public function getCourse()
     {
         return $this->course;
     }
 
-    public function setCourse(int $course): self
+    public function setCourse(Course $course): self
     {
         $this->course = $course;
 

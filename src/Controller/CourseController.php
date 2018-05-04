@@ -267,7 +267,7 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
         $data = json_decode($request->getContent(), true);
         $user = $this->getDoctrine()
             ->getRepository(User::class)
-            ->find($data['userId']);
+            ->find($data['user_id']);
 
         if(!$user){
             return new JsonResponse([
@@ -355,7 +355,7 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
 
         $user = $this->getDoctrine()
             ->getRepository(User::class)
-            ->find($data['userId']);
+            ->find($data['user_id']);
 
         if(!$user){
             return new JsonResponse([
@@ -471,7 +471,7 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
 
         $user = $this->getDoctrine()
             ->getRepository(User::class)
-            ->find($data['userId']);
+            ->find($data['user_id']);
 
         if(!$user){
             return new JsonResponse([
