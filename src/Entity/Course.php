@@ -57,7 +57,7 @@ class Course implements JsonSerializable
     private $is_public;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="course", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="course", cascade={"remove"})
      */
     private $courseUsers;
 

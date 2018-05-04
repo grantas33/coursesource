@@ -60,7 +60,7 @@ class User extends BaseUser implements JsonSerializable
     protected $avatar;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="user", cascade={"remove"})
      */
     protected $courseUsers;
 
