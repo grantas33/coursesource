@@ -105,7 +105,7 @@ export const login = object => dispatch => {
         type: LOGIN_RECEIVED,
         payload: res.data.token
       });
-      dispatch(push("/"));
+      dispatch(push("/main/my-courses"));
     })
     .catch(err => {
       dispatch({

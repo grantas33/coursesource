@@ -9,6 +9,7 @@ class MainTopNavigation extends React.Component {
   componentDidMount = () => {
     document.body.classList.toggle('layout-top-nav', true)
     document.body.classList.toggle('sidebar-collapse', false)
+    document.body.classList.toggle('sidebar-open', false)
     this.props.getCurrent();
   }
 
@@ -38,18 +39,14 @@ class MainTopNavigation extends React.Component {
             <div className="collapse navbar-collapse pull-left" id="navbar-collapse">
               <ul className="nav navbar-nav">
                 <li>
-                  <Link to="/main">Your courses</Link>
+                  <Link to="/main/my-courses">My courses</Link>
                 </li>
 
                 <li>
-                  <Link to="/main">Browse courses</Link>
+                  <Link to="/main/browse-courses">Browse courses</Link>
                 </li>
               </ul>
-              <form className="navbar-form navbar-left" role="search">
-                <div className="form-group">
-                  <input type="text" className="form-control" id="navbar-search-input" placeholder="Search" />
-                </div>
-              </form>
+              
             </div>
             {/* /.navbar-collapse */}
             {/* Navbar Right Menu */}

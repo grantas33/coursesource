@@ -1,0 +1,15 @@
+#removed-height {
+  height: auto;
+}
+
+.course-image {
+  float: left;
+  margin-right: 10px;
+  clear:both;
+}
+
+.course-text {
+  margin-left: 0px;
+  overflow:auto;
+  display:block;
+}

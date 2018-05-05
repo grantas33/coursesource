@@ -64,7 +64,7 @@ class CourseSidebar extends React.Component {
               </li>
 
               <li>
-                <Link to="/main" className="navigation-item">
+                <Link to="/main/my-courses" className="navigation-item">
                   <i className="fas fa-sign-out-alt fa-fw" /> <span>Back to main</span>
                 </Link>
               </li>

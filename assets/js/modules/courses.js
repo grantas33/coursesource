@@ -4,6 +4,10 @@ export const FETCH_COURSES_STARTED = "courses/FETCH_COURSES_STARTED";
 export const FETCH_COURSES_ERROR = "courses/FETCH_COURSES_ERROR";
 export const FETCH_COURSES_RECEIVED = "courses/FETCH_COURSES_RECEIVED";
 
+export const FETCH_COURSE_STARTED = "courses/FETCH_COURSE_STARTED";
+export const FETCH_COURSE_ERROR = "courses/FETCH_COURSE_ERROR";
+export const FETCH_COURSE_RECEIVED = "courses/FETCH_COURSE_RECEIVED";
+
 export const CREATE_COURSE_STARTED = "courses/CREATE_COURSE_STARTED";
 export const CREATE_COURSE_ERROR = "courses/CREATE_COURSE_ERROR";
 export const CREATE_COURSE_RECEIVED = "courses/CREATE_COURSE_RECEIVED";
@@ -12,6 +16,11 @@ export const CLEAR_CREATE_COURSE = "courses/CLEAR_CREATE_COURSE";
 axios.defaults.baseURL = "/";
 
 const initialState = {
+  course: {
+    item: {},
+    loading: true,
+    error: false
+  },
   allCourses: {
     courses: [],
     loading: true,
@@ -50,6 +59,30 @@ export default (state = initialState, action) => {
           items: action.payload
         }
       };
+      case FETCH_COURSE_STARTED:
+      return {
+        ...state,
+        course: {
+          loading: true
+        }
+      };
+    case FETCH_COURSE_ERROR:
+      return {
+        ...state,
+        course: {
+          loading: false,
+          error: true
+        }
+      };
+    case FETCH_COURSE_RECEIVED:
+      return {
+        ...state,
+        course: {
+          loading: false,
+          error: false,
+          item: action.payload
+        }
+      };
     case CREATE_COURSE_STARTED:
       return {
         ...state,
@@ -86,6 +119,29 @@ export default (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+export const fetchCourse = (courseId) => dispatch => {
+  dispatch({
+    type: FETCH_COURSE_STARTED
+  });
+  axios
+    .get(`api/courses/${courseId}`, {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
+    })
+    .then(res => {
+      dispatch({
+        type: FETCH_COURSE_RECEIVED,
+        payload: res.data[0]
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: FETCH_COURSE_ERROR
+      });
+    });
 };
 
 export const fetchCourses = () => dispatch => {

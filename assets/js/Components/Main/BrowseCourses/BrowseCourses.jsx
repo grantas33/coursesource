@@ -1,12 +1,13 @@
 import React from 'react'
-import CourseItem from './CourseItem'
+import BrowseCourseItem from './BrowseCourseItem'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchCourses } from '../../../modules/courses'
 import { Link } from 'react-router-dom'
 import PageHeader from '../../common/PageHeader';
 
-class Main extends React.Component {
+
+class BrowseCourses extends React.Component {
   componentWillMount() {
     this.props.fetchCourses()
   }
@@ -18,9 +19,9 @@ class Main extends React.Component {
       return <h3>Error</h3>
     }
     return (
-      <div className="container">
+      <div>
         <PageHeader
-          title={'Your courses'}
+          title={'Browse courses'}
           links={[
             {
               name: 'Home',
@@ -30,10 +31,10 @@ class Main extends React.Component {
         />
         <div className="content">
           <div className="row">
-              {this.props.courses.items.map(course => (
-                <CourseItem 
-                  key={course.id} 
-                  course={course} />
+              {this.props.courses.items.map((course, i) => (
+                <div className="col-md-12" key={i}>
+                <BrowseCourseItem key={course.id} course={course} />
+              </div>
               ))}
           </div>
         </div>
@@ -60,4 +61,4 @@ const mapDispatchToProps = dispatch =>
     dispatch
   )
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main)
+export default connect(mapStateToProps, mapDispatchToProps)(BrowseCourses)

@@ -97,7 +97,7 @@ class CreateNewCourse extends React.Component {
               url: `/`,
             },
             {
-              name: 'Your courses',
+              name: 'My courses',
               url: `/main/`,
             },
           ]}

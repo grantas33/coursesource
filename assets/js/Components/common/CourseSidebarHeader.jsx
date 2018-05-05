@@ -1,15 +1,16 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 const CourseSidebarHeader = () => (
   <header className="main-header">
-    <a href="#" className="logo">
+    <Link to="/main/my-courses" className="logo">
       <span className="logo-mini">
         <b>C</b>S
       </span>
       <span className="logo-lg">
         <b>CourseSource</b>
       </span>
-    </a>
+    </Link>
     <nav className="navbar navbar-static-top">
       <a href="#" className="sidebar-toggle" data-toggle="push-menu" role="button">
         <span className="sr-only">Toggle navigation</span>
