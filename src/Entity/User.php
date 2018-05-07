@@ -64,6 +64,11 @@ class User extends BaseUser implements JsonSerializable
      */
     protected $courseUsers;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Lecture", mappedBy="teacher", cascade={"remove"})
+     */
+    protected $lectures;
+
     public function getId()
     {
         return $this->id;

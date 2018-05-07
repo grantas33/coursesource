@@ -21,7 +21,6 @@ class LectureType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('teacher')
             ->add('course')
             ->add('start_date', DateTimeType::class, array(
                 'widget' => 'single_text'))
