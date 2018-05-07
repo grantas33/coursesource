@@ -41,14 +41,14 @@ class MyCourses extends React.Component {
               );
             })}
           </div>
-        </div>
-        <h3> Are you a mentor? </h3>
-        <div className="row col-sm-3">
-          <Link to="/main/create-new-course">
-            <button type="button" className="btn btn-block btn-primary">
-              Create new course
-            </button>
-          </Link>
+          <h3> Are you a mentor? </h3>
+          <div className="row col-sm-3">
+            <Link to="/main/create-new-course">
+              <button type="button" className="btn btn-block btn-primary">
+                Create new course
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     );

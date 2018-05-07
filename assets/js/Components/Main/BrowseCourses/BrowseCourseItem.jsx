@@ -5,7 +5,7 @@ import './BrowseCourseItem.css'
 const CourseItem = (props) => (
 <div className="box box-widget widget-user">
   <Link to={`/main/course/${props.course.id}`}>
-    <div id="removed-height" className="widget-user-header bg-aqua-active ">
+    <div className="widget-user-header bg-aqua-active ">
       <img className="course-image" src="https://www.designrepublic.com/11094-cart_default/krossing-100x100-cm.jpg" />
       <div className="course-text">
       <h3 className=" widget-user-username">{props.course.title}</h3>

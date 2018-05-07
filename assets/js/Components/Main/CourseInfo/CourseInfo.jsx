@@ -35,7 +35,9 @@ class CourseInfo extends React.Component {
             }
           ]}
         />
-        <div className="content" />
+        <div className="content">
+          <button>Join course</button>
+        </div>
       </div>
     );
   }

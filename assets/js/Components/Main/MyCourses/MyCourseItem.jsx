@@ -14,30 +14,6 @@ const MyCourseItem = (props) => (
       </div>
     </div>
   </Link>
-    <div className="row">
-      <div className="col-sm-4 border-right">
-        <div className="description-block">
-          <h5 className="description-header">7</h5>
-          <span className="description-text">MENTORS</span>
-        </div>
-        {/* /.description-block */}
-      </div>
-      {/* /.col */}
-      <div className="col-sm-4 border-right">
-        <div className="description-block">
-          <h5 className="description-header">42</h5>
-          <span className="description-text">STUDENTS</span>
-        </div>
-        {/* /.description-block */}
-      </div>
-      {/* /.col */}
-      <div className="col-sm-4">
-        <div className="description-block">
-          <h5 className="description-header">35</h5>
-          <span className="description-text">LECTURES</span>
-        </div>
-      </div>
-  </div>
 </div>
 )
 
