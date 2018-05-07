@@ -20,16 +20,4 @@ class CourseUserRepository extends ServiceEntityRepository
         parent::__construct($registry, CourseUser::class);
     }
 
-
-    public function findMyCourses($user){
-
-        return $this->createQueryBuilder('course_user')
-            ->innerJoin(Course::class, 'c', 'WITH', 'c.id = course_user.course')
-            ->select(['c.id', 'c.title', 'c.description', 'c.creation_date',
-                'course_user.role','course_user.status', 'course_user.isNotifiable'])
-            ->andWhere('course_user.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
-    }
 }

@@ -177,7 +177,9 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
     public function getMyCourses(){
         $courses = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findMyCourses($this->getUser());
+            ->findBy(
+                ['user' => $this->getUser()]
+            );
 
         return new JSONResponse(
             $courses

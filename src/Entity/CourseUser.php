@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseUserRepository")
  */
-class CourseUser
+class CourseUser implements \JsonSerializable
 {
 
     /**
@@ -137,4 +137,16 @@ class CourseUser
         return $this;
     }
 
+    public function jsonSerialize()
+    {
+        return [
+        'id' => $this->id,
+        'user' => $this->user,
+        'course' => $this->course,
+        'role' => $this->role,
+        'tag' => $this->tag,
+        'status' => $this->status,
+        'isNotifiable' => $this->isNotifiable
+    ];
+    }
 }
