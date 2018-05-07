@@ -76,7 +76,7 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
     }
 
     /**
-     * @Route("api/courses/{id}", name="api_course_get", methods="GET")
+     * @Route("api/courses/get/{id}", name="api_course_get", methods="GET")
      */
     public function getCourse(int $id)
     {
@@ -89,6 +89,20 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
             return new JsonResponse([
                 'error_message' => 'No course found for id '. $id
             ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if(!$course->getIsPublic()){
+            $isCourseVisible = $this->getDoctrine()
+                ->getRepository(CourseUser::class)
+                ->findOneBy(array(
+                    'user'=>$this->getUser(),
+                    'course'=>$course));
+
+            if(!$isCourseVisible){
+                return new JsonResponse([
+                    'error_message' => 'No permissions to view course '. $id
+                ], Response::HTTP_UNAUTHORIZED);
+            }
         }
 
         return new JSONResponse([
@@ -110,6 +124,20 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
                 'error_message' => 'No course found for id '. $id
             ], Response::HTTP_BAD_REQUEST);
         }
+
+        $courseAdmin = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy([
+                'user'=>$this->getUser(),
+                'course'=>$course,
+                'role'=>RoleInterface::ADMIN]);
+
+        if(!$courseAdmin){
+            return new JsonResponse([
+                'error_message' => 'You do not have the rights to edit this course'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
         $form = $this->createForm(CourseType::class, $course);
         $data = json_decode($request->getContent(), true);
         $form->submit($data, false);
@@ -144,17 +172,33 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
     }
 
     /**
-     * @Route("api/courses", name="api_course_getAll", methods="GET")
+     * @Route("api/courses/my", name="api_course_getMy", methods="GET")
      */
-    public function getCourses(){
+    public function getMyCourses(){
         $courses = $this->getDoctrine()
-            ->getRepository(Course::class)
-            ->findAll();
+            ->getRepository(CourseUser::class)
+            ->findMyCourses($this->getUser());
 
         return new JSONResponse(
             $courses
         );
     }
+
+    /**
+     * @Route("api/courses/public", name="api_course_getPublic", methods="GET")
+     */
+    public function getPublicCourses(){
+        $courses = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->findBy([
+                'is_public'=>true
+            ]);
+
+        return new JSONResponse(
+            $courses
+        );
+    }
+
 
     /**
      * @Route("api/courses/{id}", name="api_course_delete", methods="DELETE")
@@ -169,6 +213,19 @@ class CourseController extends Controller implements RoleInterface, StatusInterf
             return new JsonResponse([
                 'error_message' => 'No course found for id '. $id
             ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $courseAdmin = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy([
+                'user'=>$this->getUser(),
+                'course'=>$course,
+                'role'=>RoleInterface::ADMIN]);
+
+        if(!$courseAdmin){
+            return new JsonResponse([
+                'error_message' => 'You do not have the rights to edit this course'
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $em = $this->getDoctrine()->getManager();
