@@ -28,6 +28,8 @@ class User extends BaseUser implements JsonSerializable
     {
         parent::__construct();
         $this->courseUsers = new ArrayCollection();
+        $this->lectures = new ArrayCollection();
+        $this->assignments = new ArrayCollection();
     }
 
     /**
@@ -68,6 +70,11 @@ class User extends BaseUser implements JsonSerializable
      * @ORM\OneToMany(targetEntity="App\Entity\Lecture", mappedBy="teacher", cascade={"remove"})
      */
     protected $lectures;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Assignment", mappedBy="teacher", cascade={"remove"})
+     */
+    protected $assignments;
 
     public function getId()
     {

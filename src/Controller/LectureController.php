@@ -140,7 +140,7 @@ class LectureController extends Controller implements RoleInterface, StatusInter
                 'status' => StatusInterface::ACTIVE
             ]);
 
-        if(!$teacher || $data['course'] != $currentCourse){
+        if(!$teacher || $data['course'] != $currentCourse->getId()){
             return new JsonResponse([
                 'error_message' => 'You do not have permissions to edit this'
             ], Response::HTTP_UNAUTHORIZED);
