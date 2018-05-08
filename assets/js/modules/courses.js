@@ -126,7 +126,7 @@ export const fetchCourse = (courseId) => dispatch => {
     type: FETCH_COURSE_STARTED
   });
   axios
-    .get(`api/courses/${courseId}`, {
+    .get(`api/courses/get/${courseId}`, {
       headers: {
         Authorization: "Bearer " + window.localStorage.getItem("userToken")
       }
@@ -144,12 +144,12 @@ export const fetchCourse = (courseId) => dispatch => {
     });
 };
 
-export const fetchCourses = () => dispatch => {
+export const fetchCourses = (param) => dispatch => {
   dispatch({
     type: FETCH_COURSES_STARTED
   });
   axios
-    .get("api/courses", {
+    .get(`api/courses/${param}`, {
       headers: {
         Authorization: "Bearer " + window.localStorage.getItem("userToken")
       }

@@ -8,7 +8,7 @@ import PageHeader from "../../common/PageHeader";
 
 class BrowseCourses extends React.Component {
   componentWillMount() {
-    this.props.fetchCourses();
+    this.props.fetchCourses('public');
   }
 
   render() {
