@@ -3,6 +3,7 @@ import PageHeader from "../../common/PageHeader";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { fetchUsers } from '../../../modules/users';
 
 class UsersManagement extends React.Component {
   constructor(props) {
@@ -10,9 +11,19 @@ class UsersManagement extends React.Component {
     this.state = {};
   }
 
-  componentWillMount = () => {};
+  componentWillMount = () => {
+    this.props.fetchUsers(this.props.match.params.course)
+  };
 
   render() {
+    if (this.props.users.loading === true) {
+      return <h3>Loading...</h3>;
+    } else if (
+      this.props.users.loading === false &&
+      this.props.users.error === true
+    ) {
+      return <h3>Error</h3>;
+    }
     return (
       <div>
         <PageHeader
@@ -36,15 +47,32 @@ class UsersManagement extends React.Component {
                   <table className="table table-hover">
                     <tbody>
                       <tr>
+                        <th />
                         <th>User name</th>
+                        <th>Email</th>
                         <th>Role</th>
                       </tr>
-                      <tr onClick={() => this.props.history.push(`/course/${this.props.match.params.course}/users-management/${1}`)}>
-                        <td>Vardas Pavarde</td>
-                        <td>
-                          <span className="label label-success">Admin</span>
-                        </td>
-                      </tr>
+                      {this.props.users.items.map(user => {
+                        return (
+                          <tr
+                            key={user.id}
+                            onClick={() =>
+                              this.props.history.push(
+                                `/course/${
+                                  this.props.match.params.course
+                                }/users-management/${user.id}`
+                              )
+                            }
+                          >
+                            <td>{user.avatar}</td>
+                            <td>{user.name + " " + user.surname}</td>
+                            <td>{user.email}</td>
+                            <td>
+                              <span className="label label-success">Admin</span>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -58,9 +86,9 @@ class UsersManagement extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  assignments: state.assignments
+  users: state.users.allUsers
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({fetchUsers}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersManagement);

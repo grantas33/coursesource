@@ -7,7 +7,7 @@ export const FETCH_USERS_ERROR = "user/FETCH_USERS_ERROR";
 axios.defaults.baseURL = "/";
 
 const initialState = {
-  users: {
+  allUsers: {
     items: [],
     loading: true,
     error: null
@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
     case FETCH_USERS_STARTED:
       return {
         ...state,
-        login: {
+        allUsers: {
           loading: true,
           error: null
         }
@@ -27,7 +27,7 @@ export default (state = initialState, action) => {
     case FETCH_USERS_ERROR:
       return {
         ...state,
-        login: {
+        allUsers: {
           loading: false,
           error: action.payload
         }
@@ -35,7 +35,7 @@ export default (state = initialState, action) => {
     case FETCH_USERS_RECEIVED:
       return {
         ...state,
-        login: {
+        allUsers: {
           items: action.payload,
           loading: false,
           error: null
@@ -46,12 +46,12 @@ export default (state = initialState, action) => {
   }
 };
 
-export const fetchUsers = course => dispatch => {
+export const fetchUsers = (courseId) => dispatch => {
   dispatch({
     type: FETCH_USERS_STARTED
   });
   axios
-    .get("api/users?course=" + courseId, {
+    .get("api/user?course=" + courseId, {
       headers: {
         Authorization: "Bearer " + window.localStorage.getItem("userToken")
       }
@@ -59,9 +59,8 @@ export const fetchUsers = course => dispatch => {
     .then(res => {
       dispatch({
         type: FETCH_USERS_RECEIVED,
-        payload: res.data.token
+        payload: res.data
       });
-      dispatch(push("/main/my-courses"));
     })
     .catch(err => {
       dispatch({
