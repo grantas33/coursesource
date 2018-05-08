@@ -21,6 +21,8 @@ import LandingPage from './Components/common/LandingPage';
 import CourseInfo from './Components/Main/CourseInfo/CourseInfo';
 import AssignmentsGrading from './Components/Course/AssignmentsGrading/AssignmentsGrading';
 import AssignmentGrading from './Components/Course/AssignmentsGrading/AssignmentGrading';
+import UsersManagement from './Components/Course/UsersManagement/UsersManagement';
+import UserInfo from './Components/Course/UsersManagement/UserInfo';
 
 class App extends React.Component {
   render() {
@@ -44,6 +46,8 @@ class App extends React.Component {
             <PrivateRoute exact path="/course/:course" component={Home} />
             <PrivateRoute exact path="/course/:course/assignments-grading" component={AssignmentsGrading} />
             <PrivateRoute path="/course/:course/assignments-grading/:assignment" component={AssignmentGrading} />
+            <PrivateRoute exact path="/course/:course/users-management" component={UsersManagement} />
+            <PrivateRoute path="/course/:course/users-management/:user" component={UserInfo} />
             <PrivateRoute path="/course/:course/notifications" component={Notifications} />
             <PrivateRoute path="/course/:course/schedule" component={Schedule} />
             <PrivateRoute path="/course/:course/lectures" component={Lectures} />
