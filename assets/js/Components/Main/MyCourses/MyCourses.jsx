@@ -12,6 +12,7 @@ class MyCourses extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     if (this.props.courses.loading === true) {
       return <h3>Loading...</h3>;
     } else if (
@@ -33,13 +34,14 @@ class MyCourses extends React.Component {
         />
         <div className="content">
           <div className="row">
-            {this.props.courses.items.map((course, i) => {
+            {/*this.props.courses.items.map((course, i) => {
               return (
                 <div className="col-md-12" key={i}>
                   <MyCourseItem key={course.id} course={course} />
                 </div>
               );
-            })}
+            })
+          */}
           </div>
           <h3> Are you a mentor? </h3>
           <div className="row col-sm-3">
