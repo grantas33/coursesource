@@ -1,14 +1,18 @@
-import axios from 'axios';
+import axios from "axios";
 
-export const FETCH_ASSIGNMENTS_STARTED = 'assignments/FETCH_ASSIGNMENTS_STARTED'
-export const FETCH_ASSIGNMENTS_ERROR = 'assignments/FETCH_ASSIGNMENTS_ERROR'
-export const FETCH_ASSIGNMENTS_RECEIVED = 'assignments/FETCH_ASSIGNMENTS_RECEIVED'
+export const FETCH_ASSIGNMENTS_STARTED =
+  "assignments/FETCH_ASSIGNMENTS_STARTED";
+export const FETCH_ASSIGNMENTS_ERROR = "assignments/FETCH_ASSIGNMENTS_ERROR";
+export const FETCH_ASSIGNMENTS_RECEIVED =
+  "assignments/FETCH_ASSIGNMENTS_RECEIVED";
 
-export const CREATE_ASSIGNMENT_STARTED = 'assignments/CREATE_ASSIGNMENT_STARTED'
-export const CREATE_ASSIGNMENT_ERROR = 'assignments/CREATE_ASSIGNMENT_ERROR'
-export const CREATE_ASSIGNMENT_RECEIVED = 'assignments/CREATE_ASSIGNMENT_RECEIVED'
+export const CREATE_ASSIGNMENT_STARTED =
+  "assignments/CREATE_ASSIGNMENT_STARTED";
+export const CREATE_ASSIGNMENT_ERROR = "assignments/CREATE_ASSIGNMENT_ERROR";
+export const CREATE_ASSIGNMENT_RECEIVED =
+  "assignments/CREATE_ASSIGNMENT_RECEIVED";
 
-axios.defaults.baseURL = '/';
+axios.defaults.baseURL = "/";
 
 const initialState = {
   items: [],
@@ -16,8 +20,8 @@ const initialState = {
   error: false,
   newloading: false,
   newerror: false,
-  newresponse: null,
-}
+  newresponse: null
+};
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -26,79 +30,87 @@ export default (state = initialState, action) => {
         ...state,
         loading: true,
         error: false
-      }
+      };
     case FETCH_ASSIGNMENTS_ERROR:
-    return {
-      ...state,
-      loading: false,
-      error: true
-    }
+      return {
+        ...state,
+        loading: false,
+        error: true
+      };
     case FETCH_ASSIGNMENTS_RECEIVED:
-    return {
-      ...state,
-      items: action.payload,
-      loading: false,
-      error: false
-    }
+      return {
+        ...state,
+        items: action.payload,
+        loading: false,
+        error: false
+      };
     case CREATE_ASSIGNMENT_STARTED:
-    return {
-      ...state,
-      newloading: true
-    }
+      return {
+        ...state,
+        newloading: true
+      };
     case CREATE_ASSIGNMENT_ERROR:
-    return {
-      ...state,
-      newloading: false,
-      newresponse: action.payload,
-      newerror: true
-    }
+      return {
+        ...state,
+        newloading: false,
+        newresponse: action.payload,
+        newerror: true
+      };
     case CREATE_ASSIGNMENT_RECEIVED:
-    return {
-      ...state,
-      newloading: false,
-      newresponse: action.payload,
-      newerror: false
-    }
+      return {
+        ...state,
+        newloading: false,
+        newresponse: action.payload,
+        newerror: false
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export const fetchAssignments = (courseId) => 
-dispatch => {
+export const fetchAssignments = courseId => dispatch => {
   dispatch({
     type: FETCH_ASSIGNMENTS_STARTED
-  })
-  axios.get('api/assignments?course='+courseId)
-  .then((res) => {
-    dispatch({
-      type: FETCH_ASSIGNMENTS_RECEIVED,
-      payload: res.data
-    });
-  })
-  .catch((err) => {
-    dispatch({
-      type: FETCH_ASSIGNMENTS_ERROR
+  });
+  axios
+    .get("api/assignments?course=" + courseId, {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
     })
-  })
-}
+    .then(res => {
+      dispatch({
+        type: FETCH_ASSIGNMENTS_RECEIVED,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: FETCH_ASSIGNMENTS_ERROR
+      });
+    });
+};
 
-export const createAssignment = (newAssignment) => 
-dispatch => {
+export const createAssignment = newAssignment => dispatch => {
   dispatch({
     type: CREATE_ASSIGNMENT_STARTED
-  })
-  axios.post('api/assignments', newAssignment)
-  .then((res) => {
-    dispatch({
-      type: CREATE_ASSIGNMENT_RECEIVED,
-      payload: res.data
-    });
-  })
-  .catch((err) => {
-    dispatch({
-      type: CREATE_ASSIGNMENT_ERROR,
-      payload: err.data
+  });
+  axios
+    .post("api/assignments", newAssignment, {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
     })
-  })
-}
+    .then(res => {
+      dispatch({
+        type: CREATE_ASSIGNMENT_RECEIVED,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: CREATE_ASSIGNMENT_ERROR,
+        payload: err.data
+      });
+    });
+};

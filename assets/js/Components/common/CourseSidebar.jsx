@@ -2,8 +2,15 @@ import React from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import CourseSidebarHeader from './CourseSidebarHeader'
 import user2img from '../../../Resources/img/user2-160x160.jpg'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { getCurrent } from '../../modules/user';
 
 class CourseSidebar extends React.Component {
+  componentDidMount = () => {
+    this.props.getCurrent();
+  }
+  
   render() {
     return (
       <div>
@@ -15,22 +22,12 @@ class CourseSidebar extends React.Component {
                 <img src={user2img} className="img-circle" alt="User Image" />
               </div>
               <div className="pull-left info">
-                <p>Alexander Pierce</p>
+                <p>{this.props.user.current.name + ' ' + this.props.user.current.surname}</p>
                 <a href="#">
-                  <i className="fa fa-circle text-success" /> Online
+                  <i className="fa fa-circle text-success" /> Admin
                 </a>
               </div>
             </div>
-            <form action="#" method="get" className="sidebar-form">
-              <div className="input-group">
-                <input type="text" name="q" className="form-control" placeholder="Search..." />
-                <span className="input-group-btn">
-                  <button type="submit" name="search" id="search-btn" className="btn btn-flat">
-                    <i className="fa fa-search" />
-                  </button>
-                </span>
-              </div>
-            </form>
             <ul className="sidebar-menu" data-widget="tree">
               <li className="header">MAIN NAVIGATION</li>
               <li>
@@ -64,8 +61,25 @@ class CourseSidebar extends React.Component {
               </li>
 
               <li>
-                <Link to="/main" className="navigation-item">
+                <Link to="/main/my-courses" className="navigation-item">
                   <i className="fas fa-sign-out-alt fa-fw" /> <span>Back to main</span>
+                </Link>
+              </li>
+              <li className="header">LECTOR MENU</li>
+              <li>
+                <Link to={`/course/${this.props.match.params.course}/assignments-grading`} className="navigation-item">
+                  <i className="fas fa-check fa-fw" /> <span>Assignments grading</span>
+                </Link>
+              </li>
+              <li className="header">ADMIN MENU</li>
+              <li>
+                <Link to={`/course/${this.props.match.params.course}/users-management`} className="navigation-item">
+                  <i className="fas fa-users fa-fw" /> <span>Users management</span>
+                </Link>
+              </li>
+              <li>
+                <Link to={`/course/${this.props.match.params.course}/course-settings`} className="navigation-item">
+                  <i className="fas fa-wrench fa-fw" /> <span>Course settings</span>
                 </Link>
               </li>
             </ul>
@@ -76,4 +90,16 @@ class CourseSidebar extends React.Component {
   }
 }
 
-export default CourseSidebar
+const mapStateToProps = state => ({
+  user: state.user
+})
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      getCurrent
+    },
+    dispatch
+  )
+
+export default connect(mapStateToProps, mapDispatchToProps)(CourseSidebar)

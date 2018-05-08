@@ -1,18 +1,155 @@
-import React from 'react'
-import './LoginRegister.css'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
+import { login } from '../../../modules/user';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-const Login = () => (
-  <div className="landing-page-container content-wrapper">
-    <h2>Member Login</h2>
-    <input className="form-input" placeholder="Email" />
-    <br />
-    <input className="form-input" type="password" placeholder="Password" />
-    <br />
-    <Link to="/main">
-      <input className="login-register-button" type="button" value="Login" />
-    </Link>
-  </div>
-)
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userObject: {
+        email: "",
+        password: ""
+      },
+      showError: false
+    };
+  }
 
-export default Login
+  render() {
+    return (
+      <div className="login-box">
+        <div className="login-logo">
+          <Link to="/">
+            <b>CourseSource</b>
+          </Link>
+        </div>
+        <div className="login-box-body">
+        
+        {this.state.showError && this.props.user.login.error && !this.props.user.login.loading && <div className="alert alert-danger alert-dismissible">
+          <button type="button" className="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i className="icon fa fa-ban" /> {this.props.user.login.error}</h4>
+        </div>}
+
+          <form>
+            <div className="form-group has-feedback">
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Email"
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    userObject: {
+                      ...this.state.userObject,
+                      email: e.target.value
+                    }
+                  })
+                }
+              />
+              <span className="glyphicon glyphicon-envelope form-control-feedback" />
+            </div>
+            <div className="form-group has-feedback">
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Password"
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    userObject: {
+                      ...this.state.userObject,
+                      password: e.target.value
+                    }
+                  })
+                }
+              />
+              <span className="glyphicon glyphicon-lock form-control-feedback" />
+            </div>
+            <div className="row">
+              <div className="col-xs-8">
+                <div className="checkbox icheck">
+                  <label>
+                    <div
+                      className="icheckbox_square-blue"
+                      style={{ position: "relative" }}
+                    >
+                      <input
+                        type="checkbox"
+                        style={{
+                          position: "absolute",
+                          top: "-20%",
+                          left: "-20%",
+                          display: "block",
+                          width: "140%",
+                          height: "140%",
+                          margin: 0,
+                          padding: 0,
+                          background: "rgb(255, 255, 255)",
+                          border: 0,
+                          opacity: 0
+                        }}
+                      />
+                      <ins
+                        className="iCheck-helper"
+                        style={{
+                          position: "absolute",
+                          top: "-20%",
+                          left: "-20%",
+                          display: "block",
+                          width: "140%",
+                          height: "140%",
+                          margin: 0,
+                          padding: 0,
+                          background: "rgb(255, 255, 255)",
+                          border: 0,
+                          opacity: 0
+                        }}
+                      />
+                    </div>{" "}
+                    Remember Me
+                  </label>
+                </div>
+              </div>
+
+              <div className="col-xs-4">
+                <button
+                  className="btn btn-primary btn-block btn-flat"
+                  onClick={
+                    (e) => {
+                      this.props.login(this.state.userObject)
+                      e.preventDefault();
+                      this.setState({...this.state, showError: true})
+                    }
+                  }
+                >
+                  Sign In
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <a href="#">I forgot my password</a>
+          <br />
+          <Link to="/register" className="text-center">
+            Register a new membership
+          </Link>
+        </div>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  user: state.user
+})
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      login,
+    },
+    dispatch
+  )
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

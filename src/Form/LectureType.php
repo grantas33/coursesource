@@ -36,6 +36,7 @@ class LectureType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => Lecture::class,
+            'csrf_protection' => false
         ));
     }
 }

@@ -33,6 +33,7 @@ class AssignmentType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => Assignment::class,
+            'csrf_protection' => false
         ));
     }
 }
