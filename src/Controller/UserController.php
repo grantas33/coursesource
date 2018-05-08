@@ -196,6 +196,18 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * @Route("api/user", name="api_user_getAll", methods="GET")
+     */
+    public function getAllUsers(){
+        $users = $this->getDoctrine()->getRepository(User::class)
+            ->findAll();
+
+        return new JsonResponse(
+            $users
+        );
+    }
+
     public function getToken(User $user)
     {
         try {
