@@ -27,7 +27,7 @@ class UserInfo extends React.Component {
           links={[
             {
               name: "Home",
-              url: `/`
+              url: `/course/${this.props.match.params.course}`
             },
             {
               name: "Users management",
