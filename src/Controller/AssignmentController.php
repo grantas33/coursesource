@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 
-class AssignmentController extends Controller implements RoleInterface, StatusInterface
+class AssignmentController extends Controller
 {
     /**
      * @Route("api/assignments", name="api_assignment_create", methods="POST")

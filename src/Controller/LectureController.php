@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-class LectureController extends Controller implements RoleInterface, StatusInterface
+class LectureController extends Controller
 {
 
     /**
