@@ -22,7 +22,7 @@ class LandingPage extends React.Component {
         {/* Nav Menu */}
         <header className="bg-gradient" id="home">
           <div id="landing-header--margin-top" className="container mt-5">
-            <h1 className="landing-page-header">Join CourseSource</h1>
+            <h1 className="landing-page-header">CourseSource</h1>
             <p className="tagline">
               The one and the only multiple courses manager. Just register and
               start learning today.{" "}
