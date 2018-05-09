@@ -18,7 +18,6 @@ class Course implements JsonSerializable
         $this->courseUsers = new ArrayCollection();
         $this->lectures = new ArrayCollection();
         $this->assignments = new ArrayCollection();
-        $this->entryTasks = new ArrayCollection();
     }
 
     /**
@@ -87,7 +86,7 @@ class Course implements JsonSerializable
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\EntryTask", mappedBy="course", cascade={"remove"})
      */
-    private $entryTasks;
+    private $entryTask;
 
     public function getId()
     {
@@ -195,7 +194,9 @@ class Course implements JsonSerializable
             'title' => $this->title,
             'description' => $this->description,
             'creation_date' => $this->creation_date->format("Y-m-d"),
-            'is_public' => $this->is_public
+            'is_public' => $this->is_public,
+            'is_submittable' => $this->is_submittable,
+            'avatar' => $this->avatar
         ];
     }
 }

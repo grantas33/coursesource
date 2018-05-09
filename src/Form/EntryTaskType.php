@@ -2,36 +2,31 @@
 /**
  * Created by PhpStorm.
  * User: grantas
- * Date: 18.4.5
- * Time: 19.13
+ * Date: 18.5.9
+ * Time: 13.30
  */
 
 namespace App\Form;
-use App\Entity\Course;
+
+use App\Entity\EntryTask;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CourseType extends AbstractType
+class EntryTaskType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
             ->add('description')
-            ->add('is_public', CheckboxType::class)
-            ->add('is_submittable', CheckboxType::class)
-            ->add('avatar')
-        ;
+            ->add('deadline_date');
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => Course::class,
-            'allow_extra_fields' => true,
+            'data_class' => EntryTask::class,
             'csrf_protection' => false
         ));
     }

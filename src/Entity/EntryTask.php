@@ -23,7 +23,7 @@ class EntryTask implements \JsonSerializable
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Course", inversedBy="entryTasks")
+     * @ORM\OneToOne(targetEntity="App\Entity\Course", inversedBy="entryTask")
      */
     private $course;
 
@@ -31,11 +31,6 @@ class EntryTask implements \JsonSerializable
      * @ORM\Column(type="string", length=255)
      */
     private $description;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $creationDate;
 
     /**
      * @ORM\Column(type="datetime")
@@ -79,28 +74,14 @@ class EntryTask implements \JsonSerializable
         return $this;
     }
 
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    public function setCreationDate(): self
-    {
-        $this->creationDate = new \DateTime('now');
-
-        return $this;
-    }
-
     public function getDeadlineDate()
     {
         return $this->deadlineDate;
     }
 
-    public function setDeadlineDate(\DateTimeInterface $deadlineDate): self
+    public function setDeadlineDate(string $date): void
     {
-        $this->deadlineDate = $deadlineDate;
-
-        return $this;
+        $this->deadlineDate = \DateTime::createFromFormat("Y-m-d H:i:s", $date);
     }
 
     public function jsonSerialize()
@@ -109,8 +90,7 @@ class EntryTask implements \JsonSerializable
             'id' => $this->id,
             'course' => $this->course,
             'description' => $this->description,
-            'creation_date' => $this->creationDate,
-            'deadline_date' => $this->deadlineDate
+            'deadline_date' => $this->deadlineDate->format("Y-m-d H:i:s")
         ];
     }
 }

@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\Course;
 use App\Entity\CourseUser;
+use App\Entity\EntryTask;
 use App\Entity\User;
 use App\Form\CourseType;
 use App\Interfaces\RoleInterface;
@@ -48,6 +49,7 @@ class CourseController extends Controller
             return new JsonResponse([
                  'error_message' => $errors
              ], Response::HTTP_BAD_REQUEST);
+
         }
 
         $courseUser = new CourseUser();
@@ -55,14 +57,26 @@ class CourseController extends Controller
         $courseUser->setRole(RoleInterface::ADMIN);
         $courseUser->setStatus(StatusInterface::ACTIVE);
 
+        if($course->getIsSubmittable()){
+            $entryTask = new EntryTask();
+            $entryTask->setDescription($data['entry_task_description']);
+            $entryTask->setDeadlineDate($data['entry_task_deadline_date']);
+        }
+
         try {
             $em = $this->getDoctrine()->getManager();
             $em->persist($course);
             $em->flush();
 
+            if(isset($entryTask)){
+                $entryTask->setCourse($course);
+                $em->persist($entryTask);
+            }
+
             $courseUser->setCourse($course);
             $em->persist($courseUser);
             $em->flush();
+
         }
         catch (\Exception $e) {
             return new JsonResponse([
