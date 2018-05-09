@@ -18,6 +18,7 @@ class Course implements JsonSerializable
         $this->courseUsers = new ArrayCollection();
         $this->lectures = new ArrayCollection();
         $this->assignments = new ArrayCollection();
+        $this->entryTasks = new ArrayCollection();
     }
 
     /**
@@ -72,6 +73,11 @@ class Course implements JsonSerializable
      * @ORM\OneToMany(targetEntity="App\Entity\Assignment", mappedBy="course", cascade={"remove"})
      */
     private $assignments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\EntryTask", mappedBy="course", cascade={"remove"})
+     */
+    private $entryTasks;
 
     public function getId()
     {
