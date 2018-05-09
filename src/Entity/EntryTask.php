@@ -11,7 +11,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CourseUserRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\EntryTaskRepository")
  */
 class EntryTask implements \JsonSerializable
 {
@@ -23,7 +23,7 @@ class EntryTask implements \JsonSerializable
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Course", inversedBy="entryTasks")
+     * @ORM\OneToOne(targetEntity="App\Entity\Course", inversedBy="entryTasks")
      */
     private $course;
 

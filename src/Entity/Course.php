@@ -60,6 +60,16 @@ class Course implements JsonSerializable
     private $is_public;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_submittable;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatar;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="course", cascade={"remove"})
      */
     private $courseUsers;
@@ -75,7 +85,7 @@ class Course implements JsonSerializable
     private $assignments;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EntryTask", mappedBy="course", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\EntryTask", mappedBy="course", cascade={"remove"})
      */
     private $entryTasks;
 
@@ -154,6 +164,29 @@ class Course implements JsonSerializable
         return $this;
     }
 
+    public function getIsSubmittable(): ?bool
+    {
+        return $this->is_submittable;
+    }
+
+    public function setIsSubmittable($is_submittable): self
+    {
+        $this->is_submittable = $is_submittable;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
 
     public function jsonSerialize()
     {
