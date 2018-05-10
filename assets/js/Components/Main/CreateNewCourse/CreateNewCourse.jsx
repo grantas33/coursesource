@@ -98,7 +98,7 @@ class CreateNewCourse extends React.Component {
             },
             {
               name: 'My courses',
-              url: `/main/`,
+              url: `/main/my-courses`,
             },
           ]}
         />
@@ -178,38 +178,6 @@ class CreateNewCourse extends React.Component {
                 </div>
               </form>
             </div>
-
-            <div className="form-group">
-              <div className="radio">
-                <label>
-                  Visibility
-                  <input type="radio" name="optionsRadios" defaultChecked={this.state.newCourse.is_public} onChange={() => 
-                                                                                          this.setState({
-                                                                                            ...this.state,
-                                                                                            newCourse: {
-                                                                                              ...this.state.newCourse,
-                                                                                              is_public: true
-                                                                                            }
-                                                                                          })}
-                  />
-                    Public course
-                </label>
-              </div>
-              <div className="radio">
-                <label>
-                  <input type="radio" name="optionsRadios" defaultChecked={!this.state.newCourse.is_public} onChange={() => 
-                                                                                          this.setState({
-                                                                                            ...this.state,
-                                                                                            newCourse: {
-                                                                                              ...this.state.newCourse,
-                                                                                              is_public: false
-                                                                                            }
-                                                                                          })}/>
-                    Private course
-                </label>
-              </div>
-            </div>
-
 
             <div className="box-footer">
               <button

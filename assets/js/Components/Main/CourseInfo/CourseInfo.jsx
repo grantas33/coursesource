@@ -11,7 +11,8 @@ class CourseInfo extends React.Component {
     super(props);
     this.state = {
       showMore: false,
-      submitted: false
+      submitted: false,
+      activeTab: 1
     };
   }
 
@@ -45,7 +46,49 @@ class CourseInfo extends React.Component {
         />
         <div className="content">
           <h1>{this.props.course.item.title}</h1>
-          <h3>{this.props.course.item.description}</h3>
+          <div className="nav-tabs-custom">
+            <ul className="nav nav-tabs">
+              <li
+                className={this.state.activeTab === 1 ? "active" : ""}
+                onClick={() => this.setState({ ...this.state, activeTab: 1 })}
+              >
+                <a>Description</a>
+              </li>
+              <li
+                className={this.state.activeTab === 2 ? "active" : ""}
+                onClick={() => this.setState({ ...this.state, activeTab: 2 })}
+              >
+                <a>Stats</a>
+              </li>
+              <li
+                className={this.state.activeTab === 3 ? "active" : ""}
+                onClick={() => this.setState({ ...this.state, activeTab: 3 })}
+              >
+                <a>Lectors</a>
+              </li>
+              <li
+                className={this.state.activeTab === 4 ? "active" : ""}
+                onClick={() => this.setState({ ...this.state, activeTab: 4 })}
+              >
+                <a>Other info</a>
+              </li>
+            </ul>
+            <div className="tab-content">
+              {this.state.activeTab === 1 &&
+                <h3>{this.props.course.item.description}</h3>
+              }
+              {this.state.activeTab === 2 && 
+                <h3>{this.props.course.item.description}</h3>
+              }
+              {this.state.activeTab === 3 && 
+                <h3>{this.props.course.item.description}</h3>
+              }
+              {this.state.activeTab === 4 && 
+                <h3>{this.props.course.item.creationDate}</h3>
+              }
+            </div>
+          </div>
+
           {!this.state.showMore && (
             <button
               onClick={() =>
