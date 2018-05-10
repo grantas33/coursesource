@@ -12,10 +12,11 @@ namespace App\Controller;
 use App\Entity\Course;
 use App\Entity\CourseUser;
 use App\Entity\EntryTask;
+use App\Entity\EntryTaskSubmission;
 use App\Form\EntryTaskType;
 use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -132,5 +133,83 @@ class EntryTaskController extends Controller
         return new JsonResponse([
             'success_message' => 'Successfully updated entry task for course '. $courseId
         ]);
+    }
+
+    /**
+     * @Route("api/entrytasks/submission/getall/{courseId}", name="api_entryTasks_submission_getAll", methods="GET")
+     */
+    public function getEntryTaskSubmissions(int $courseId){
+
+        $courseTeacher = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy([
+                'user' => $this->getUser(),
+                'course' => $courseId,
+                'role' => [RoleInterface::ADMIN, RoleInterface::TEACHER],
+                'status' => StatusInterface::ACTIVE
+            ]);
+
+        if(!$courseTeacher){
+            return new JsonResponse([
+                'error_message' => 'You do not have the permissions to view the submissions'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $entryTask = $this->getDoctrine()
+            ->getRepository(EntryTask::class)
+            ->findOneBy([
+                'course'=>$courseId,
+            ]);
+
+        if(!$entryTask){
+            return new JsonResponse([
+                'error_message' => 'This course does not have an entry task'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $submissions = $this->getDoctrine()
+            ->getRepository(EntryTaskSubmission::class)
+            ->findBy([
+                'course' => $courseId
+            ]);
+
+        return new JsonResponse(
+            $submissions
+        );
+    }
+
+    /**
+     * @Route("api/entrytasks/submission/{id}", name="api_entryTasks_submission_getFromCourse", methods="GET")
+     */
+    public function getEntryTaskSubmission(int $id){
+
+        $submission = $submissions = $this->getDoctrine()
+            ->getRepository(EntryTaskSubmission::class)
+            ->find($id);
+
+        if(!$submission){
+            return new JsonResponse([
+                'error_message' => 'Submission not found'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $courseTeacher = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy([
+                'user' => $this->getUser(),
+                'course' => $submission->getCourse(),
+                'role' => [RoleInterface::ADMIN, RoleInterface::TEACHER],
+                'status' => StatusInterface::ACTIVE
+            ]);
+
+        if(!$courseTeacher){
+            return new JsonResponse([
+                'error_message' => 'You do not have the permissions to view the submission'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return new JsonResponse(
+            $submission
+        );
     }
 }

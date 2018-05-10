@@ -26,4 +26,17 @@ class EntryTaskRepository extends ServiceEntityRepository
         parent::__construct($registry, EntryTask::class);
     }
 
+    public function findLive($courseId)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.course = :courseId')
+            ->andWhere('e.deadlineDate > :currentDate')
+            ->setParameters([
+                'courseId' => $courseId,
+                'currentDate' => new \DateTime('now')
+            ])
+            ->getQuery()
+            ->getResult();
+    }
+
 }
