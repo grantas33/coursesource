@@ -9,6 +9,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EntryTaskRepository")
@@ -31,7 +32,7 @@ class EntryTask implements \JsonSerializable
      * @ORM\Column(type="text")
      * @Assert\Length(
      *     max = 2000,
-     *     maxMessage="The description cannot be longer than 5000 characters"
+     *     maxMessage="The entry task description cannot be longer than 2000 characters"
      * )
      */
     private $description;

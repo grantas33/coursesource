@@ -21,10 +21,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class CourseController extends Controller
 {
+
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
+     * EntryTaskController constructor.
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /**
      * @Route("api/courses", name="api_course_create", methods="POST")
      */
@@ -62,6 +78,15 @@ class CourseController extends Controller
             $entryTask = new EntryTask();
             $entryTask->setDescription($data['entry_task_description']);
             $entryTask->setDeadlineDate($data['entry_task_deadline_date']);
+
+            $errors = $this->validator->validate($entryTask);
+
+            if (count($errors) > 0) {
+
+                return new JsonResponse([
+                    'error_message' => $errors->get(0)->getMessage(),
+                ], Response::HTTP_BAD_REQUEST);
+            }
         }
 
         try {
@@ -312,6 +337,15 @@ class CourseController extends Controller
             $entryTaskSubmission->setCourse($course);
             $entryTaskSubmission->setSubmission($data['submission']);
             $entryTaskSubmission->setDate(new \DateTime('now'));
+
+            $errors = $this->validator->validate($entryTaskSubmission);
+
+            if (count($errors) > 0) {
+
+                return new JsonResponse([
+                    'error_message' => $errors->get(0)->getMessage(),
+                ], Response::HTTP_BAD_REQUEST);
+            }
         }
         else{
             $courseUser->setRole(RoleInterface::STUDENT);
