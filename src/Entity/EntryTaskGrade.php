@@ -41,6 +41,10 @@ class EntryTaskGrade implements \JsonSerializable
      *      minMessage = "Grade score must be an integer from 1 to 10",
      *      maxMessage = "Grade score must be an integer from 1 to 10"
      * )
+     * @Assert\Type(
+     *     type="integer",
+     *     message="Grade score must be an integer from 1 to 10"
+     * )
      */
     private $score;
 
@@ -85,7 +89,7 @@ class EntryTaskGrade implements \JsonSerializable
         return $this->score;
     }
 
-    public function setScore(int $score): void
+    public function setScore($score): void
     {
         $this->score = $score;
     }
@@ -95,7 +99,7 @@ class EntryTaskGrade implements \JsonSerializable
         return $this->gradingDate;
     }
 
-    public function setDate(\DateTimeInterface $date): void
+    public function setGradingDate(\DateTimeInterface $date): void
     {
         $this->gradingDate = $date;
     }

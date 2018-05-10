@@ -37,8 +37,8 @@ class EntryTaskSubmission implements JsonSerializable
     /**
      * @ORM\Column(type="text")
      * @Assert\Length(
-     *     max = 2000,
-     *     maxMessage="The submission cannot be longer than 2000 characters"
+     *     max = 5000,
+     *     maxMessage="The submission cannot be longer than 5000 characters"
      * )
      */
     private $submission;

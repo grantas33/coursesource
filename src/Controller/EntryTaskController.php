@@ -12,6 +12,7 @@ namespace App\Controller;
 use App\Entity\Course;
 use App\Entity\CourseUser;
 use App\Entity\EntryTask;
+use App\Entity\EntryTaskGrade;
 use App\Entity\EntryTaskSubmission;
 use App\Form\EntryTaskType;
 use App\Interfaces\RoleInterface;
@@ -21,9 +22,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EntryTaskController extends Controller
 {
+
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
+     * EntryTaskController constructor.
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /**
      * @Route("api/entrytasks/{courseId}", name="api_entryTasks_get", methods="GET")
      */
@@ -138,7 +155,7 @@ class EntryTaskController extends Controller
     /**
      * @Route("api/entrytasks/submission/getall/{courseId}", name="api_entryTasks_submission_getAll", methods="GET")
      */
-    public function getEntryTaskSubmissions(int $courseId){
+    public function getEntryTaskSubmissionsAndGrades(int $courseId){
 
         $courseTeacher = $this->getDoctrine()
             ->getRepository(CourseUser::class)
@@ -167,14 +184,12 @@ class EntryTaskController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $submissions = $this->getDoctrine()
+        $submissionsAndGrades = $this->getDoctrine()
             ->getRepository(EntryTaskSubmission::class)
-            ->findBy([
-                'course' => $courseId
-            ]);
+            ->findSubmissionsAndGrades($courseId);
 
         return new JsonResponse(
-            $submissions
+            $submissionsAndGrades
         );
     }
 
@@ -210,6 +225,118 @@ class EntryTaskController extends Controller
 
         return new JsonResponse(
             $submission
+        );
+    }
+
+    /**
+     * @Route("api/entrytasks/grade/{submissionId}", name="api_entryTasks_grade_edit", methods="PUT")
+     */
+    public function setEntryTaskGrade(int $submissionId, Request $request){
+
+        $submission = $this->getDoctrine()
+            ->getRepository(EntryTaskSubmission::class)
+            ->find($submissionId);
+
+        if(!$submission){
+            return new JsonResponse([
+                'error_message' => 'Entry task submission not found'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $courseTeacher = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findBy([
+                'user' => $this->getUser(),
+                'course' => $submission->getCourse(),
+                'role' => [RoleInterface::ADMIN, RoleInterface::TEACHER],
+                'status' => StatusInterface::ACTIVE
+            ]);
+
+        if(!$courseTeacher){
+            return new JsonResponse([
+                'error_message' => 'You do not have the permissions to grade the submission'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $grade = $this->getDoctrine()
+            ->getRepository(EntryTaskGrade::class)
+            ->findOneBy([
+                'student' => $submission->getStudent(),
+                'course' => $submission->getCourse()
+            ]);
+
+        if(!$grade){
+            $grade = new EntryTaskGrade();
+            $grade->setStudent($submission->getStudent());
+            $grade->setCourse($submission->getCourse());
+        }
+        $grade->setScore($data['score']);
+        $grade->setGradingDate(new \DateTime('now'));
+
+        $errors = $this->validator->validate($grade);
+
+        if (count($errors) > 0) {
+
+            return new JsonResponse([
+                'error_message' => $errors->get(0)->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($grade);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse([
+            'success_message' => 'Successfully graded an entry task submission'
+        ], Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route("api/entrytasks/grade/{submissionId}", name="api_entryTasks_grade_get", methods="GET")
+     */
+    public function getEntryTaskGrade(int $submissionId, Request $request){
+
+        $submission = $this->getDoctrine()
+            ->getRepository(EntryTaskSubmission::class)
+            ->find($submissionId);
+
+        if(!$submission){
+            return new JsonResponse([
+                'error_message' => 'Entry task submission not found'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $courseTeacher = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findBy([
+                'user' => $this->getUser(),
+                'course' => $submission->getCourse(),
+                'role' => [RoleInterface::ADMIN, RoleInterface::TEACHER],
+                'status' => StatusInterface::ACTIVE
+            ]);
+
+        if(!$courseTeacher){
+            return new JsonResponse([
+                'error_message' => 'You do not have the permissions to view the grade'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $grade = $this->getDoctrine()
+            ->getRepository(EntryTaskGrade::class)
+            ->findOneBy([
+                'student' => $submission->getStudent(),
+                'course' => $submission->getCourse()
+            ]);
+
+        return new JsonResponse(
+            $grade
         );
     }
 }

@@ -28,7 +28,11 @@ class EntryTask implements \JsonSerializable
     private $course;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
+     * @Assert\Length(
+     *     max = 2000,
+     *     maxMessage="The description cannot be longer than 5000 characters"
+     * )
      */
     private $description;
 
