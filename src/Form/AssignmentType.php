@@ -21,7 +21,6 @@ class AssignmentType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('teacher')
             ->add('course')
             ->add('deadline_date', DateTimeType::class, array(
                 'widget' => 'single_text'))

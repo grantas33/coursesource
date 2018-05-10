@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 
-class CourseController extends Controller implements RoleInterface, StatusInterface
+class CourseController extends Controller
 {
     /**
      * @Route("api/courses", name="api_course_create", methods="POST")
