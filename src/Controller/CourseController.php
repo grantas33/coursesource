@@ -187,6 +187,29 @@ class CourseController extends Controller
     }
 
     /**
+     * @Route("api/courses/{id}/current", name="api_course_getCurrentCourseUser", methods="GET")
+     */
+    public function getCurrentCourseUser(int $id){
+
+        $courseUser = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy([
+                'user' => $this->getUser(),
+                'course' => $id
+            ]);
+
+        if(!$courseUser){
+            return new JsonResponse([
+                'error_message' => 'You do not participate in course '. $id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JSONResponse(
+            $courseUser
+        );
+    }
+
+    /**
      * @Route("api/courses/public", name="api_course_getPublic", methods="GET")
      */
     public function getPublicCourses(){
