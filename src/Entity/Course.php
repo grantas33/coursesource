@@ -49,6 +49,15 @@ class Course implements JsonSerializable
     private $description;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Assert\Length(
+     *     max = 150,
+     *     maxMessage="The slogan cannot be longer than 150 characters"
+     * )
+     */
+    private $slogan;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $creation_date;
@@ -56,7 +65,7 @@ class Course implements JsonSerializable
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_public;
+    private $is_public = false;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="course", cascade={"remove"})
@@ -82,43 +91,40 @@ class Course implements JsonSerializable
         $this->id = $id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param mixed $title
-     */
     public function setTitle($title): void
     {
         $this->title = $title;
 
     }
 
-    /**
-     * @return mixed
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param mixed $description
-     */
     public function setDescription($description): void
     {
         $this->description = $description;
 
     }
 
-    /**
-     * @return mixed
-     */
+    public function getSlogan(): ?string
+    {
+        return $this->slogan;
+    }
+
+    public function setSlogan($slogan): self
+    {
+        $this->slogan = $slogan;
+
+        return $this;
+    }
+
     public function getCreationDate(): ?\DateTimeInterface
     {
         return $this->creation_date;
@@ -155,6 +161,7 @@ class Course implements JsonSerializable
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'slogan' => $this->slogan,
             'creation_date' => $this->creation_date->format("Y-m-d"),
             'is_public' => $this->is_public
         ];

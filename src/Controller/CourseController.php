@@ -70,7 +70,7 @@ class CourseController extends Controller
                ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
-            'success_message' => 'Successfully created new course'
+            $course
         ], Response::HTTP_CREATED);
 
     }
