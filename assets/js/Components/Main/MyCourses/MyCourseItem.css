@@ -13,3 +13,7 @@
   overflow:auto;
   display:block;
 }
+
+#course-title {
+  margin-left: 0px;
+}

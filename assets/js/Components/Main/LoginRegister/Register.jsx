@@ -22,10 +22,7 @@ class Register extends React.Component {
         surname: "",
         username: "",
         email: "",
-        plainPassword: {
-          first: "",
-          second: ""
-        }
+        plainPassword: "",
       },
       showError: false
     };
@@ -129,10 +126,8 @@ class Register extends React.Component {
                     ...this.state,
                     userObject: {
                       ...this.state.userObject,
-                      plainPassword: {
-                        ...this.state.userObject.plainPassword,
-                        first: e.target.value
-                      }
+                      plainPassword: 
+                        e.target.value
                     }
                   })
                 }

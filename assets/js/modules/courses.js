@@ -1,8 +1,12 @@
 import axios from "axios";
 
-export const FETCH_COURSES_STARTED = "courses/FETCH_COURSES_STARTED";
-export const FETCH_COURSES_ERROR = "courses/FETCH_COURSES_ERROR";
-export const FETCH_COURSES_RECEIVED = "courses/FETCH_COURSES_RECEIVED";
+export const FETCH_MYCOURSES_STARTED = "courses/FETCH_MYCOURSES_STARTED";
+export const FETCH_MYCOURSES_ERROR = "courses/FETCH_MYCOURSES_ERROR";
+export const FETCH_MYCOURSES_RECEIVED = "courses/FETCH_MYCOURSES_RECEIVED";
+
+export const FETCH_BROWSECOURSES_STARTED = "courses/FETCH_BROWSECOURSES_STARTED";
+export const FETCH_BROWSECOURSES_ERROR = "courses/FETCH_BROWSECOURSES_ERROR";
+export const FETCH_BROWSECOURSES_RECEIVED = "courses/FETCH_BROWSECOURSES_RECEIVED";
 
 export const FETCH_COURSE_STARTED = "courses/FETCH_COURSE_STARTED";
 export const FETCH_COURSE_ERROR = "courses/FETCH_COURSE_ERROR";
@@ -21,10 +25,15 @@ const initialState = {
     loading: true,
     error: false
   },
-  allCourses: {
+  allMyCourses: {
     courses: [],
     loading: true,
     error: false
+  },
+  allBrowseCourses: {
+    courses: [],
+    loading: true,
+    error: false,
   },
   newCourse: {
     response: "",
@@ -35,30 +44,56 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_COURSES_STARTED:
+    case FETCH_MYCOURSES_STARTED:
       return {
         ...state,
-        allCourses: {
+        allMyCourses: {
           loading: true
         }
       };
-    case FETCH_COURSES_ERROR:
+    case FETCH_MYCOURSES_ERROR:
       return {
         ...state,
-        allCourses: {
+        allMyCourses: {
           loading: false,
           error: true
         }
       };
-    case FETCH_COURSES_RECEIVED:
+    case FETCH_MYCOURSES_RECEIVED:
       return {
         ...state,
-        allCourses: {
+        allMyCourses: {
           loading: false,
           error: false,
           items: action.payload
         }
       };
+
+    case FETCH_BROWSECOURSES_STARTED:
+      return {
+        ...state,
+        allBrowseCourses: {
+          loading: true
+        }
+      };
+    case FETCH_BROWSECOURSES_ERROR:
+      return {
+        ...state,
+        allBrowseCourses: {
+          loading: false,
+          error: true
+        }
+      };
+    case FETCH_BROWSECOURSES_RECEIVED:
+      return {
+        ...state,
+        allBrowseCourses: {
+          loading: false,
+          error: false,
+          items: action.payload
+        }
+      };
+
       case FETCH_COURSE_STARTED:
       return {
         ...state,
@@ -138,31 +173,66 @@ export const fetchCourse = (courseId) => dispatch => {
       });
     })
     .catch(err => {
+      if (err.error_message === "Token is missing!") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: FETCH_COURSE_ERROR
       });
     });
 };
 
-export const fetchCourses = (param) => dispatch => {
+export const fetchMyCourses = () => dispatch => {
   dispatch({
-    type: FETCH_COURSES_STARTED
+    type: FETCH_MYCOURSES_STARTED
   });
   axios
-    .get(`api/courses/${param}`, {
+    .get(`api/courses/my`, {
       headers: {
         Authorization: "Bearer " + window.localStorage.getItem("userToken")
       }
     })
     .then(res => {
       dispatch({
-        type: FETCH_COURSES_RECEIVED,
+        type: FETCH_MYCOURSES_RECEIVED,
         payload: res.data
       });
     })
     .catch(err => {
+      if (err.error_message === "Token is missing!") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
-        type: FETCH_COURSES_ERROR
+        type: FETCH_MYCOURSES_ERROR
+      });
+    });
+};
+
+export const fetchBrowseCourses = () => dispatch => {
+  dispatch({
+    type: FETCH_BROWSECOURSES_STARTED
+  });
+  axios
+    .get(`api/courses/public`, {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
+    })
+    .then(res => {
+      dispatch({
+        type: FETCH_BROWSECOURSES_RECEIVED,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      if (err.error_message === "Token is missing!") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
+      dispatch({
+        type: FETCH_BROWSECOURSES_ERROR
       });
     });
 };
@@ -184,6 +254,10 @@ export const createCourse = newCourse => dispatch => {
       });
     })
     .catch(err => {
+      if (err.error_message === "Token is missing!") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: CREATE_COURSE_ERROR,
         payload: err.response.data.error_message.title

@@ -108,6 +108,10 @@ export const login = object => dispatch => {
       dispatch(push("/main/my-courses"));
     })
     .catch(err => {
+      if (err.error_message === "Token is missing!") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: LOGIN_ERROR,
         payload: err.response.data.error_message
@@ -129,6 +133,10 @@ export const register = object => dispatch => {
       dispatch(push("/login"));
     })
     .catch(err => {
+      if (err.error_message === "Token is missing!") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: REGISTER_ERROR,
         payload: err.response.data.error_message

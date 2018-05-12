@@ -86,6 +86,10 @@ export const fetchLectures = (courseId, teacherId) => dispatch => {
       });
     })
     .catch(err => {
+      if (err.error_message === "Token is missing!") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: FETCH_LECTURES_ERROR
       });
@@ -110,6 +114,10 @@ export const createLecture = newLecture => {
         });
       })
       .catch(err => {
+        if (err.error_message === "Token is missing!") {
+          window.localStorage.removeItem("userToken");
+          dispatch(push("/login"));
+        }
         dispatch({
           type: CREATE_LECTURE_ERROR,
           payload: err.data

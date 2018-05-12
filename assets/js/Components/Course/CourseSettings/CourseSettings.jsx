@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchCourses } from "../../../modules/courses";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 import { fetchCourse } from "../../../modules/courses";

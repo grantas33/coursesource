@@ -46,7 +46,7 @@ export default (state = initialState, action) => {
   }
 };
 
-export const fetchUsers = (courseId) => dispatch => {
+export const fetchUsers = courseId => dispatch => {
   dispatch({
     type: FETCH_USERS_STARTED
   });
@@ -63,6 +63,10 @@ export const fetchUsers = (courseId) => dispatch => {
       });
     })
     .catch(err => {
+      if (err.error_message === "Token is missing!") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: FETCH_USERS_ERROR,
         payload: err.response.data.error_message
