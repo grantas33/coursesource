@@ -10,6 +10,8 @@ namespace App\Controller;
 
 use App\Entity\Course;
 use App\Entity\CourseUser;
+use App\Entity\EntryTask;
+use App\Entity\EntryTaskSubmission;
 use App\Entity\User;
 use App\Form\CourseType;
 use App\Interfaces\RoleInterface;
@@ -19,10 +21,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class CourseController extends Controller
 {
+
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
+     * EntryTaskController constructor.
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /**
      * @Route("api/courses", name="api_course_create", methods="POST")
      */
@@ -37,30 +55,33 @@ class CourseController extends Controller
             $course->setCreationDate();
         }
         else{
-            $errors = array();
+            $errors = $this->validator->validate($course);
+            $jsonErrors = [];
 
-            foreach ($form as $child) {
-                if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error)
-                    $errors[$child->getName()] = $error->getMessage();
-                }
+            foreach($errors as $err){
+                $jsonErrors[$err->getPropertyPath()] = $err->getMessage();
             }
-            return new JsonResponse([
-                 'error_message' => $errors
-             ], Response::HTTP_BAD_REQUEST);
+
+            if (count($errors) > 0) {
+
+                return new JsonResponse([
+                    'error_message' => $jsonErrors,
+                ], Response::HTTP_BAD_REQUEST);
+            }
         }
 
         $courseUser = new CourseUser();
         $courseUser->setUser($this->getUser());
+        $courseUser->setCourse($course);
         $courseUser->setRole(RoleInterface::ADMIN);
         $courseUser->setStatus(StatusInterface::ACTIVE);
 
         try {
             $em = $this->getDoctrine()->getManager();
+            if($course->getEntryTask()){
+                $course->getEntryTask()->setCourse($course);
+            }
             $em->persist($course);
-            $em->flush();
-
-            $courseUser->setCourse($course);
             $em->persist($courseUser);
             $em->flush();
         }
@@ -125,14 +146,7 @@ class CourseController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $courseAdmin = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findOneBy([
-                'user'=>$this->getUser(),
-                'course'=>$course,
-                'role'=>RoleInterface::ADMIN]);
-
-        if(!$courseAdmin){
+        if(!$course->isAdmin($this->getUser())){
             return new JsonResponse([
                 'error_message' => 'You do not have the rights to edit this course'
             ], Response::HTTP_UNAUTHORIZED);
@@ -240,14 +254,7 @@ class CourseController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $courseAdmin = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findOneBy([
-                'user'=>$this->getUser(),
-                'course'=>$course,
-                'role'=>RoleInterface::ADMIN]);
-
-        if(!$courseAdmin){
+        if(!$course->isAdmin($this->getUser())){
             return new JsonResponse([
                 'error_message' => 'You do not have the rights to edit this course'
             ], Response::HTTP_UNAUTHORIZED);
@@ -272,7 +279,7 @@ class CourseController extends Controller
     /**
      * @Route("api/courses/{id}/apply", name="api_course_apply", methods="POST")
      */
-    public function applyToCourse(int $id){
+    public function applyToCourse(int $id, Request $request){
 
         $course = $this->getDoctrine()
             ->getRepository(Course::class)
@@ -288,24 +295,60 @@ class CourseController extends Controller
             ->getRepository(CourseUser::class)
             ->findOneBy([
                 'user'=>$this->getUser(),
-                'course'=>$course,
-                'status'=>StatusInterface::PENDING]);
+                'course'=>$course]);
 
         if($user){
             return new JsonResponse([
-                'error_message' => 'Already submitted an application to this course'
+                'error_message' => 'Already submitted an application, joined or got invited to this course'
             ], Response::HTTP_BAD_REQUEST);
         }
 
         $courseUser = new CourseUser();
         $courseUser->setUser($this->getUser());
         $courseUser->setCourse($course);
-        $courseUser->setRole(RoleInterface::APPLICANT);
-        $courseUser->setStatus(StatusInterface::PENDING);
+
+        if($course->getIsSubmittable()){
+            $entryTask = $this->getDoctrine()
+                ->getRepository(EntryTask::class)
+                ->findLive($id);
+
+            if(!$entryTask){
+                return new JSONResponse([
+                    'error_message' => 'This course does not have an active entry task'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $courseUser->setRole(RoleInterface::APPLICANT);
+            $courseUser->setStatus(StatusInterface::PENDING);
+
+            $data = json_decode($request->getContent(), true);
+            $entryTaskSubmission = new EntryTaskSubmission();
+            $entryTaskSubmission->setStudent($this->getUser());
+            $entryTaskSubmission->setCourse($course);
+            $entryTaskSubmission->setSubmission($data['submission']);
+            $entryTaskSubmission->setDate(new \DateTime('now'));
+
+            $errors = $this->validator->validate($entryTaskSubmission);
+
+            if (count($errors) > 0) {
+
+                return new JsonResponse([
+                    'error_message' => $errors->get(0)->getMessage(),
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        }
+        else{
+            $courseUser->setRole(RoleInterface::STUDENT);
+            $courseUser->setStatus(StatusInterface::ACTIVE);
+        }
 
         try {
             $em = $this->getDoctrine()->getManager();
             $em->persist($courseUser);
+            if(isset($entryTaskSubmission)){
+                $em->persist($entryTaskSubmission);
+            }
+
             $em->flush();
         }
         catch (\Exception $e) {
@@ -313,9 +356,16 @@ class CourseController extends Controller
                 'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse([
-            'success_message' => 'Successfully sent an application to course '.$id
-        ], Response::HTTP_CREATED);
+        if($course->getIsSubmittable()){
+            return new JsonResponse([
+                'success_message' => 'Successfully sent an application to course '.$id
+            ], Response::HTTP_CREATED);
+        }
+            return new JsonResponse([
+                'success_message' => 'Successfully joined course '.$id
+            ], Response::HTTP_CREATED);
+
+
     }
 
     /**
@@ -333,14 +383,7 @@ class CourseController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $courseAdmin = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findOneBy([
-                'user'=>$this->getUser(),
-                'course'=>$course,
-                'role'=>RoleInterface::ADMIN]);
-
-        if(!$courseAdmin){
+        if(!$course->isAdmin($this->getUser())){
             return new JsonResponse([
                 'error_message' => 'You do not have the rights to invite this user'
             ], Response::HTTP_UNAUTHORIZED);
@@ -420,14 +463,7 @@ class CourseController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $courseAdmin = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findOneBy([
-                'user'=>$this->getUser(),
-                'course'=>$course,
-                'role'=>RoleInterface::ADMIN]);
-
-        if(!$courseAdmin){
+        if(!$course->isAdmin($this->getUser())){
             return new JsonResponse([
                 'error_message' => 'You do not have the rights to accept the submission'
             ], Response::HTTP_UNAUTHORIZED);
@@ -536,14 +572,7 @@ class CourseController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $courseAdmin = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findOneBy([
-                'user'=>$this->getUser(),
-                'course'=>$course,
-                'role'=>RoleInterface::ADMIN]);
-
-        if(!$courseAdmin){
+        if(!$course->isAdmin($this->getUser())){
             return new JsonResponse([
                 'error_message' => 'You do not have the rights to assign roles'
             ], Response::HTTP_UNAUTHORIZED);

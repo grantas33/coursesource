@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Interfaces\RoleInterface;
+use App\Interfaces\StatusInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -69,6 +70,16 @@ class Course implements JsonSerializable
     private $is_public = false;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_submittable;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatar;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="course", cascade={"remove"})
      */
     private $courseUsers;
@@ -82,6 +93,13 @@ class Course implements JsonSerializable
      * @ORM\OneToMany(targetEntity="App\Entity\Assignment", mappedBy="course", cascade={"remove"})
      */
     private $assignments;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\EntryTask", mappedBy="course", cascade={"persist", "remove"})
+     * @Assert\Type(type="App\Entity\EntryTask")
+     * @Assert\Valid()
+     */
+    private $entryTask;
 
     public function getId()
     {
@@ -165,6 +183,42 @@ class Course implements JsonSerializable
         return $this->assignments->count();
     }
 
+    public function getIsSubmittable(): ?bool
+    {
+        return $this->is_submittable;
+    }
+
+    public function setIsSubmittable($is_submittable): self
+    {
+        $this->is_submittable = $is_submittable;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getEntryTask()
+    {
+        return $this->entryTask;
+    }
+
+    public function setEntryTask($entryTask)
+    {
+        $this->entryTask = $entryTask;
+
+        return $this;
+    }
+
     public function getTeachers(){
 
         $teachers = [];
@@ -181,6 +235,31 @@ class Course implements JsonSerializable
         return $teachers;
     }
 
+    public function isAdmin(User $currentUser){
+
+        foreach($this->courseUsers as $user){
+            if($user->getUser() == $currentUser &&
+                $user->getRole() == RoleInterface::ADMIN &&
+                $user->getStatus() == StatusInterface::ACTIVE){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isTeacher(User $currentUser){
+
+        foreach($this->courseUsers as $user){
+            if($user->getUser() == $currentUser &&
+                ($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
+                $user->getStatus() == StatusInterface::ACTIVE){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public function jsonSerialize()
     {
@@ -196,7 +275,9 @@ class Course implements JsonSerializable
             'lectureCount' => $this->getLectureCount(),
             'assignmentCount' => $this->getAssignmentCount(),
             'teacherCount' => count($teachers),
-            'teachers' => $teachers
+            'teachers' => $teachers,
+            'is_submittable' => $this->is_submittable,
+            'avatar' => $this->avatar
         ];
     }
 }

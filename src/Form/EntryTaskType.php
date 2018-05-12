@@ -2,40 +2,35 @@
 /**
  * Created by PhpStorm.
  * User: grantas
- * Date: 18.4.5
- * Time: 19.13
+ * Date: 18.5.9
+ * Time: 13.30
  */
 
 namespace App\Form;
 
-use App\Entity\Course;
+use App\Entity\EntryTask;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Collection;
-use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
-class CourseType extends AbstractType
+class EntryTaskType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
             ->add('description')
-            ->add('slogan')
-            ->add('is_public', CheckboxType::class)
-            ->add('is_submittable', CheckboxType::class)
-            ->add('avatar')
-            ->add('entry_task', EntryTaskType::class)
-        ;
+            ->add('deadline_date', DateTimeType::class, [
+                'widget' => 'single_text']);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => Course::class,
+            'data_class' => EntryTask::class,
             'csrf_protection' => false
         ));
     }
