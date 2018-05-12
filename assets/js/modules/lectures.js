@@ -86,7 +86,7 @@ export const fetchLectures = (courseId, teacherId) => dispatch => {
       });
     })
     .catch(err => {
-      if (err.error_message === "Invalid Token!") {
+      if (err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
@@ -114,7 +114,7 @@ export const createLecture = newLecture => {
         });
       })
       .catch(err => {
-        if (err.error_message === "Invalid Token!") {
+        if (err.response.data.message === "Invalid Token") {
           window.localStorage.removeItem("userToken");
           dispatch(push("/login"));
         }

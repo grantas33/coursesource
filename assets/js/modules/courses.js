@@ -173,7 +173,7 @@ export const fetchCourse = (courseId) => dispatch => {
       });
     })
     .catch(err => {
-      if (err.error_message === "Invalid Token!") {
+      if (err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
@@ -200,7 +200,7 @@ export const fetchMyCourses = () => dispatch => {
       });
     })
     .catch(err => {
-      if (err.error_message === "Invalid Token!") {
+      if (err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
@@ -227,7 +227,7 @@ export const fetchBrowseCourses = () => dispatch => {
       });
     })
     .catch(err => {
-      if (err.error_message === "Invalid Token!") {
+      if (err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
@@ -254,7 +254,7 @@ export const createCourse = newCourse => dispatch => {
       });
     })
     .catch(err => {
-      if (err.error_message === "Invalid Token!") {
+      if (err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }

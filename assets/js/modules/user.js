@@ -145,7 +145,7 @@ export const login = object => dispatch => {
       dispatch(push("/main/my-courses"));
     })
     .catch(err => {
-      if (err.error_message === "Invalid Token!") {
+      if (err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
@@ -170,7 +170,7 @@ export const register = object => dispatch => {
       dispatch(push("/login"));
     })
     .catch(err => {
-      if (err.error_message === "Invalid Token!") {
+      if (err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
@@ -213,7 +213,7 @@ export const fetchCourseRole = courseId => dispatch => {
       });
     })
     .catch(err => {
-      if (err.error_message === "Invalid Token!") {
+      if (err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
