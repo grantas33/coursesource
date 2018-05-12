@@ -2,13 +2,13 @@ import React from "react";
 import MyCourseItem from "./MyCourseItem";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchCourses } from "../../../modules/courses";
+import { fetchMyCourses } from "../../../modules/courses";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 
 class MyCourses extends React.Component {
   componentWillMount() {
-    this.props.fetchCourses('my');
+    this.props.fetchMyCourses();
   }
 
   render() {
@@ -33,10 +33,10 @@ class MyCourses extends React.Component {
         />
         <div className="content">
           <div className="row">
-            {this.props.courses.items.map((course, i) => {
+            {this.props.courses.items.map((courseInfo) => {
               return (
-                <div className="col-md-12" key={i}>
-                  <MyCourseItem key={course.id} course={course} />
+                <div className="col-md-6" key={courseInfo.course.id}>
+                  <MyCourseItem courseInfo={courseInfo} />
                 </div>
               );
             })
@@ -57,13 +57,13 @@ class MyCourses extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  courses: state.courses.allCourses
+  courses: state.courses.allMyCourses
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchCourses
+      fetchMyCourses
     },
     dispatch
   );

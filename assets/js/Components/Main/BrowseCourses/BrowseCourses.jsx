@@ -2,13 +2,13 @@ import React from "react";
 import BrowseCourseItem from "./BrowseCourseItem";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchCourses } from "../../../modules/courses";
+import { fetchBrowseCourses } from "../../../modules/courses";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 
 class BrowseCourses extends React.Component {
   componentWillMount() {
-    this.props.fetchCourses('public');
+    this.props.fetchBrowseCourses();
   }
 
   render() {
@@ -68,13 +68,13 @@ class BrowseCourses extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  courses: state.courses.allCourses
+  courses: state.courses.allBrowseCourses
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchCourses
+      fetchBrowseCourses
     },
     dispatch
   );

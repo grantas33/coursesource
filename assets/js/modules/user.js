@@ -9,6 +9,10 @@ export const REGISTER_STARTED = "user/REGISTER_STARTED";
 export const REGISTER_ERROR = "user/REGISTER_ERROR";
 export const REGISTER_RECEIVED = "user/REGISTER_RECEIVED";
 
+export const FETCH_COURSEROLE_STARTED = "courses/FETCH_COURSEROLE_STARTED";
+export const FETCH_COURSEROLE_ERROR = "courses/FETCH_COURSEROLE_ERROR";
+export const FETCH_COURSEROLE_RECEIVED = "courses/FETCH_COURSEROLE_RECEIVED";
+
 export const CURRENT_USER_RECEIVED = "user/CURRENT_USER_RECEIVED";
 export const LOGOUT_RECEIVED = "user/LOGOUT_RECEIVED";
 
@@ -17,6 +21,11 @@ axios.defaults.baseURL = "/";
 const initialState = {
   login: {
     token: null,
+    loading: true,
+    error: null
+  },
+  courseRole: {
+    item: null,
     loading: true,
     error: null
   },
@@ -39,7 +48,7 @@ export default (state = initialState, action) => {
         login: {
           loading: false,
           error: action.payload,
-          response: null,
+          response: null
         }
       };
     case LOGIN_RECEIVED:
@@ -88,6 +97,34 @@ export default (state = initialState, action) => {
       };
     case LOGOUT_RECEIVED:
       return initialState;
+
+    case FETCH_COURSEROLE_STARTED:
+      return {
+        ...state,
+        courseRole: {
+          loading: true,
+          error: null
+        }
+      };
+    case FETCH_COURSEROLE_ERROR:
+      return {
+        ...state,
+        courseRole: {
+          item: false,
+          error: action.payload,
+          response: null
+        }
+      };
+    case FETCH_COURSEROLE_RECEIVED:
+      return {
+        ...state,
+        courseRole: {
+          item: action.payload,
+          loading: false,
+          error: null
+        }
+      };
+
     default:
       return state;
   }
@@ -108,6 +145,10 @@ export const login = object => dispatch => {
       dispatch(push("/main/my-courses"));
     })
     .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: LOGIN_ERROR,
         payload: err.response.data.error_message
@@ -129,6 +170,10 @@ export const register = object => dispatch => {
       dispatch(push("/login"));
     })
     .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: REGISTER_ERROR,
         payload: err.response.data.error_message
@@ -147,6 +192,33 @@ export const getCurrent = () => dispatch => {
       dispatch({
         type: CURRENT_USER_RECEIVED,
         payload: res.data
+      });
+    });
+};
+
+export const fetchCourseRole = courseId => dispatch => {
+  dispatch({
+    type: FETCH_COURSEROLE_STARTED
+  });
+  axios
+    .get(`api/courses/${courseId}/current`, {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
+    })
+    .then(res => {
+      dispatch({
+        type: FETCH_COURSEROLE_RECEIVED,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
+      dispatch({
+        type: FETCH_COURSEROLE_ERROR
       });
     });
 };

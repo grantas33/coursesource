@@ -21,6 +21,7 @@ class CourseType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
+            ->add('slogan')
             ->add('is_public', CheckboxType::class)
             ->add('is_submittable', CheckboxType::class)
             ->add('avatar')

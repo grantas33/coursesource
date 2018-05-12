@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Interfaces\RoleInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -51,6 +52,15 @@ class Course implements JsonSerializable
     private $description;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Assert\Length(
+     *     max = 150,
+     *     maxMessage="The slogan cannot be longer than 150 characters"
+     * )
+     */
+    private $slogan;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $creation_date;
@@ -58,7 +68,7 @@ class Course implements JsonSerializable
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_public;
+    private $is_public = false;
 
     /**
      * @ORM\Column(type="boolean")
@@ -109,43 +119,40 @@ class Course implements JsonSerializable
         $this->id = $id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param mixed $title
-     */
     public function setTitle($title): void
     {
         $this->title = $title;
 
     }
 
-    /**
-     * @return mixed
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param mixed $description
-     */
     public function setDescription($description): void
     {
         $this->description = $description;
 
     }
 
-    /**
-     * @return mixed
-     */
+    public function getSlogan(): ?string
+    {
+        return $this->slogan;
+    }
+
+    public function setSlogan($slogan): self
+    {
+        $this->slogan = $slogan;
+
+        return $this;
+    }
+
     public function getCreationDate(): ?\DateTimeInterface
     {
         return $this->creation_date;
@@ -175,6 +182,16 @@ class Course implements JsonSerializable
         return $this;
     }
 
+    public function getLectureCount(){
+
+        return $this->lectures->count();
+    }
+
+    public function getAssignmentCount(){
+
+        return $this->assignments->count();
+    }
+
     public function getIsSubmittable(): ?bool
     {
         return $this->is_submittable;
@@ -199,14 +216,39 @@ class Course implements JsonSerializable
         return $this;
     }
 
+    public function getTeachers(){
+
+        $teachers = [];
+        foreach($this->courseUsers as $user){
+            if($user->getRole() == RoleInterface::TEACHER){
+                $teachers[] = [
+                    'name' => $user->getUser()->getName(),
+                    'surname' => $user->getUser()->getSurname(),
+                    'tag' => $user->getTag()
+                ];
+            }
+        }
+
+        return $teachers;
+    }
+
+
+
     public function jsonSerialize()
     {
+        $teachers = $this->getTeachers();
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'slogan' => $this->slogan,
             'creation_date' => $this->creation_date->format("Y-m-d"),
             'is_public' => $this->is_public,
+            'lectureCount' => $this->getLectureCount(),
+            'assignmentCount' => $this->getAssignmentCount(),
+            'teacherCount' => count($teachers),
+            'teachers' => $teachers,
             'is_submittable' => $this->is_submittable,
             'avatar' => $this->avatar
         ];

@@ -17,6 +17,8 @@ class RegistrationType extends AbstractType
     {
         $builder->add('name')
             ->add('surname')
+            ->add('email')
+            ->add('plainPassword')
             ->add('avatar');
     }
 

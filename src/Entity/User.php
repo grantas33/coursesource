@@ -8,11 +8,16 @@ use Doctrine\ORM\Mapping\AttributeOverride;
 use Doctrine\ORM\Mapping\AttributeOverrides;
 use Doctrine\ORM\Mapping\Column;
 use JsonSerializable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(
+ *     fields = {"email"},
+ *     message = "This email is already in use"
+ * )
  */
 class User extends BaseUser implements JsonSerializable
 {
@@ -57,6 +62,21 @@ class User extends BaseUser implements JsonSerializable
      * )
      */
     protected $surname;
+
+    /**
+     * @Assert\NotBlank(message="Email is required")
+     * @Assert\Email(message="This is not a valid email address")
+     */
+    protected $email;
+
+    /**
+     * @Assert\Length(
+     *     min=8,
+     *     max=4096,
+     *     minMessage="Password must be at least 8 characters long"
+     * )
+     */
+    protected $plainPassword;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
