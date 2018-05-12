@@ -35,8 +35,6 @@ class User extends BaseUser implements JsonSerializable
         $this->courseUsers = new ArrayCollection();
         $this->lectures = new ArrayCollection();
         $this->assignments = new ArrayCollection();
-        $this->entryTaskSubmissions = new ArrayCollection();
-        $this->entryTaskGrades = new ArrayCollection();
     }
 
     /**
@@ -97,16 +95,6 @@ class User extends BaseUser implements JsonSerializable
      * @ORM\OneToMany(targetEntity="App\Entity\Assignment", mappedBy="teacher", cascade={"remove"})
      */
     protected $assignments;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EntryTaskSubmission", mappedBy="student", cascade={"remove"})
-     */
-    protected $entryTaskSubmissions;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EntryTaskGrade", mappedBy="student", cascade={"remove"})
-     */
-    protected $entryTaskGrades;
 
     public function getId()
     {

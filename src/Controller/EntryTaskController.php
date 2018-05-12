@@ -46,34 +46,25 @@ class EntryTaskController extends Controller
      */
     public function getEntryTask(int $courseId){
 
-        $publicCourse = $this->getDoctrine()
+        $course = $this->getDoctrine()
             ->getRepository(Course::class)
-            ->findOneBy([
-               'id'=>$courseId,
-               'is_public'=>true,
-            ]);
+            ->find($courseId);
 
-        if(!$publicCourse){
-            $courseAdmin = $this->getDoctrine()
-                ->getRepository(CourseUser::class)
-                ->findOneBy([
-                    'course'=>$courseId,
-                    'user'=>$this->getUser(),
-                    'role'=>RoleInterface::ADMIN,
-                    'status'=>StatusInterface::ACTIVE
-                ]);
-            if(!$courseAdmin) {
-                return new JSONResponse([
-                    'error_message' => 'This course is private'
-                ], Response::HTTP_UNAUTHORIZED);
-            }
+        if(!$course){
+            return new JSONResponse([
+                'error_message' => 'Course not found'
+            ], Response::HTTP_BAD_REQUEST);
         }
 
-        $entryTask = $this->getDoctrine()
-            ->getRepository(EntryTask::class)
-            ->findOneBy([
-                'course'=>$courseId,
-            ]);
+        if(!$course->getIsPublic() && !$course->isAdmin($this->getUser())){
+
+            return new JSONResponse([
+                'error_message' => 'This course is private'
+            ], Response::HTTP_UNAUTHORIZED);
+
+        }
+
+        $entryTask = $course->getEntryTask();
 
         if(!$entryTask){
             return new JSONResponse([
@@ -87,96 +78,21 @@ class EntryTaskController extends Controller
     }
 
     /**
-     * @Route("api/entrytasks/{courseId}", name="api_entryTasks_edit", methods="PUT")
-     */
-    public function editEntryTask(int $courseId, Request $request){
-
-        $em = $this->getDoctrine()->getManager();
-        $entryTask = $this->getDoctrine()
-            ->getRepository(EntryTask::class)
-            ->findOneBy([
-                'course'=>$courseId,
-            ]);
-
-        if(!$entryTask){
-            return new JSONResponse([
-                'error_message' => 'This course does not have an entry task'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $courseAdmin = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findOneBy([
-                'course'=>$courseId,
-                'user'=>$this->getUser(),
-                'role'=>RoleInterface::ADMIN,
-                'status'=>StatusInterface::ACTIVE
-            ]);
-
-        if(!$courseAdmin){
-            return new JSONResponse([
-                'error_message' => 'You cannot edit this entry task'
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-
-        $form = $this->createForm(EntryTaskType::class, $entryTask);
-        $data = json_decode($request->getContent(), true);
-        $form->submit($data, false);
-
-        if(!($form->isSubmitted() && $form->isValid())){
-            $errors = array();
-
-            foreach ($form as $child) {
-                if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error)
-                        $errors[$child->getName()] = $error->getMessage();
-                }
-            }
-
-            return new JsonResponse([
-                'error_message' => $errors
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        try {
-            $em->persist($entryTask);
-            $em->flush();
-        }
-        catch (\Exception $e) {
-            return new JsonResponse([
-                'error_message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-        return new JsonResponse([
-            'success_message' => 'Successfully updated entry task for course '. $courseId
-        ]);
-    }
-
-    /**
      * @Route("api/entrytasks/submission/getall/{courseId}", name="api_entryTasks_submission_getAll", methods="GET")
      */
-    public function getEntryTaskSubmissionsAndGrades(int $courseId){
+    public function getEntryTaskSubmissions(int $courseId){
 
-        $courseTeacher = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findOneBy([
-                'user' => $this->getUser(),
-                'course' => $courseId,
-                'role' => [RoleInterface::ADMIN, RoleInterface::TEACHER],
-                'status' => StatusInterface::ACTIVE
-            ]);
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($courseId);
 
-        if(!$courseTeacher){
+        if(!$course->isTeacher($this->getUser())){
             return new JsonResponse([
                 'error_message' => 'You do not have the permissions to view the submissions'
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $entryTask = $this->getDoctrine()
-            ->getRepository(EntryTask::class)
-            ->findOneBy([
-                'course'=>$courseId,
-            ]);
+        $entryTask = $course->getEntryTask();
 
         if(!$entryTask){
             return new JsonResponse([
@@ -186,7 +102,10 @@ class EntryTaskController extends Controller
 
         $submissionsAndGrades = $this->getDoctrine()
             ->getRepository(EntryTaskSubmission::class)
-            ->findSubmissionsAndGrades($courseId);
+            ->findOneBy([
+                'student' => $this->getUser(),
+                'course' => $course
+            ]);
 
         return new JsonResponse(
             $submissionsAndGrades
@@ -259,22 +178,10 @@ class EntryTaskController extends Controller
         }
 
         $data = json_decode($request->getContent(), true);
-        $grade = $this->getDoctrine()
-            ->getRepository(EntryTaskGrade::class)
-            ->findOneBy([
-                'student' => $submission->getStudent(),
-                'course' => $submission->getCourse()
-            ]);
 
-        if(!$grade){
-            $grade = new EntryTaskGrade();
-            $grade->setStudent($submission->getStudent());
-            $grade->setCourse($submission->getCourse());
-        }
-        $grade->setScore($data['score']);
-        $grade->setGradingDate(new \DateTime('now'));
+        $submission->setScore($data['score']);
 
-        $errors = $this->validator->validate($grade);
+        $errors = $this->validator->validate($submission);
 
         if (count($errors) > 0) {
 
@@ -285,7 +192,7 @@ class EntryTaskController extends Controller
 
         try {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($grade);
+            $em->persist($submission);
             $em->flush();
         }
         catch (\Exception $e) {
@@ -298,45 +205,4 @@ class EntryTaskController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("api/entrytasks/grade/{submissionId}", name="api_entryTasks_grade_get", methods="GET")
-     */
-    public function getEntryTaskGrade(int $submissionId, Request $request){
-
-        $submission = $this->getDoctrine()
-            ->getRepository(EntryTaskSubmission::class)
-            ->find($submissionId);
-
-        if(!$submission){
-            return new JsonResponse([
-                'error_message' => 'Entry task submission not found'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $courseTeacher = $this->getDoctrine()
-            ->getRepository(CourseUser::class)
-            ->findBy([
-                'user' => $this->getUser(),
-                'course' => $submission->getCourse(),
-                'role' => [RoleInterface::ADMIN, RoleInterface::TEACHER],
-                'status' => StatusInterface::ACTIVE
-            ]);
-
-        if(!$courseTeacher){
-            return new JsonResponse([
-                'error_message' => 'You do not have the permissions to view the grade'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $grade = $this->getDoctrine()
-            ->getRepository(EntryTaskGrade::class)
-            ->findOneBy([
-                'student' => $submission->getStudent(),
-                'course' => $submission->getCourse()
-            ]);
-
-        return new JsonResponse(
-            $grade
-        );
-    }
 }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Interfaces\RoleInterface;
+use App\Interfaces\StatusInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -19,8 +20,6 @@ class Course implements JsonSerializable
         $this->courseUsers = new ArrayCollection();
         $this->lectures = new ArrayCollection();
         $this->assignments = new ArrayCollection();
-        $this->entryTaskSubmissions = new ArrayCollection();
-        $this->entryTaskGrades = new ArrayCollection();
     }
 
     /**
@@ -96,19 +95,11 @@ class Course implements JsonSerializable
     private $assignments;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\EntryTask", mappedBy="course", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\EntryTask", mappedBy="course", cascade={"persist", "remove"})
+     * @Assert\Type(type="App\Entity\EntryTask")
+     * @Assert\Valid()
      */
     private $entryTask;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EntryTaskSubmission", mappedBy="course", cascade={"remove"})
-     */
-    private $entryTaskSubmissions;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EntryTaskGrade", mappedBy="course", cascade={"remove"})
-     */
-    private $entryTaskGrades;
 
     public function getId()
     {
@@ -216,6 +207,18 @@ class Course implements JsonSerializable
         return $this;
     }
 
+    public function getEntryTask()
+    {
+        return $this->entryTask;
+    }
+
+    public function setEntryTask($entryTask)
+    {
+        $this->entryTask = $entryTask;
+
+        return $this;
+    }
+
     public function getTeachers(){
 
         $teachers = [];
@@ -232,7 +235,31 @@ class Course implements JsonSerializable
         return $teachers;
     }
 
+    public function isAdmin(User $currentUser){
 
+        foreach($this->courseUsers as $user){
+            if($user->getUser() == $currentUser &&
+                $user->getRole() == RoleInterface::ADMIN &&
+                $user->getStatus() == StatusInterface::ACTIVE){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isTeacher(User $currentUser){
+
+        foreach($this->courseUsers as $user){
+            if($user->getUser() == $currentUser &&
+                ($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
+                $user->getStatus() == StatusInterface::ACTIVE){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public function jsonSerialize()
     {

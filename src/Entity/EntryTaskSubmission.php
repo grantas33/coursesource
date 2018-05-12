@@ -25,12 +25,12 @@ class EntryTaskSubmission implements JsonSerializable
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="entryTaskSubmissions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      */
     private $student;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Course", inversedBy="entryTaskSubmissions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Course")
      */
     private $course;
 
@@ -42,6 +42,22 @@ class EntryTaskSubmission implements JsonSerializable
      * )
      */
     private $submission;
+
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 10,
+     *      minMessage = "Grade score must be an integer from 1 to 10",
+     *      maxMessage = "Grade score must be an integer from 1 to 10"
+     * )
+     * @Assert\Type(
+     *     type="integer",
+     *     message="Grade score must be an integer from 1 to 10"
+     * )
+     */
+    private $score;
 
     /**
      * @ORM\Column(type="datetime")
@@ -89,6 +105,16 @@ class EntryTaskSubmission implements JsonSerializable
         $this->submission = $submission;
     }
 
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    public function setScore($score): void
+    {
+        $this->score = $score;
+    }
+
     public function getDate()
     {
         return $this->date;
@@ -106,6 +132,7 @@ class EntryTaskSubmission implements JsonSerializable
             'student' => $this->student,
             'course' => $this->course,
             'submission' => $this->submission,
+            'score' => $this->score,
             'date' => $this->date->format("Y-m-d H:i:s")
         ];
     }

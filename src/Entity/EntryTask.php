@@ -30,6 +30,7 @@ class EntryTask implements \JsonSerializable
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="Description cannot be blank")
      * @Assert\Length(
      *     max = 2000,
      *     maxMessage="The entry task description cannot be longer than 2000 characters"
@@ -84,9 +85,11 @@ class EntryTask implements \JsonSerializable
         return $this->deadlineDate;
     }
 
-    public function setDeadlineDate(string $date): void
+    public function setDeadlineDate(\DateTimeInterface $deadline_date): self
     {
-        $this->deadlineDate = \DateTime::createFromFormat("Y-m-d H:i:s", $date);
+        $this->deadlineDate = $deadline_date;
+
+        return $this;
     }
 
     public function jsonSerialize()
