@@ -63,7 +63,7 @@ export const fetchUsers = courseId => dispatch => {
       });
     })
     .catch(err => {
-      if (err.error_message === "Token is missing!") {
+      if (err.error_message === "Invalid Token!") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }

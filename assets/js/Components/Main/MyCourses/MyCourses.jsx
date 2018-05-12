@@ -33,7 +33,7 @@ class MyCourses extends React.Component {
         />
         <div className="content">
           <div className="row">
-            {console.log(this.props) || this.props.courses.items.map((courseInfo) => {
+            {this.props.courses.items.map((courseInfo) => {
               return (
                 <div className="col-md-6" key={courseInfo.course.id}>
                   <MyCourseItem courseInfo={courseInfo} />
