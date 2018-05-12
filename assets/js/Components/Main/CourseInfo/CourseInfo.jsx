@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 import { fetchCourse } from "../../../modules/courses";
+import user2img from "../../../../Resources/img/user2-160x160.jpg";
 
 class CourseInfo extends React.Component {
   constructor(props) {
@@ -45,6 +46,8 @@ class CourseInfo extends React.Component {
         />
         <div className="content">
           <h1>{this.props.course.item.title}</h1>
+          {/*<img />*/}
+          <h5>{this.props.course.item.slogan}</h5>
           <div className="nav-tabs-custom">
             <ul className="nav nav-tabs">
               <li
@@ -73,18 +76,87 @@ class CourseInfo extends React.Component {
               </li>
             </ul>
             <div className="tab-content">
-              {this.state.activeTab === 1 &&
+              {this.state.activeTab === 1 && (
                 <h3>{this.props.course.item.description}</h3>
-              }
-              {this.state.activeTab === 2 && 
-                <h3>{this.props.course.item.description}</h3>
-              }
-              {this.state.activeTab === 3 && 
-                <h3>{this.props.course.item.description}</h3>
-              }
-              {this.state.activeTab === 4 && 
+              )}
+
+              {this.state.activeTab === 2 && (
+                <div className="row">
+                  <div className="col-md-3 col-sm-6 col-xs-12">
+                    <div className="info-box">
+                      <span className="info-box-icon bg-green">
+                        <i className="ion-ios-information-outline" />
+                      </span>
+                      <div className="info-box-content">
+                        <span className="info-box-text">Sales</span>
+                        <span className="info-box-number">760</span>
+                      </div>
+                      {/* /.info-box-content */}
+                    </div>
+                    {/* /.info-box */}
+                  </div>
+                  <div className="col-md-3 col-sm-6 col-xs-12">
+                    <div className="info-box">
+                      <span className="info-box-icon bg-green">
+                        <i className="ion ion-ios-book-outline" />
+                      </span>
+                      <div className="info-box-content">
+                        <span className="info-box-text">Lectures</span>
+                        <span className="info-box-number">54</span>
+                      </div>
+                      {/* /.info-box-content */}
+                    </div>
+                    {/* /.info-box */}
+                  </div>
+                  <div className="col-md-3 col-sm-6 col-xs-12">
+                    <div className="info-box">
+                      <span className="info-box-icon bg-green">
+                        <i className="ion ion-ios-person-outline" />
+                      </span>
+                      <div className="info-box-content">
+                        <span className="info-box-text">Lectors</span>
+                        <span className="info-box-number">18</span>
+                      </div>
+                      {/* /.info-box-content */}
+                    </div>
+                    {/* /.info-box */}
+                  </div>
+                </div>
+              )}
+
+              {this.state.activeTab === 3 && (
+                <div className="row">
+                  {[1, 3, 4].map((lector, i) => (
+                    <div className="col-sm-3" key={i}>
+                      <div className="box box-primary">
+                        <div className="box-body box-profile">
+                          <img
+                            className="profile-user-img img-responsive img-circle"
+                            src={user2img}
+                            alt="User profile picture"
+                          />
+                          <h3 className="profile-username text-center">
+                            Nina Mcintire
+                          </h3>
+                          <p className="text-muted text-center">
+                            Software Engineer
+                          </p>
+                          <ul className="list-group list-group-unbordered">
+                            <li className="list-group-item">
+                              <b>Followers</b>{" "}
+                              <a className="pull-right">1,322</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {this.state.activeTab === 4 && (
                 <h3>{this.props.course.item.creationDate}</h3>
-              }
+              )}
             </div>
           </div>
 

@@ -16,7 +16,10 @@ class CreateNewCourse extends React.Component {
         title: "",
         description: "",
         slogan: "",
-        photo: ""
+        photo: "",
+        is_submittable: false,
+        entry_task_submission: "",
+        entry_task_deadline: ""
       },
       editted: {}
     };
@@ -253,7 +256,7 @@ class CreateNewCourse extends React.Component {
                     multiple={false}
                     onDone={file => {
                       if (file.type === "image/png") {
-                        this.handleUpdateField("image", file.base64)
+                        this.handleUpdateField("image", file.base64);
                       } else {
                         this.handleUpdateField("image", "");
                         this.setState({
@@ -262,11 +265,97 @@ class CreateNewCourse extends React.Component {
                             ...this.state.validations,
                             image: "Please upload valid photo under 5MB"
                           }
-                        })
+                        });
                       }
                     }}
                   />
                 </div>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({
+                      ...this.state,
+                      newCourse: {
+                        ...this.state.newCourse,
+                        is_submittable: !this.state.newCourse.is_submittable
+                      }
+                    });
+                  }}
+                >
+                  {this.state.newCourse.is_submittable === true
+                    ? "Remove"
+                    : "Add"}{" "}
+                  application task
+                </button>
+
+                {this.state.newCourse.is_submittable && (
+                  <div
+                    className={
+                      "form-group" +
+                      (this.state.validations.entry_task_submission
+                        ? " has-error"
+                        : "")
+                    }
+                  >
+                    <label>Application task description</label>
+                    <textarea
+                      value={this.state.newCourse.entry_task_submission}
+                      onChange={event =>
+                        this.handleUpdateField(
+                          "entry_task_submission",
+                          event.target.value
+                        )
+                      }
+                      className={"form-control"}
+                      rows={3}
+                      placeholder="Enter ..."
+                    />
+                    {this.state.editted.entry_task_submission &&
+                      this.state.validations.entry_task_submission && (
+                        <span className="help-block">
+                          {this.state.validations.entry_task_submission}
+                        </span>
+                      )}
+                  </div>
+                )}
+
+                {this.state.newCourse.is_submittable && (
+                  <div
+                    className={
+                      "form-group" +
+                      (this.state.editted.entry_task_deadline &&
+                      this.state.validations.entry_task_deadline
+                        ? " has-error"
+                        : "")
+                    }
+                  >
+                    <label>Application deadline</label>
+                    <Datetime
+                      value={this.state.newCourse.entry_task_deadline}
+                      onChange={momentdate => {
+                        if (momentdate._isValid) {
+                          this.handleUpdateField(
+                            "entry_task_deadline",
+                            new Date(momentdate._d)
+                          );
+                        } else {
+                          this.handleUpdateField("entry_task_deadline", "");
+                        }
+                      }}
+                      timeFormat={"HH:mm"}
+                      dateFormat={"YYYY-MM-DD"}
+                    />
+                    {this.state.editted.entry_task_deadline &&
+                      this.state.validations.entry_task_deadline && (
+                        <span className="help-block">
+                          {this.state.validations.entry_task_deadline}
+                        </span>
+                      )}
+                  </div>
+                )}
+
                 {this.state.editted.image &&
                   this.state.validations.image && (
                     <span className="help-block">

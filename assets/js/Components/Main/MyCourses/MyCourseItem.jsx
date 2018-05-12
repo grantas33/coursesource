@@ -42,7 +42,7 @@ const MyCourseItem = props => (
           </li>
           <li>
             <Link to={`/course/${props.courseInfo.course.id}`}>
-              <button className="btn btn-info">Join course</button>
+              <button className="btn btn-info">Open course</button>
             </Link>
           </li>
         </ul>
