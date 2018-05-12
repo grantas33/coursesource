@@ -50,24 +50,24 @@ class CourseController extends Controller
         $form = $this->createForm(CourseType::class, $course);
         $data = json_decode($request->getContent(), true);
         $form->submit($data, false);
-        
-        if($form->isSubmitted() && $form->isValid()){
 
+        if($form->isSubmitted() && $form->isValid()){
             $course->setCreationDate();
         }
         else{
-            $errors = array();
+            $errors = $this->validator->validate($course);
+            $jsonErrors = [];
 
-            foreach ($form as $child) {
-                if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error)
-                    $errors[$child->getName()] = $error->getMessage();
-                }
+            foreach($errors as $err){
+                $jsonErrors[$err->getPropertyPath()] = $err->getMessage();
             }
-            return new JsonResponse([
-                 'error_message' => $errors
-             ], Response::HTTP_BAD_REQUEST);
 
+            if (count($errors) > 0) {
+
+                return new JsonResponse([
+                    'error_message' => $jsonErrors,
+                ], Response::HTTP_BAD_REQUEST);
+            }
         }
 
         $courseUser = new CourseUser();

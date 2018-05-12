@@ -30,7 +30,7 @@ class EntryTask implements \JsonSerializable
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlank(message="Description cannot be blank")
+     * @Assert\NotBlank(message="Entry task description cannot be blank")
      * @Assert\Length(
      *     max = 2000,
      *     maxMessage="The entry task description cannot be longer than 2000 characters"
