@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Interfaces\RoleInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -154,16 +155,48 @@ class Course implements JsonSerializable
         return $this;
     }
 
+    public function getLectureCount(){
+
+        return $this->lectures->count();
+    }
+
+    public function getAssignmentCount(){
+
+        return $this->assignments->count();
+    }
+
+    public function getTeachers(){
+
+        $teachers = [];
+        foreach($this->courseUsers as $user){
+            if($user->getRole() == RoleInterface::TEACHER){
+                $teachers[] = [
+                    'name' => $user->getUser()->getName(),
+                    'surname' => $user->getUser()->getSurname(),
+                    'tag' => $user->getTag()
+                ];
+            }
+        }
+
+        return $teachers;
+    }
+
 
     public function jsonSerialize()
     {
+        $teachers = $this->getTeachers();
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
             'slogan' => $this->slogan,
             'creation_date' => $this->creation_date->format("Y-m-d"),
-            'is_public' => $this->is_public
+            'is_public' => $this->is_public,
+            'lectureCount' => $this->getLectureCount(),
+            'assignmentCount' => $this->getAssignmentCount(),
+            'teacherCount' => count($teachers),
+            'teachers' => $teachers
         ];
     }
 }
