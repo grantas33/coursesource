@@ -1,0 +1,58 @@
+parameters:
+    role: ['ADMIN', 'TEACHER', 'STUDENT', 'APPLICANT']
+    status: ['ACTIVE', 'PENDING', 'INVITED', 'FINISHED']
+
+App\Entity\User:
+    user{1..30}:
+        name: '<firstName()>'
+        surname: '<lastName()>'
+        email:  '<email()>'
+        username: '<userName()>'
+        plainPassword: '<password()>'
+        password: '<text(50)>'
+
+App\Entity\Course:
+    course{1..10}:
+        title: '<sentence()>'
+        description: '<text(1000)>'
+        slogan: '<text(140)>'
+        creationDateByDatetime: "<dateTime()>"
+        is_public: '<boolean()>'
+        is_submittable: '<boolean()>'
+
+App\Entity\Assignment:
+    assignment{1..50}:
+        title: '<sentence()>'
+        description: '<paragraph()>'
+        teacher: '@user*'
+        course: '@course*'
+        creationDateByDatetime: "<dateTime()>"
+        deadline_date: "<dateTimeBetween('now', '+1 month')>"
+        is_gradeable: "<boolean()>"
+        is_submittable: "<boolean()>"
+
+App\Entity\CourseUser:
+    coursUser{1..100}:
+        user: '@user*'
+        course: '@course*'
+        role: '<randomElement($role)>'
+        tag: '<jobTitle()>'
+        status: '<randomElement($status)>'
+        is_notifiable: '<boolean()>'
+
+App\Entity\Lecture:
+    lecture{1..50}:
+        title: '<sentence()>'
+        description: '<paragraph()>'
+        teacher: '@user*'
+        course: '@course*'
+        creationDateByDatetime: "<dateTime()>"
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        preparation_tasks: "<sentences()>"
+        location: "<address()>"
+
+
+
+
+
+

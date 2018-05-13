@@ -163,6 +163,12 @@ class Lecture implements JsonSerializable
 
     }
 
+    public function setCreationDateByDatetime(\DateTimeInterface $date): void
+    {
+        $this->creation_date = $date;
+
+    }
+
     public function getStartDate(): ?\DateTimeInterface
     {
         return $this->start_date;

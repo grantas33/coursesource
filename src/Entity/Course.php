@@ -152,12 +152,17 @@ class Course implements JsonSerializable
     public function setCreationDate(): void
     {
         $this->creation_date = new \DateTime('now');
-
     }
 
     public function setCreationDateManually(string $date): void
     {
         $this->creation_date = \DateTime::createFromFormat("Y-m-d", $date);
+
+    }
+
+    public function setCreationDateByDatetime(\DateTimeInterface $date): void
+    {
+        $this->creation_date = $date;
 
     }
 

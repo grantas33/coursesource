@@ -144,6 +144,11 @@ class Assignment implements \JsonSerializable
 
     }
 
+    public function setCreationDateByDatetime(\DateTimeInterface $date): void
+    {
+        $this->creation_date = $date;
+    }
+
     public function getDeadlineDate(): ?\DateTimeInterface
     {
         return $this->deadline_date;
