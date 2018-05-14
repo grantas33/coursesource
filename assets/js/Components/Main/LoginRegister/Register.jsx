@@ -208,7 +208,7 @@ class Register extends React.Component {
                   onClick={e => {
                     if (
                       this.state.secondPassword ===
-                      this.state.userObject.plainPassword && this.state.userObject.plainPassword.length > 0
+                      this.state.userObject.plainPassword
                     ) {
                       this.props.register(this.state.userObject);
                       this.setState({ ...this.state, showError: true });
