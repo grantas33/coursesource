@@ -142,13 +142,7 @@ class Register extends React.Component {
                 onChange={e =>
                   this.setState({
                     ...this.state,
-                    userObject: {
-                      ...this.state.userObject,
-                      plainPassword: {
-                        ...this.state.userObject.plainPassword,
-                        second: e.target.value
-                      }
-                    }
+                    secondPassword: e.target.value
                   })
                 }
               />

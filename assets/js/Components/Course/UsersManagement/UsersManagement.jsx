@@ -89,6 +89,7 @@ class UsersManagement extends React.Component {
               </div>
             </div>
           </div>
+          <button className="btn btn-primary"> Invite new user </button>
         </div>
       </div>
     );

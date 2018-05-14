@@ -381,7 +381,29 @@ class CreateNewCourse extends React.Component {
                       x => this.state.validations[x] !== null
                     ).length === 0
                   ) {
-                    this.props.createCourse(this.state.newCourse);
+                    this.props.createCourse(
+                      this.state.newCourse.is_submittable===true
+                        ? {
+                            title: this.state.newCourse.title,
+                            description: this.state.newCourse.description,
+                            slogan: this.state.newCourse.slogan,
+                            is_submittable: this.state.newCourse.is_submittable,
+                            image: this.state.newCourse.image,
+                            entry_task: {
+                              description: this.state.newCourse
+                                .entry_task_submission,
+                              deadline_date: this.state.newCourse
+                                .entry_task_deadline
+                            }
+                          }
+                        : {
+                            title: this.state.newCourse.title,
+                            description: this.state.newCourse.description,
+                            slogan: this.state.newCourse.slogan,
+                            is_submittable: this.state.newCourse.is_submittable,
+                            image: this.state.newCourse.image
+                          }
+                    );
                     this.setState({
                       ...this.state,
                       submitted: true

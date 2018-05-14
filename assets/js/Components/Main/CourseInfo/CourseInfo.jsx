@@ -88,8 +88,8 @@ class CourseInfo extends React.Component {
                         <i className="ion-ios-information-outline" />
                       </span>
                       <div className="info-box-content">
-                        <span className="info-box-text">Sales</span>
-                        <span className="info-box-number">760</span>
+                        <span className="info-box-text">Assignments</span>
+                        <span className="info-box-number">{this.props.course.item.assignmentCount}</span>
                       </div>
                       {/* /.info-box-content */}
                     </div>
@@ -102,7 +102,7 @@ class CourseInfo extends React.Component {
                       </span>
                       <div className="info-box-content">
                         <span className="info-box-text">Lectures</span>
-                        <span className="info-box-number">54</span>
+                        <span className="info-box-number">{this.props.course.item.lectureCount}</span>
                       </div>
                       {/* /.info-box-content */}
                     </div>
@@ -115,7 +115,7 @@ class CourseInfo extends React.Component {
                       </span>
                       <div className="info-box-content">
                         <span className="info-box-text">Lectors</span>
-                        <span className="info-box-number">18</span>
+                        <span className="info-box-number">{this.props.course.item.teacherCount}</span>
                       </div>
                       {/* /.info-box-content */}
                     </div>
@@ -126,7 +126,7 @@ class CourseInfo extends React.Component {
 
               {this.state.activeTab === 3 && (
                 <div className="row">
-                  {[1, 3, 4].map((lector, i) => (
+                  {this.props.course.item.teachers.map((teacher, i) => (
                     <div className="col-sm-3" key={i}>
                       <div className="box box-primary">
                         <div className="box-body box-profile">
@@ -155,13 +155,14 @@ class CourseInfo extends React.Component {
               )}
 
               {this.state.activeTab === 4 && (
-                <h3>{this.props.course.item.creationDate}</h3>
+                <h3>Created on: {this.props.course.item.creation_date}</h3>
               )}
             </div>
           </div>
 
           {!this.state.showMore && (
             <button
+              className="btn btn-primary"
               onClick={() =>
                 this.setState({
                   ...this.state,
@@ -180,8 +181,10 @@ class CourseInfo extends React.Component {
               </h3>
               {!this.state.submitted ? (
                 <div>
-                  <input />
+                  <textarea />
+                  <br />
                   <button
+                    className="btn btn-primary"
                     onClick={() =>
                       this.setState({
                         ...this.state,

@@ -19,7 +19,7 @@ const CourseItem = props => (
     <div className="row">
       <div className="col-sm-4 border-right">
         <div className="description-block">
-          <h5 className="description-header">7</h5>
+          <h5 className="description-header">{props.course.teacherCount}</h5>
           <span className="description-text">MENTORS</span>
         </div>
         {/* /.description-block */}
@@ -27,15 +27,15 @@ const CourseItem = props => (
       {/* /.col */}
       <div className="col-sm-4 border-right">
         <div className="description-block">
-          <h5 className="description-header">42</h5>
-          <span className="description-text">STUDENTS</span>
+          <h5 className="description-header">{props.course.assignmentCount}</h5>
+          <span className="description-text">ASSIGNMENTS</span>
         </div>
         {/* /.description-block */}
       </div>
       {/* /.col */}
       <div className="col-sm-4">
         <div className="description-block">
-          <h5 className="description-header">35</h5>
+          <h5 className="description-header">{props.course.lectureCount}</h5>
           <span className="description-text">LECTURES</span>
         </div>
       </div>
