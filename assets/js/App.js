@@ -23,6 +23,7 @@ import AssignmentsGrading from './Components/Course/AssignmentsGrading/Assignmen
 import AssignmentGrading from './Components/Course/AssignmentsGrading/AssignmentGrading';
 import UsersManagement from './Components/Course/UsersManagement/UsersManagement';
 import UserInfo from './Components/Course/UsersManagement/UserInfo';
+import CourseSettings from './Components/Course/CourseSettings/CourseSettings';
 
 class App extends React.Component {
   render() {
@@ -54,6 +55,7 @@ class App extends React.Component {
             <PrivateRoute path="/course/:course/create-new-lecture" component={CreateNewLecture} />
             <PrivateRoute path="/course/:course/assignments" component={Assignments} />
             <PrivateRoute path="/course/:course/create-new-assignment" component={CreateNewAssignment} />
+            <PrivateRoute path="/course/:course/course-settings" component={CourseSettings} />
           </Switch>
         </div>
       </div>

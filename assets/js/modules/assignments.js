@@ -85,6 +85,10 @@ export const fetchAssignments = courseId => dispatch => {
       });
     })
     .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: FETCH_ASSIGNMENTS_ERROR
       });
@@ -108,6 +112,10 @@ export const createAssignment = newAssignment => dispatch => {
       });
     })
     .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
       dispatch({
         type: CREATE_ASSIGNMENT_ERROR,
         payload: err.data

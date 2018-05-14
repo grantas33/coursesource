@@ -39,12 +39,12 @@ class Assignment implements \JsonSerializable
     private $description;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="assignments")
      */
     private $teacher;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Course", inversedBy="assignments")
      */
     private $course;
 
@@ -102,24 +102,24 @@ class Assignment implements \JsonSerializable
         return $this;
     }
 
-    public function getTeacher(): ?int
+    public function getTeacher()
     {
         return $this->teacher;
     }
 
-    public function setTeacher(int $teacher): self
+    public function setTeacher($teacher): self
     {
         $this->teacher = $teacher;
 
         return $this;
     }
 
-    public function getCourse(): ?int
+    public function getCourse()
     {
         return $this->course;
     }
 
-    public function setCourse(int $course): self
+    public function setCourse($course): self
     {
         $this->course = $course;
 
@@ -142,6 +142,11 @@ class Assignment implements \JsonSerializable
     {
         $this->creation_date = \DateTime::createFromFormat("Y-m-d H:i:s", $date);
 
+    }
+
+    public function setCreationDateByDatetime(\DateTimeInterface $date): void
+    {
+        $this->creation_date = $date;
     }
 
     public function getDeadlineDate(): ?\DateTimeInterface

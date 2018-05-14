@@ -3,7 +3,7 @@ import PageHeader from "../../common/PageHeader";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchUsers } from '../../../modules/users';
+import { fetchUsers } from "../../../modules/users";
 
 class UsersManagement extends React.Component {
   constructor(props) {
@@ -12,7 +12,7 @@ class UsersManagement extends React.Component {
   }
 
   componentWillMount = () => {
-    this.props.fetchUsers(this.props.match.params.course)
+    this.props.fetchUsers(this.props.match.params.course);
   };
 
   render() {
@@ -51,24 +51,34 @@ class UsersManagement extends React.Component {
                         <th>User name</th>
                         <th>Email</th>
                         <th>Role</th>
+                        <th />
+                        <th />
                       </tr>
                       {this.props.users.items.map(user => {
                         return (
-                          <tr
-                            key={user.id}
-                            onClick={() =>
-                              this.props.history.push(
-                                `/course/${
-                                  this.props.match.params.course
-                                }/users-management/${user.id}`
-                              )
-                            }
-                          >
+                          <tr key={user.id}>
                             <td>{user.avatar}</td>
                             <td>{user.name + " " + user.surname}</td>
                             <td>{user.email}</td>
                             <td>
                               <span className="label label-success">Admin</span>
+                            </td>
+                            <td>
+                              <button className="btn-danger">
+                                <span className="fa fas fa-minus" />
+                              </button>
+                              <button
+                                onClick={() =>
+                                  this.props.history.push(
+                                    `/course/${
+                                      this.props.match.params.course
+                                    }/users-management/${user.id}`
+                                  )
+                                }
+                                className="btn-info"
+                              >
+                                <span className="fa fas fa-info" />
+                              </button>
                             </td>
                           </tr>
                         );
@@ -79,6 +89,7 @@ class UsersManagement extends React.Component {
               </div>
             </div>
           </div>
+          <button className="btn btn-primary"> Invite new user </button>
         </div>
       </div>
     );
@@ -89,6 +100,7 @@ const mapStateToProps = state => ({
   users: state.users.allUsers
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({fetchUsers}, dispatch);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ fetchUsers }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersManagement);
