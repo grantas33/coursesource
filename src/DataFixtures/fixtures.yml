@@ -16,7 +16,7 @@ App\Entity\Course:
         title: '<sentence()>'
         description: '<text(1000)>'
         slogan: '<text(140)>'
-        creationDateByDatetime: "<dateTime()>"
+        creationDateByDatetime: "<dateTimeBetween('now', 'now')>"
         is_public: '<boolean()>'
         is_submittable: '<boolean()>'
 
@@ -26,7 +26,7 @@ App\Entity\Assignment:
         description: '<paragraph()>'
         teacher: '@user*'
         course: '@course*'
-        creationDateByDatetime: "<dateTime()>"
+        creationDateByDatetime: "<dateTimeBetween('now', 'now')>"
         deadline_date: "<dateTimeBetween('now', '+1 month')>"
         is_gradeable: "<boolean()>"
         is_submittable: "<boolean()>"
@@ -46,10 +46,25 @@ App\Entity\Lecture:
         description: '<paragraph()>'
         teacher: '@user*'
         course: '@course*'
-        creationDateByDatetime: "<dateTime()>"
+        creationDateByDatetime: "<dateTimeBetween('now', 'now')>"
         start_date: "<dateTimeBetween('now', '+1 month')>"
         preparation_tasks: "<sentences()>"
         location: "<address()>"
+
+App\Entity\EntryTask:
+    entryTask{1..10}:
+        course: '@course<current()>'
+        description: '<paragraph()>'
+        deadlineDate: "<dateTimeBetween('now', '+1 month')>"
+
+App\Entity\EntryTaskSubmission:
+    entryTasSubmission{1..30}:
+        student: '@user*'
+        course: '@course*'
+        submission: '<paragraph()>'
+        score: '<numberBetween(1, 10)>'
+        date: "<dateTimeBetween('now', 'now')>"
+
 
 
 
