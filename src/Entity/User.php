@@ -68,7 +68,7 @@ class User extends BaseUser implements JsonSerializable
     protected $email;
 
     /**
-     * @Assert\NotBlank(message="You must enter a password")
+     * @Assert\NotBlank(message="Password is required")
      * @Assert\Length(
      *     min=8,
      *     max=4096,

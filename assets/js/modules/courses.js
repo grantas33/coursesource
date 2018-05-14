@@ -1,12 +1,19 @@
 import axios from "axios";
+import history from '../store';
 
 export const FETCH_MYCOURSES_STARTED = "courses/FETCH_MYCOURSES_STARTED";
 export const FETCH_MYCOURSES_ERROR = "courses/FETCH_MYCOURSES_ERROR";
 export const FETCH_MYCOURSES_RECEIVED = "courses/FETCH_MYCOURSES_RECEIVED";
 
+export const FETCH_COURSEENTRYTASK_RECEIVED = "courses/FETCH_COURSEENTRYTASK_RECEIVED";
+
 export const FETCH_BROWSECOURSES_STARTED = "courses/FETCH_BROWSECOURSES_STARTED";
 export const FETCH_BROWSECOURSES_ERROR = "courses/FETCH_BROWSECOURSES_ERROR";
 export const FETCH_BROWSECOURSES_RECEIVED = "courses/FETCH_BROWSECOURSES_RECEIVED";
+
+export const APPLY_TO_COURSE_STARTED = "courses/APPLY_TO_COURSE_STARTED";
+export const APPLY_TO_COURSE_ERROR = "courses/APPLY_TO_COURSE_ERROR";
+export const APPLY_TO_COURSE_RECEIVED = "courses/APPLY_TO_COURSE_RECEIVED";
 
 export const FETCH_COURSE_STARTED = "courses/FETCH_COURSE_STARTED";
 export const FETCH_COURSE_ERROR = "courses/FETCH_COURSE_ERROR";
@@ -151,6 +158,15 @@ export default (state = initialState, action) => {
         }
       };
     }
+    case FETCH_COURSEENTRYTASK_RECEIVED: {
+      return {
+        ...state,
+        newCourse: {
+          ...this.state.newCourse,
+          ...action.payload
+        }
+      }
+    }
     default:
       return state;
   }
@@ -181,7 +197,54 @@ export const fetchCourse = (courseId) => dispatch => {
         type: FETCH_COURSE_ERROR
       });
     });
+  axios
+    .get(`api/entrytasks/${courseId}`, {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
+    })
+    .then(res => {
+      if (res.data.error_message === "This course does not have an entry task") {
+        dispatch({
+          type: FETCH_COURSEENTRYTASK_RECEIVED,
+          payload: null
+        })
+      } else {
+        dispatch({
+          type: FETCH_COURSEENTRYTASK_RECEIVED,
+          payload: res.data
+        })
+      }
+    })
 };
+
+export const applyToCourse = (courseId, object) => dispatch => {
+  dispatch({
+    type: APPLY_TO_COURSE_STARTED
+  });
+  axios 
+    .post(`api/courses/${courseId}/apply`,object, {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
+    })
+    .then( res => {
+      dispatch({
+        type: APPLY_TO_COURSE_RECEIVED,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
+      dispatch({
+        type: APPLY_TO_COURSE_ERROR,
+        payload: res.data
+      });
+    });
+}
 
 export const fetchMyCourses = () => dispatch => {
   dispatch({
@@ -254,13 +317,13 @@ export const createCourse = newCourse => dispatch => {
       });
     })
     .catch(err => {
-      if (err.response.data.message === "Invalid Token") {
+      if (err.response && err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
       dispatch({
         type: CREATE_COURSE_ERROR,
-        payload: err.response.data.error_message.title
+        payload: err.response ? err.response.data.error_message.title : "Unknown error"
       });
     });
 };

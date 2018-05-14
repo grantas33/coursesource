@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
-import { fetchCourse } from "../../../modules/courses";
+import { fetchCourse, applyToCourse } from "../../../modules/courses";
 import user2img from "../../../../Resources/img/user2-160x160.jpg";
 
 class CourseInfo extends React.Component {
@@ -12,7 +12,8 @@ class CourseInfo extends React.Component {
     this.state = {
       showMore: false,
       submitted: false,
-      activeTab: 1
+      activeTab: 1,
+      submission: ""
     };
   }
 
@@ -89,7 +90,9 @@ class CourseInfo extends React.Component {
                       </span>
                       <div className="info-box-content">
                         <span className="info-box-text">Assignments</span>
-                        <span className="info-box-number">{this.props.course.item.assignmentCount}</span>
+                        <span className="info-box-number">
+                          {this.props.course.item.assignmentCount}
+                        </span>
                       </div>
                       {/* /.info-box-content */}
                     </div>
@@ -102,7 +105,9 @@ class CourseInfo extends React.Component {
                       </span>
                       <div className="info-box-content">
                         <span className="info-box-text">Lectures</span>
-                        <span className="info-box-number">{this.props.course.item.lectureCount}</span>
+                        <span className="info-box-number">
+                          {this.props.course.item.lectureCount}
+                        </span>
                       </div>
                       {/* /.info-box-content */}
                     </div>
@@ -115,7 +120,9 @@ class CourseInfo extends React.Component {
                       </span>
                       <div className="info-box-content">
                         <span className="info-box-text">Lectors</span>
-                        <span className="info-box-number">{this.props.course.item.teacherCount}</span>
+                        <span className="info-box-number">
+                          {this.props.course.item.teacherCount}
+                        </span>
                       </div>
                       {/* /.info-box-content */}
                     </div>
@@ -160,20 +167,16 @@ class CourseInfo extends React.Component {
             </div>
           </div>
 
-          {!this.state.showMore && (
+          {!this.props.course.item.is_submittable ? (
             <button
               className="btn btn-primary"
-              onClick={() =>
-                this.setState({
-                  ...this.state,
-                  showMore: true
-                })
-              }
+              onClick={() => {
+                this.props.applyToCourse(this.props.course.item.id);
+              }}
             >
               Join course
             </button>
-          )}
-          {(this.state.showMore || this.state.submitted) && (
+          ) : (
             <div>
               <h3>
                 In order to join this course you have to submit a solution for
@@ -181,16 +184,26 @@ class CourseInfo extends React.Component {
               </h3>
               {!this.state.submitted ? (
                 <div>
-                  <textarea />
+                  <textarea
+                    onInput={e =>
+                      this.setState({
+                        ...this.state,
+                        submission: e.target.value
+                      })
+                    }
+                  />
                   <br />
                   <button
                     className="btn btn-primary"
-                    onClick={() =>
+                    onClick={() => {
                       this.setState({
                         ...this.state,
                         submitted: true
-                      })
-                    }
+                      });
+                      this.props.applyToCourse(this.props.course.item.id, {
+                        submission: this.state.submission
+                      });
+                    }}
                   >
                     Submit a solution
                   </button>
@@ -213,6 +226,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
+      applyToCourse,
       fetchCourse
     },
     dispatch

@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { register } from '../../../modules/user';
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { register } from "../../../modules/user";
 
 class Register extends React.Component {
   componentDidMount = () => {
@@ -22,9 +22,10 @@ class Register extends React.Component {
         surname: "",
         username: "",
         email: "",
-        plainPassword: "",
+        plainPassword: ""
       },
-      showError: false
+      showError: false,
+      secondPassword: ""
     };
   }
 
@@ -40,26 +41,16 @@ class Register extends React.Component {
           <p className="login-box-msg">Register a new membership</p>
 
           {this.state.showError &&
-          this.props.user.register.error &&
-          !this.props.user.register.loading ? (
+            this.props.user.register.error &&
+            !this.props.user.register.loading &&
             Object.keys(this.props.user.register.error).map((key, index) => (
-              <div className="alert alert-danger alert-dismissible" key={index}>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="alert"
-                  aria-hidden="true"
-                >
-                  ×
-                </button>
-                <h4>
-                  <i className="icon fa fa-ban" /> {this.props.user.register.error[key]}
-                </h4>
+              <div className="callout callout-danger" key={index}>
+                <h4>Error</h4>
+                <p>
+                  {this.props.user.register.error[key]}
+                </p>
               </div>
-            ))
-          ) : (
-            <div />
-          )}
+            ))}
 
           <form method="post">
             <div className="form-group has-feedback">
@@ -116,7 +107,15 @@ class Register extends React.Component {
               />
               <span className="glyphicon glyphicon-envelope form-control-feedback" />
             </div>
-            <div className="form-group has-feedback">
+            <div
+              className={
+                "form-group has-feedback" +
+                (this.state.secondPassword ===
+                this.state.userObject.plainPassword
+                  ? ""
+                  : " has-error")
+              }
+            >
               <input
                 type="password"
                 className="form-control"
@@ -126,15 +125,22 @@ class Register extends React.Component {
                     ...this.state,
                     userObject: {
                       ...this.state.userObject,
-                      plainPassword: 
-                        e.target.value
+                      plainPassword: e.target.value
                     }
                   })
                 }
               />
               <span className="glyphicon glyphicon-lock form-control-feedback" />
             </div>
-            <div className="form-group has-feedback">
+            <div
+              className={
+                "form-group has-feedback" +
+                (this.state.secondPassword ===
+                this.state.userObject.plainPassword
+                  ? ""
+                  : " has-error")
+              }
+            >
               <input
                 type="password"
                 className="form-control"
@@ -200,9 +206,14 @@ class Register extends React.Component {
                   type="submit"
                   className="btn btn-primary btn-block btn-flat"
                   onClick={e => {
-                    this.props.register(this.state.userObject);
+                    if (
+                      this.state.secondPassword ===
+                      this.state.userObject.plainPassword && this.state.userObject.plainPassword.length > 0
+                    ) {
+                      this.props.register(this.state.userObject);
+                      this.setState({ ...this.state, showError: true });
+                    }
                     e.preventDefault();
-                    this.setState({ ...this.state, showError: true });
                   }}
                 >
                   Register
