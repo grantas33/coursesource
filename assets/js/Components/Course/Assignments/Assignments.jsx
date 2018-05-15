@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { fetchAssignments } from '../../../modules/assignments'
 import { bindActionCreators } from 'redux'
+import { ROLES } from '../../../consts/userRoles';
 
 class Assignments extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class Assignments extends React.Component {
         <PageHeader
           title={'Assignments'}
           subtitle={
-            <Link to={`/course/${this.props.match.params.course}/create-new-assignment`}> Create a new assignment</Link>
+            !this.props.user.courseRole.loading && (this.props.user.courseRole.item.role === ROLES.ADMIN || this.props.user.courseRole.item.role === ROLES.LECTOR) && <Link to={`/course/${this.props.match.params.course}/create-new-assignment`}> Create a new assignment</Link>
           }
           links={[
             {
@@ -144,6 +145,7 @@ class Assignments extends React.Component {
 
 const mapStateToProps = state => ({
   assignments: state.assignments,
+  user: state.user
 })
 
 const mapDispatchToProps = dispatch =>
