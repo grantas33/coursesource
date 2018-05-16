@@ -70,9 +70,9 @@ class User extends BaseUser implements JsonSerializable
     /**
      * @Assert\NotBlank(message="Password is required")
      * @Assert\Length(
-     *     min=8,
+     *     min=3,
      *     max=4096,
-     *     minMessage="Password must be at least 8 characters long"
+     *     minMessage="Password must be at least 3 characters long"
      * )
      */
     protected $plainPassword;

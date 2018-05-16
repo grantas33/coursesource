@@ -8,8 +8,11 @@
 
 namespace App\Controller;
 
+use App\Entity\CourseUser;
 use App\Entity\User;
 use App\Form\RegistrationType;
+use App\Interfaces\RoleInterface;
+use App\Interfaces\StatusInterface;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
@@ -25,6 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Role\Role;
 
 class UserController extends Controller
 {
@@ -145,7 +149,7 @@ class UserController extends Controller
 
         if (!$user) {
             return new JsonResponse([
-                'error_message' => 'Cannot find user'
+                'error_message' => 'Bad credentials'
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -197,14 +201,18 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("api/user", name="api_user_getAll", methods="GET")
+     * @Route("api/user/course/{courseId}", name="api_user_getAll", methods="GET")
      */
-    public function getAllUsers(){
-        $users = $this->getDoctrine()->getRepository(User::class)
-            ->findAll();
+    public function getAllUsersFromCourse(int $courseId){
+        $courseUsers = $this->getDoctrine()->getRepository(CourseUser::class)
+            ->findBy([
+                'course' => $courseId,
+                'role' => [RoleInterface::TEACHER, RoleInterface::ADMIN, RoleInterface::STUDENT],
+                'status' => [StatusInterface::ACTIVE, StatusInterface::INVITED]
+            ]);
 
         return new JsonResponse(
-            $users
+            $courseUsers
         );
     }
 
