@@ -20,6 +20,7 @@ class Course implements JsonSerializable
         $this->courseUsers = new ArrayCollection();
         $this->lectures = new ArrayCollection();
         $this->assignments = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -100,6 +101,11 @@ class Course implements JsonSerializable
      * @Assert\Valid()
      */
     private $entryTask;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="course", cascade={"remove"})
+     */
+    private $notifications;
 
     public function getId()
     {

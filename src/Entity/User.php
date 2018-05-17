@@ -35,6 +35,7 @@ class User extends BaseUser implements JsonSerializable
         $this->courseUsers = new ArrayCollection();
         $this->lectures = new ArrayCollection();
         $this->assignments = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -96,6 +97,11 @@ class User extends BaseUser implements JsonSerializable
      * @ORM\OneToMany(targetEntity="App\Entity\Assignment", mappedBy="teacher", cascade={"remove"})
      */
     protected $assignments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="user", cascade={"remove"})
+     */
+    protected $notifications;
 
     public function getId()
     {
