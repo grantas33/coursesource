@@ -20,17 +20,38 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-    public function findBrowseCourses($courses)
+    public function findBrowseCourses($courses, $search)
     {
 
         $query = $this->createQueryBuilder('c');
-          $query = $query->add('where', $query->expr()->notIn('c.id', ':courses'))
-            ->andWhere('c.is_public = :true')
+        $query = $query->andWhere('c.is_public = :true')
+            ->andWhere('c.id NOT IN (:courses)')
             ->setParameters([
                 'courses' => $courses,
                 'true' => true
-            ])
-            ->getQuery();
+            ]);
+        if($search != ''){
+            $query = $query->andWhere('c.title LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        $query = $query->orderBy('c.creation_date', 'DESC')->getQuery();
+        return $query->getResult();
+    }
+
+    public function findPublicCourses($search)
+    {
+
+        $query = $this->createQueryBuilder('c');
+        $query = $query->andWhere('c.is_public = :true')
+            ->setParameter('true', true);
+
+        if($search != ''){
+            $query = $query->andWhere('c.title LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        $query = $query->orderBy('c.creation_date', 'DESC')->getQuery();
         return $query->getResult();
     }
 

@@ -226,12 +226,13 @@ class CourseController extends Controller
     /**
      * @Route("api/courses/public", name="api_course_getPublic", methods="GET")
      */
-    public function getPublicCourses(){  // for unregistered users
+    public function getPublicCourses(Request $request){  // for unregistered users
+
+        $search = $request->query->get('query');
+
         $courses = $this->getDoctrine()
             ->getRepository(Course::class)
-            ->findBy([
-                'is_public'=>true
-            ]);
+            ->findPublicCourses($search);
 
         return new JSONResponse(
             $courses
@@ -241,15 +242,18 @@ class CourseController extends Controller
     /**
      * @Route("api/courses/browse", name="api_course_getBrowse", methods="GET")
      */
-    public function getBrowseCourses(){
+    public function getBrowseCourses(Request $request){
 
         $courses = [];
         foreach($this->getUser()->getCourseUsers() as $courseUser){
             $courses[] = $courseUser->getCourse();
         }
 
+        $search = $request->query->get('query');
+
         $browseCourses = $this->getDoctrine()->
-            getRepository(Course::class)->findBrowseCourses($courses);
+            getRepository(Course::class)
+            ->findBrowseCourses($courses, $search);
 
         return new JsonResponse(
             $browseCourses
