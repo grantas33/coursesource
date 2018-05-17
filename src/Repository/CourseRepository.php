@@ -20,21 +20,19 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-//    /**
-//     * @return Course[] Returns an array of Course objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function findBrowseCourses($courses)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+
+        $query = $this->createQueryBuilder('c');
+          $query = $query->add('where', $query->expr()->notIn('c.id', ':courses'))
+            ->andWhere('c.is_public = :true')
+            ->setParameters([
+                'courses' => $courses,
+                'true' => true
+            ])
+            ->getQuery();
+        return $query->getResult();
     }
-    */
+
 
 }

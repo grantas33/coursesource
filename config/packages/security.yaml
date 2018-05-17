@@ -40,5 +40,6 @@ security:
     access_control:
         - { path: ^/api/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/courses/public, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, role: [IS_AUTHENTICATED_FULLY] }
         - { path: ^/, role: IS_AUTHENTICATED_ANONYMOUSLY }

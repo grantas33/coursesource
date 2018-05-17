@@ -266,6 +266,7 @@ class Course implements JsonSerializable
         return false;
     }
 
+
     public function jsonSerialize()
     {
         $teachers = $this->getTeachers();
