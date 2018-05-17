@@ -229,10 +229,12 @@ class CourseController extends Controller
     public function getPublicCourses(Request $request){  // for unregistered users
 
         $search = $request->query->get('query');
+        $offset = $request->query->get('offset');
+        $limit = $request->query->get('limit');
 
         $courses = $this->getDoctrine()
             ->getRepository(Course::class)
-            ->findPublicCourses($search);
+            ->findPublicCourses($search, $offset, $limit);
 
         return new JSONResponse(
             $courses
@@ -250,10 +252,12 @@ class CourseController extends Controller
         }
 
         $search = $request->query->get('query');
+        $offset = $request->query->get('offset');
+        $limit = $request->query->get('limit');
 
         $browseCourses = $this->getDoctrine()->
             getRepository(Course::class)
-            ->findBrowseCourses($courses, $search);
+            ->findBrowseCourses($courses, $search, $offset, $limit);
 
         return new JsonResponse(
             $browseCourses
