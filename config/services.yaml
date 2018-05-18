@@ -35,3 +35,21 @@ services:
     token_authenticator:
         class: 'App\Security\TokenAuthenticator'
         arguments: ['@lexik_jwt_authentication.encoder', '@doctrine.orm.entity_manager']
+
+    App\Event\:
+        resource: '../src/Event'
+        autowire: false
+
+    App\EventListener\NotificationListener:
+        tags:
+            - { name: kernel.event_listener, event: lecture.create }
+            - { name: kernel.event_listener, event: lecture.edit }
+            - { name: kernel.event_listener, event: assignment.create }
+            - { name: kernel.event_listener, event: assignment.edit }
+            - { name: kernel.event_listener, event: course.join }
+            - { name: kernel.event_listener, event: course.invited }
+            - { name: kernel.event_listener, event: course.assign.role }
+            - { name: kernel.event_listener, event: course.leave }
+
+        arguments:
+            -  '@doctrine.orm.entity_manager'

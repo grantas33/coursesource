@@ -1,6 +1,6 @@
 parameters:
     role: ['ADMIN', 'TEACHER', 'STUDENT', 'APPLICANT']
-    status: ['ACTIVE', 'PENDING', 'INVITED', 'FINISHED']
+    status: ['ACTIVE', 'PENDING', 'INVITED']
 
 App\Entity\User:
     user{1..30}:

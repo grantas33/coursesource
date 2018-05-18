@@ -55,7 +55,7 @@ class Notification implements \JsonSerializable
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isSeen;
+    private $isSeen = false;
 
     /**
      * @ORM\Column(type="boolean")

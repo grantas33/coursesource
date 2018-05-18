@@ -230,6 +230,11 @@ class Course implements JsonSerializable
         return $this;
     }
 
+    public function getCourseUsers(){
+
+        return $this->courseUsers;
+    }
+
     public function getTeachers(){
 
         $teachers = [];
