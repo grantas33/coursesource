@@ -150,6 +150,7 @@ class User extends BaseUser implements JsonSerializable
     }
 
     public function getCourseUsers(){
+
         return $this->courseUsers;
     }
 

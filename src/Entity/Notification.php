@@ -152,7 +152,7 @@ class Notification implements \JsonSerializable
             'course' => $this->course,
             'message' => $this->message,
             'link' => $this->link,
-            'date' => $this->date,
+            'date' => $this->date->format("Y-m-d H:i:s"),
             'is_seen' => $this->isSeen,
             'is_acceptable' => $this->isAcceptable
         ];

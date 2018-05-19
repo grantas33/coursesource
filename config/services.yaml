@@ -51,5 +51,4 @@ services:
             - { name: kernel.event_listener, event: course.assign.role }
             - { name: kernel.event_listener, event: course.leave }
 
-        arguments:
-            -  '@doctrine.orm.entity_manager'
+        arguments: ['@doctrine.orm.entity_manager', '@request_stack']

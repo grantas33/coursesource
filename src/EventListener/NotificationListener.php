@@ -9,7 +9,6 @@
 namespace App\EventListener;
 
 
-use App\Entity\Assignment;
 use App\Entity\Notification;
 use App\Event\AssignmentEvent;
 use App\Event\CourseEvent;
@@ -19,9 +18,7 @@ use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class NotificationListener extends Controller
 {
@@ -32,12 +29,19 @@ class NotificationListener extends Controller
     private $entityManager;
 
     /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
      * NotificationListener constructor.
      * @param EntityManagerInterface $entityManager
+     * @param RequestStack $requestStack
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, RequestStack $requestStack)
     {
         $this->entityManager = $entityManager;
+        $this->requestStack = $requestStack;
     }
 
 
@@ -166,6 +170,10 @@ class NotificationListener extends Controller
         $message = "Congratulations! You have joined the course ".$course->getTitle();
 
         $notification->setMessage($message);
+
+        $baseUrl = $this->requestStack->getCurrentRequest()->getSchemeAndHttpHost();
+
+        $notification->setLink($baseUrl.'/course/'.$course->getId());
         $notification->setDate(new \DateTime());
         $notification->setIsAcceptable(false);
 
@@ -183,6 +191,7 @@ class NotificationListener extends Controller
                 $message = $user->getName()." ".$user->getSurname()." has joined your course ".$course->getTitle();
 
                 $notification->setMessage($message);
+                $notification->setLink($baseUrl.'/course/'.$course->getId());
                 $notification->setDate(new \DateTime());
                 $notification->setIsAcceptable(false);
                 $this->entityManager->persist($notification);
@@ -227,6 +236,10 @@ class NotificationListener extends Controller
         $message = "Your course role has been changed to ".$event->getRole()." in course ".$course->getTitle();
 
         $notification->setMessage($message);
+
+        $baseUrl = $this->requestStack->getCurrentRequest()->getSchemeAndHttpHost();
+
+        $notification->setLink($baseUrl.'/course/'.$course->getId());
         $notification->setDate(new \DateTime());
         $notification->setIsAcceptable(false);
 
