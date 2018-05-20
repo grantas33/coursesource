@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { login } from '../../../modules/user';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { login } from "../../../modules/user";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 class Login extends React.Component {
   constructor(props) {
@@ -18,123 +18,137 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="login-box">
-        <div className="login-logo">
-          <Link to="/">
-            <b>CourseSource</b>
-          </Link>
-        </div>
-        <div className="login-box-body">
-        
-        {this.state.showError && this.props.user.login.error && !this.props.user.login.loading && <div className="alert alert-danger alert-dismissible">
-          <button type="button" className="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i className="icon fa fa-ban" /> {this.props.user.login.error}</h4>
-        </div>}
-
-          <form>
-            <div className="form-group has-feedback">
-              <input
-                type="email"
-                className="form-control"
-                placeholder="Email"
-                onChange={e =>
-                  this.setState({
-                    ...this.state,
-                    userObject: {
-                      ...this.state.userObject,
-                      email: e.target.value
-                    }
-                  })
-                }
-              />
-              <span className="glyphicon glyphicon-envelope form-control-feedback" />
+      <div className="landingpage">
+        <header className="bg-gradient" style={{height: 1000, "overflow": "hidden"}}>
+          <div className="login-box ">
+            <div className="login-logo">
+              <Link style={{color: "#FFFFFF"}} to="/">
+                CourseSource
+              </Link>
             </div>
-            <div className="form-group has-feedback">
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Password"
-                onChange={e =>
-                  this.setState({
-                    ...this.state,
-                    userObject: {
-                      ...this.state.userObject,
-                      password: e.target.value
-                    }
-                  })
-                }
-              />
-              <span className="glyphicon glyphicon-lock form-control-feedback" />
-            </div>
-            <div className="row">
-              <div className="col-xs-8">
-                <div className="checkbox icheck">
-                  <label>
-                    <div
-                      className="icheckbox_square-blue"
-                      style={{ position: "relative" }}
+            <div className="login-box-body">
+              {this.state.showError &&
+                this.props.user.login.error &&
+                !this.props.user.login.loading && (
+                  <div className="alert alert-danger alert-dismissible">
+                    <button
+                      type="button"
+                      className="close"
+                      data-dismiss="alert"
+                      aria-hidden="true"
                     >
-                      <input
-                        type="checkbox"
-                        style={{
-                          position: "absolute",
-                          top: "-20%",
-                          left: "-20%",
-                          display: "block",
-                          width: "140%",
-                          height: "140%",
-                          margin: 0,
-                          padding: 0,
-                          background: "rgb(255, 255, 255)",
-                          border: 0,
-                          opacity: 0
-                        }}
-                      />
-                      <ins
-                        className="iCheck-helper"
-                        style={{
-                          position: "absolute",
-                          top: "-20%",
-                          left: "-20%",
-                          display: "block",
-                          width: "140%",
-                          height: "140%",
-                          margin: 0,
-                          padding: 0,
-                          background: "rgb(255, 255, 255)",
-                          border: 0,
-                          opacity: 0
-                        }}
-                      />
-                    </div>{" "}
-                    Remember Me
-                  </label>
-                </div>
-              </div>
+                      ×
+                    </button>
+                    <h4>
+                      <i className="icon fa fa-ban" />{" "}
+                      {this.props.user.login.error}
+                    </h4>
+                  </div>
+                )}
 
-              <div className="col-xs-4">
-                <button
-                  className="btn btn-primary btn-block btn-flat"
-                  onClick={
-                    (e) => {
-                      this.props.login(this.state.userObject)
-                      e.preventDefault();
-                      this.setState({...this.state, showError: true})
+              <form>
+                <div className="form-group has-feedback">
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Email"
+                    onChange={e =>
+                      this.setState({
+                        ...this.state,
+                        userObject: {
+                          ...this.state.userObject,
+                          email: e.target.value
+                        }
+                      })
                     }
-                  }
-                >
-                  Sign In
-                </button>
-              </div>
-            </div>
-          </form>
+                  />
+                  <span className="glyphicon glyphicon-envelope form-control-feedback" />
+                </div>
+                <div className="form-group has-feedback">
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Password"
+                    onChange={e =>
+                      this.setState({
+                        ...this.state,
+                        userObject: {
+                          ...this.state.userObject,
+                          password: e.target.value
+                        }
+                      })
+                    }
+                  />
+                  <span className="glyphicon glyphicon-lock form-control-feedback" />
+                </div>
+                <div className="row">
+                  <div className="col-xs-8">
+                    <div className="checkbox icheck">
+                      <label>
+                        <div
+                          className="icheckbox_square-blue"
+                          style={{ position: "relative" }}
+                        >
+                          <input
+                            type="checkbox"
+                            style={{
+                              position: "absolute",
+                              top: "-20%",
+                              left: "-20%",
+                              display: "block",
+                              width: "140%",
+                              height: "140%",
+                              margin: 0,
+                              padding: 0,
+                              background: "rgb(255, 255, 255)",
+                              border: 0,
+                              opacity: 0
+                            }}
+                          />
+                          <ins
+                            className="iCheck-helper"
+                            style={{
+                              position: "absolute",
+                              top: "-20%",
+                              left: "-20%",
+                              display: "block",
+                              width: "140%",
+                              height: "140%",
+                              margin: 0,
+                              padding: 0,
+                              background: "rgb(255, 255, 255)",
+                              border: 0,
+                              opacity: 0
+                            }}
+                          />
+                        </div>{" "}
+                        Remember Me
+                      </label>
+                    </div>
+                  </div>
 
-          <a href="#">I forgot my password</a>
-          <br />
-          <Link to="/register" className="text-center">
-            Register a new membership
-          </Link>
-        </div>
+                  <div className="col-xs-4">
+                    <button
+                      className="btn btn-primary btn-block btn-flat"
+                      onClick={e => {
+                        this.props.login(this.state.userObject);
+                        e.preventDefault();
+                        this.setState({ ...this.state, showError: true });
+                      }}
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                </div>
+              </form>
+
+              <br />
+              <Link to="/register" className="text-center">
+                Register a new membership
+              </Link>
+            </div>
+          </div>
+        </header>
       </div>
     );
   }
@@ -142,14 +156,14 @@ class Login extends React.Component {
 
 const mapStateToProps = state => ({
   user: state.user
-})
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      login,
+      login
     },
     dispatch
-  )
+  );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
