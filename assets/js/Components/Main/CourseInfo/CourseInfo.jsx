@@ -133,7 +133,7 @@ class CourseInfo extends React.Component {
 
               {this.state.activeTab === 3 && (
                 <div className="row">
-                  {this.props.course.item.teachers.map((teacher, i) => (
+                  {!this.props.course.loading && this.props.course.item.teachers.map((teacher, i) => (
                     <div className="col-sm-3" key={i}>
                       <div className="box box-primary">
                         <div className="box-body box-profile">

@@ -42,7 +42,7 @@ class App extends React.Component {
             <PrivateRoute exact path="/main/my-courses" component={MyCourses} />
             <Route exact path="/main/browse-courses" component={BrowseCourses} />
             <PrivateRoute exact path="/main/create-new-course" component={CreateNewCourse} />
-            <PrivateRoute exact path="/main/course/:course" component={CourseInfo} />            
+            <Route exact path="/main/course/:course" component={CourseInfo} />            
 
             <PrivateRoute exact path="/course/:course" component={Home} />
             <PrivateRoute exact path="/course/:course/assignments-grading" component={AssignmentsGrading} />
