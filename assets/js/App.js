@@ -34,13 +34,13 @@ class App extends React.Component {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <PrivateRoute path="/course/:course" component={CourseSidebar} />
-          <PrivateRoute path="/" component={MainTopNavigation} />
+          <Route path="/" component={MainTopNavigation} />
         </Switch>
         
         <div className="content-wrapper">
           <Switch>
             <PrivateRoute exact path="/main/my-courses" component={MyCourses} />
-            <PrivateRoute exact path="/main/browse-courses" component={BrowseCourses} />
+            <Route exact path="/main/browse-courses" component={BrowseCourses} />
             <PrivateRoute exact path="/main/create-new-course" component={CreateNewCourse} />
             <PrivateRoute exact path="/main/course/:course" component={CourseInfo} />            
 
