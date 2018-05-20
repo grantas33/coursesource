@@ -392,7 +392,7 @@ class CreateNewCourse extends React.Component {
                             entry_task: {
                               description: this.state.newCourse
                                 .entry_task_submission,
-                              deadline_date: this.state.newCourse
+                              deadlineDate: this.state.newCourse
                                 .entry_task_deadline
                             }
                           }
