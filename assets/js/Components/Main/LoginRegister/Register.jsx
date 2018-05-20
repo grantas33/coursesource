@@ -34,11 +34,11 @@ class Register extends React.Component {
       <div className="landingpage">
         <header
           className="bg-gradient"
-          style={{ height: 1000, overflow: "hidden" }}
+          style={{ minHeight: 1000, overflow: "hidden" }}
         >
           <div className="register-box">
             <div className="register-logo">
-              <Link style={{color: "#FFFFFF"}} to="/">
+              <Link style={{ color: "#FFFFFF" }} to="/">
                 CourseSource
               </Link>
             </div>
@@ -47,14 +47,20 @@ class Register extends React.Component {
 
               {this.state.showError &&
                 this.props.user.register.error &&
-                !this.props.user.register.loading &&
-                Object.keys(this.props.user.register.error).map(
-                  (key, index) => (
-                    <div className="callout callout-danger" key={index}>
-                      <h4>Error</h4>
-                      <p>{this.props.user.register.error[key]}</p>
-                    </div>
-                  )
+                !this.props.user.register.loading && (
+                  <div
+                    className="alert alert-danger alert-dismissable"
+                  >
+                    <h4>
+                      <i className="icon fa fa-ban" />
+                      Alert
+                    </h4>
+                    {Object.keys(this.props.user.register.error).map(
+                      (key, index) => {
+                        return <div key={index}>{this.props.user.register.error[key]}</div>
+                      }
+                    )}
+                  </div>
                 )}
 
               <form method="post">

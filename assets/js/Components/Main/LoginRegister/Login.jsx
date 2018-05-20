@@ -19,7 +19,7 @@ class Login extends React.Component {
   render() {
     return (
       <div className="landingpage">
-        <header className="bg-gradient" style={{height: 1000, "overflow": "hidden"}}>
+        <header className="bg-gradient" style={{minHeight: 1000, "overflow": "hidden"}}>
           <div className="login-box ">
             <div className="login-logo">
               <Link style={{color: "#FFFFFF"}} to="/">
@@ -30,15 +30,7 @@ class Login extends React.Component {
               {this.state.showError &&
                 this.props.user.login.error &&
                 !this.props.user.login.loading && (
-                  <div className="alert alert-danger alert-dismissible">
-                    <button
-                      type="button"
-                      className="close"
-                      data-dismiss="alert"
-                      aria-hidden="true"
-                    >
-                      ×
-                    </button>
+                  <div className="alert alert-danger">
                     <h4>
                       <i className="icon fa fa-ban" />{" "}
                       {this.props.user.login.error}
