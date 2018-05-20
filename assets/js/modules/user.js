@@ -228,5 +228,5 @@ export const signout = object => dispatch => {
     type: LOGOUT_RECEIVED
   });
   window.localStorage.removeItem("userToken");
-  dispatch(push("/login"));
+  dispatch(push("/"));
 };

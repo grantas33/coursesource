@@ -43,6 +43,9 @@ class LandingPage extends React.Component {
             <Link to="/login" id="landing-button" className="btn btn-primary">
               Login
             </Link>
+            <Link to="/courses" id="landing-button" className="btn btn-primary">
+              Courses
+            </Link>
           </div>
           <div className="img-holder mt-3">
             <img
