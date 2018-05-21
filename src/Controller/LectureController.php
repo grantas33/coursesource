@@ -252,4 +252,24 @@ class LectureController extends Controller
         ]);
     }
 
+    /**
+     * @Route("api/lectures/get/last", name="api_lecture_getLast", methods="GET")
+     */
+    public function getLastLectures(){
+
+        $userLectures = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findUserLectures($this->getUser());
+
+        usort($userLectures, function($a, $b)
+        {
+            return $a['lecture']->getStartDate() >  $b['lecture']->getStartDate();
+        });
+
+        return new JsonResponse(
+            array_slice($userLectures, 0, 3)
+        );
+
+    }
+
 }
