@@ -34,6 +34,24 @@ class NotificationController extends Controller
     }
 
     /**
+     * @Route("api/notifications/course/{course}", name="api_notifications_getAllInCourse", methods="GET")
+     */
+    public function getAllNotificationsByCourseUser(int $course)
+    {
+
+        $notifications = $this->getDoctrine()
+            ->getRepository(Notification::class)
+            ->findBy([
+                'user' => $this->getUser(),
+                'course' => $course],
+                ['date' => 'DESC']);
+
+        return new JSONResponse(
+            $notifications
+        );
+    }
+
+    /**
      * @Route("api/notifications/last", name="api_notifications_getLast", methods="GET")
      */
     public function getLastNotificationsByUser()
