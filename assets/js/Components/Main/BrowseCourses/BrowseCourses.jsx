@@ -5,20 +5,37 @@ import { bindActionCreators } from "redux";
 import { fetchBrowseCourses } from "../../../modules/courses";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
+import debounce from "debounce";
 
 class BrowseCourses extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sortBy: 1,
+      searchQuery: ""
+    };
+    this.fetchBrowseCourses = debounce(() => this.props.fetchBrowseCourses(this.state.sortBy, this.state.searchQuery), 500);
+  }
   componentWillMount() {
-    this.props.fetchBrowseCourses();
+    this.props.fetchBrowseCourses(1);
   }
 
   render() {
+    let content;
     if (this.props.courses.loading === true) {
-      return <h3>Loading...</h3>;
+      content = <h3>Loading...</h3>;
     } else if (
       this.props.courses.loading === false &&
       this.props.courses.error === true
     ) {
-      return <h3>Error</h3>;
+      content = <h3>Error</h3>;
+    } else {
+      content = this.props.courses.items.map((course, i) => (
+        <div className="col-md-6" key={i}>
+          <BrowseCourseItem key={course.id} course={course} />
+        </div>
+      ))
     }
     return (
       <div>
@@ -33,7 +50,16 @@ class BrowseCourses extends React.Component {
         />
         <div className="content">
           <div className="box-header with-border">
-            <select defaultValue="0" className="input-sm">
+            <select
+              onClick={e =>
+                this.setState(
+                  { ...this.state, sortBy: e.target.value },
+                  this.fetchBrowseCourses
+                )
+              }
+              defaultValue="0"
+              className="input-sm"
+            >
               <option value="0" disabled>
                 Sort by
               </option>
@@ -45,6 +71,12 @@ class BrowseCourses extends React.Component {
             <div className="pull-right">
               <div className="has-feedback">
                 <input
+                  onChange={e =>
+                    this.setState(
+                      { ...this.state, searchQuery: e.target.value },
+                      this.fetchBrowseCourses
+                    )
+                  }
                   type="text"
                   className="form-control input-sm"
                   placeholder="Search Courses"
@@ -55,11 +87,7 @@ class BrowseCourses extends React.Component {
           </div>
 
           <div className="row">
-            {this.props.courses.items.map((course, i) => (
-              <div className="col-md-6" key={i}>
-                <BrowseCourseItem key={course.id} course={course} />
-              </div>
-            ))}
+            {content}
           </div>
         </div>
       </div>

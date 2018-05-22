@@ -181,9 +181,7 @@ export const fetchCourse = courseId => dispatch => {
   });
   axios
     .get(
-      `api/courses/` +
-        (window.localStorage.getItem("userToken") ? "" : "public/") +
-        `get/${courseId}`,
+      `api/courses/public/get/${courseId}`,
       window.localStorage.getItem("userToken")
         ? {
             headers: {
@@ -284,14 +282,17 @@ export const fetchMyCourses = () => dispatch => {
     });
 };
 
-export const fetchBrowseCourses = () => dispatch => {
+export const fetchBrowseCourses = (sortBy, searchQuery) => dispatch => {
   dispatch({
     type: FETCH_BROWSECOURSES_STARTED
   });
   let loggedIn = window.localStorage.getItem("userToken");
   axios
     .get(
-      "api/courses/" + (loggedIn ? "browse" : "public"),
+      "api/courses/" +
+        (loggedIn ? "browse" : "public") +
+        `?sortby=${sortBy}` +
+        (searchQuery && searchQuery !== "" ? `&query=${searchQuery}` : ""),
       loggedIn
         ? {
             headers: {
