@@ -102,11 +102,6 @@ class Course implements JsonSerializable
      */
     private $entryTask;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="course", cascade={"remove"})
-     */
-    private $notifications;
-
     public function getId()
     {
         return $this->id;

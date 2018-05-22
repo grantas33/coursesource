@@ -24,12 +24,12 @@ class Notification implements \JsonSerializable
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="notifications")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Course", inversedBy="notifications")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Course")
      */
     private $course;
 

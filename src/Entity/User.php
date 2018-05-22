@@ -98,11 +98,6 @@ class User extends BaseUser implements JsonSerializable
      */
     protected $assignments;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="user", cascade={"remove"})
-     */
-    protected $notifications;
-
     public function getId()
     {
         return $this->id;

@@ -51,25 +51,11 @@ class NotificationListener extends Controller
         $course = $lecture->getCourse();
         $teacher = $lecture->getTeacher();
 
-        foreach($course->getCourseUsers() as $courseUser){
-            if($courseUser->getRole() == RoleInterface::STUDENT &&
-                $courseUser->getStatus() == StatusInterface::ACTIVE){
-                $notification = new Notification();
-
-                $notification->setUser($courseUser->getUser());
-                $notification->setCourse($course);
-
-                $message = "A new lecture \"".$lecture->getTitle()."\" has been posted
+        $message = "A new lecture \"".$lecture->getTitle()."\" has been posted
                 in course ".$course->getTitle()." by ".$teacher->getName()." "
-                    .$teacher->getSurname();
+            .$teacher->getSurname();
 
-                $notification->setMessage($message);
-                $notification->setDate(new \DateTime());
-                $notification->setIsAcceptable(false);
-
-                $this->entityManager->persist($notification);
-            }
-        }
+        $this->createNotificationsForStudents($course, $message);
         $this->entityManager->flush();
     }
 
@@ -79,25 +65,11 @@ class NotificationListener extends Controller
         $course = $lecture->getCourse();
         $teacher = $lecture->getTeacher();
 
-        foreach($course->getCourseUsers() as $courseUser){
-            if($courseUser->getRole() == RoleInterface::STUDENT &&
-                $courseUser->getStatus() == StatusInterface::ACTIVE){
-                $notification = new Notification();
-
-                $notification->setUser($courseUser->getUser());
-                $notification->setCourse($course);
-
-                $message = "A lecture \"".$lecture->getTitle()."\" has been edited
+        $message = "A lecture \"".$lecture->getTitle()."\" has been edited
                 in course ".$course->getTitle()." by ".$teacher->getName()." "
-                    .$teacher->getSurname();
+            .$teacher->getSurname();
 
-                $notification->setMessage($message);
-                $notification->setDate(new \DateTime());
-                $notification->setIsAcceptable(false);
-
-                $this->entityManager->persist($notification);
-            }
-        }
+        $this->createNotificationsForStudents($course, $message);
         $this->entityManager->flush();
     }
 
@@ -107,25 +79,11 @@ class NotificationListener extends Controller
         $course = $assignment->getCourse();
         $teacher = $assignment->getTeacher();
 
-        foreach($course->getCourseUsers() as $courseUser){
-            if($courseUser->getRole() == RoleInterface::STUDENT &&
-                $courseUser->getStatus() == StatusInterface::ACTIVE){
-                $notification = new Notification();
-
-                $notification->setUser($courseUser->getUser());
-                $notification->setCourse($course);
-
-                $message = "A new assignment \"".$assignment->getTitle()."\" has been posted
+        $message = "A new assignment \"".$assignment->getTitle()."\" has been posted
                 in course ".$course->getTitle()." by ".$teacher->getName()." "
-                    .$teacher->getSurname();
+            .$teacher->getSurname();
 
-                $notification->setMessage($message);
-                $notification->setDate(new \DateTime());
-                $notification->setIsAcceptable(false);
-
-                $this->entityManager->persist($notification);
-            }
-        }
+        $this->createNotificationsForStudents($course, $message);
         $this->entityManager->flush();
     }
 
@@ -135,25 +93,11 @@ class NotificationListener extends Controller
         $course = $assignment->getCourse();
         $teacher = $assignment->getTeacher();
 
-        foreach($course->getCourseUsers() as $courseUser){
-            if($courseUser->getRole() == RoleInterface::STUDENT &&
-                $courseUser->getStatus() == StatusInterface::ACTIVE){
-                $notification = new Notification();
-
-                $notification->setUser($courseUser->getUser());
-                $notification->setCourse($course);
-
-                $message = "An assignment \"".$assignment->getTitle()."\" has been edited
+        $message = "An assignment \"".$assignment->getTitle()."\" has been edited
                 in course ".$course->getTitle()." by ".$teacher->getName()." "
-                    .$teacher->getSurname();
+            .$teacher->getSurname();
 
-                $notification->setMessage($message);
-                $notification->setDate(new \DateTime());
-                $notification->setIsAcceptable(false);
-
-                $this->entityManager->persist($notification);
-            }
-        }
+        $this->createNotificationsForStudents($course, $message);
         $this->entityManager->flush();
     }
 
@@ -180,9 +124,7 @@ class NotificationListener extends Controller
         $this->entityManager->persist($notification);
 
         foreach($course->getCourseUsers() as $courseUser){
-            if($courseUser->getRole() == RoleInterface::ADMIN &&
-            $courseUser->getStatus() == StatusInterface::ACTIVE &&
-            $courseUser->getUser() != $user){
+            if($courseUser->isActiveAdmin() && $courseUser->getUser() != $user){
                 $notification = new Notification();
 
                 $notification->setUser($courseUser->getUser());
@@ -287,6 +229,24 @@ class NotificationListener extends Controller
 
         $em->persist($notification);
         $em->flush();
+    }
+
+    private function createNotificationsForStudents($course, $message)
+    {
+        foreach ($course->getCourseUsers() as $courseUser) {
+            if ($courseUser->isActiveStudent()) {
+                $notification = new Notification();
+
+                $notification->setUser($courseUser->getUser());
+                $notification->setCourse($course);
+
+                $notification->setMessage($message);
+                $notification->setDate(new \DateTime());
+                $notification->setIsAcceptable(false);
+
+                $this->entityManager->persist($notification);
+            }
+        }
     }
 
 }
