@@ -5,6 +5,8 @@ import assignments from './assignments'
 import lectures from './lectures'
 import user from './user'
 import users from './users'
+import dashboard from './dashboard'
+
 
 export default combineReducers({
   routing: routerReducer,
@@ -12,5 +14,6 @@ export default combineReducers({
   assignments,
   lectures,
   user,
-  users
+  users,
+  dashboard
 })

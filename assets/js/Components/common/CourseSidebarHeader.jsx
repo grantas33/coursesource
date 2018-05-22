@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const CourseSidebarHeader = () => (
   <header className="main-header">
-    <Link to="/main/my-courses" className="logo">
+    <Link to="/main/dashboard" className="logo">
       <span className="logo-mini">
         <b>C</b>S
       </span>

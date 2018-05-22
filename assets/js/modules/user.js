@@ -142,7 +142,7 @@ export const login = object => dispatch => {
         type: LOGIN_RECEIVED,
         payload: res.data.token
       });
-      dispatch(push("/main/my-courses"));
+      dispatch(push("/main/dashboard"));
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {

@@ -24,6 +24,7 @@ import AssignmentGrading from './Components/Course/AssignmentsGrading/Assignment
 import UsersManagement from './Components/Course/UsersManagement/UsersManagement';
 import UserInfo from './Components/Course/UsersManagement/UserInfo';
 import CourseSettings from './Components/Course/CourseSettings/CourseSettings';
+import Dashboard from './Components/Main/Dashboard/Dashboard';
 
 class App extends React.Component {
   render() {
@@ -40,6 +41,7 @@ class App extends React.Component {
         <div className="content-wrapper">
           <Switch>
             <PrivateRoute exact path="/main/my-courses" component={MyCourses} />
+            <PrivateRoute exact path="/main/dashboard" component={Dashboard} />
             <Route exact path="/main/browse-courses" component={BrowseCourses} />
             <PrivateRoute exact path="/main/create-new-course" component={CreateNewCourse} />
             <Route exact path="/main/course/:course" component={CourseInfo} />            

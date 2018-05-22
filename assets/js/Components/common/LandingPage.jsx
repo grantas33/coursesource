@@ -17,7 +17,7 @@ class LandingPage extends React.Component {
       return (
         <Redirect
           to={{
-            pathname: "/main/my-courses",
+            pathname: "/main/dashboard",
             state: { from: this.props.location }
           }}
         />
