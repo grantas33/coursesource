@@ -10,9 +10,11 @@ namespace App\Controller;
 
 use App\Entity\CourseUser;
 use App\Entity\Lecture;
+use App\Event\LectureEvent;
 use App\Form\LectureType;
 use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -22,6 +24,20 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class LectureController extends Controller
 {
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
+     * LectureController constructor.
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
 
     /**
      * @Route("api/lectures", name="api_lecture_create", methods="POST")
@@ -69,6 +85,7 @@ class LectureController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($lecture);
             $em->flush();
+            $this->dispatcher->dispatch('lecture.create', new LectureEvent($lecture));
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -166,6 +183,7 @@ class LectureController extends Controller
         try {
             $em->persist($lecture);
             $em->flush();
+            $this->dispatcher->dispatch('lecture.edit', new LectureEvent($lecture));
         }
         catch (\Exception $e) {
             return new JsonResponse([
