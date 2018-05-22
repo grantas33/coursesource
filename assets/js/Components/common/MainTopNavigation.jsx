@@ -10,7 +10,9 @@ class MainTopNavigation extends React.Component {
     document.body.classList.toggle("layout-top-nav", true);
     document.body.classList.toggle("sidebar-collapse", false);
     document.body.classList.toggle("sidebar-open", false);
-    this.props.getCurrent();
+    if (window.localStorage.getItem("userToken")) {
+      this.props.getCurrent();
+    }
   };
 
   componentWillUnmount = () => {
