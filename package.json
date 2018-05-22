@@ -27,6 +27,7 @@
         "babel-plugin-transform-class-properties": "^6.24.1",
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
         "babel-plugin-transform-react-jsx": "^6.24.1",
+        "debounce": "^1.1.0",
         "history": "latest",
         "moment": "^2.22.1",
         "react-big-calendar": "^0.19.0",
@@ -36,6 +37,7 @@
         "react-router-redux": "^5.0.0-alpha.9",
         "react-timestamp": "^4.4.0",
         "redux-thunk": "^2.2.0",
+        "sweetalert2": "^7.20.7",
         "validator": "^9.4.1"
     }
 }

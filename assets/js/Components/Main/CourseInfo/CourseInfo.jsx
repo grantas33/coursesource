@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 import { fetchCourse, applyToCourse } from "../../../modules/courses";
 import user2img from "../../../../Resources/img/user2-160x160.jpg";
+import swal from "sweetalert2";
 
 class CourseInfo extends React.Component {
   constructor(props) {
@@ -133,31 +134,32 @@ class CourseInfo extends React.Component {
 
               {this.state.activeTab === 3 && (
                 <div className="row">
-                  {this.props.course.item.teachers.map((teacher, i) => (
-                    <div className="col-sm-3" key={i}>
-                      <div className="box box-primary">
-                        <div className="box-body box-profile">
-                          <img
-                            className="profile-user-img img-responsive img-circle"
-                            src={user2img}
-                            alt="User profile picture"
-                          />
-                          <h3 className="profile-username text-center">
-                            Nina Mcintire
-                          </h3>
-                          <p className="text-muted text-center">
-                            Software Engineer
-                          </p>
-                          <ul className="list-group list-group-unbordered">
-                            <li className="list-group-item">
-                              <b>Followers</b>{" "}
-                              <a className="pull-right">1,322</a>
-                            </li>
-                          </ul>
+                  {!this.props.course.loading &&
+                    this.props.course.item.teachers.map((teacher, i) => (
+                      <div className="col-sm-3" key={i}>
+                        <div className="box box-primary">
+                          <div className="box-body box-profile">
+                            <img
+                              className="profile-user-img img-responsive img-circle"
+                              src={user2img}
+                              alt="User profile picture"
+                            />
+                            <h3 className="profile-username text-center">
+                              Nina Mcintire
+                            </h3>
+                            <p className="text-muted text-center">
+                              Software Engineer
+                            </p>
+                            <ul className="list-group list-group-unbordered">
+                              <li className="list-group-item">
+                                <b>Followers</b>{" "}
+                                <a className="pull-right">1,322</a>
+                              </li>
+                            </ul>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               )}
 
@@ -171,7 +173,28 @@ class CourseInfo extends React.Component {
             <button
               className="btn btn-primary"
               onClick={() => {
-                this.props.applyToCourse(this.props.course.item.id);
+                if (!window.localStorage.getItem("userToken")) {
+                  this.props.history.push(`/register`);
+                } else {
+                  swal({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, apply!"
+                  }).then(result => {
+                    if (result.value) {
+                      this.props.applyToCourse(this.props.course.item.id);
+                      swal(
+                        "Applied!",
+                        "You have applied to this course.",
+                        "success"
+                      );
+                    }
+                  });
+                }
               }}
             >
               Join course
@@ -184,25 +207,41 @@ class CourseInfo extends React.Component {
               </h3>
               {!this.state.submitted ? (
                 <div>
-                  <textarea
-                    onInput={e =>
-                      this.setState({
-                        ...this.state,
-                        submission: e.target.value
-                      })
-                    }
-                  />
-                  <br />
                   <button
                     className="btn btn-primary"
                     onClick={() => {
-                      this.setState({
-                        ...this.state,
-                        submitted: true
-                      });
-                      this.props.applyToCourse(this.props.course.item.id, {
-                        submission: this.state.submission
-                      });
+                      if (!window.localStorage.getItem("userToken")) {
+                        this.props.history.push(`/register`);
+                      } else {
+                        swal({
+                          title: "Are you sure?",
+                          input: "text",
+                          inputAttributes: {
+                            autocapitalize: "off"
+                          },
+                          text: "You won't be able to revert this!",
+                          type: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#3085d6",
+                          cancelButtonColor: "#d33",
+                          confirmButtonText: "Submit!"
+                        }).then(result => {
+                          if (result.value) {
+                            this.setState({
+                              ...this.state,
+                              submitted: true
+                            });
+                            this.props.applyToCourse(this.props.course.item.id, {
+                              submission: this.state.submission
+                            });
+                            swal(
+                              "Applied!",
+                              "You have applied to this course.",
+                              "success"
+                            );
+                          }
+                        });
+                      }
                     }}
                   >
                     Submit a solution

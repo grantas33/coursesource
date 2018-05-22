@@ -40,6 +40,11 @@ class EntryTask implements \JsonSerializable
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotBlank(message="You must enter a valid date")
+     * @Assert\DateTime(message="You must enter a valid date")
+     * @Assert\Expression(
+     *     "value > this.getCurrentDate()",
+     *     message="The date must be in the future!")
      */
     private $deadlineDate;
 
@@ -85,11 +90,17 @@ class EntryTask implements \JsonSerializable
         return $this->deadlineDate;
     }
 
-    public function setDeadlineDate(\DateTimeInterface $deadline_date): self
+    public function setDeadlineDate($deadline_date): self
     {
         $this->deadlineDate = $deadline_date;
 
         return $this;
+    }
+
+
+    public function getCurrentDate() : ?\DateTimeInterface
+    {
+        return new \DateTime('now');
     }
 
     public function jsonSerialize()

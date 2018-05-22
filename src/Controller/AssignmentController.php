@@ -11,10 +11,12 @@ namespace App\Controller;
 
 use App\Entity\Assignment;
 use App\Entity\CourseUser;
+use App\Event\AssignmentEvent;
 use App\Form\AssignmentType;
 use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -22,6 +24,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AssignmentController extends Controller
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
+     * LectureController constructor.
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
     /**
      * @Route("api/assignments", name="api_assignment_create", methods="POST")
      */
@@ -68,6 +84,7 @@ class AssignmentController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($assignment);
             $em->flush();
+            $this->dispatcher->dispatch('assignment.create', new AssignmentEvent($assignment));
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -165,6 +182,7 @@ class AssignmentController extends Controller
         try {
             $em->persist($assignment);
             $em->flush();
+            $this->dispatcher->dispatch('assignment.edit', new AssignmentEvent($assignment));
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -249,5 +267,25 @@ class AssignmentController extends Controller
         return new JSONResponse([
             'success_message' => 'Successfully deleted assignment '. $id
         ]);
+    }
+
+    /**
+     * @Route("api/assignments/get/last", name="api_assignment_getLast", methods="GET")
+     */
+    public function getLastAssignments(){
+
+        $userAssignments = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findUserAssignments($this->getUser());
+
+        usort($userAssignments, function($a, $b)
+        {
+            return $a['assignment']->getDeadlineDate() >  $b['assignment']->getDeadlineDate();
+        });
+
+        return new JsonResponse(
+            array_slice($userAssignments, 0, 3)
+        );
+
     }
 }

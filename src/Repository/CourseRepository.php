@@ -20,21 +20,42 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-//    /**
-//     * @return Course[] Returns an array of Course objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function findBrowseCourses($courses, $search, $offset, $limit)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+
+        $query = $this->createQueryBuilder('c');
+        $query = $query->andWhere('c.is_public = :true')
+            ->andWhere('c.id NOT IN (:courses)')
+            ->setParameters([
+                'courses' => $courses,
+                'true' => true
+            ]);
+        if($search != ''){
+            $query = $query->andWhere('c.title LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        $query = $query->orderBy('c.creation_date', 'DESC')->
+        setMaxResults($limit)->setFirstResult($offset)->getQuery();
+        return $query->getResult();
     }
-    */
+
+    public function findPublicCourses($search, $offset, $limit)
+    {
+
+        $query = $this->createQueryBuilder('c');
+        $query = $query->andWhere('c.is_public = :true')
+            ->setParameter('true', true);
+
+        if($search != ''){
+            $query = $query->andWhere('c.title LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        $query = $query->orderBy('c.creation_date', 'DESC')->
+        setMaxResults($limit)->setFirstResult($offset)->getQuery();
+        return $query->getResult();
+    }
+
 
 }

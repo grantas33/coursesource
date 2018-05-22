@@ -23,7 +23,7 @@ class EntryTaskType extends AbstractType
     {
         $builder
             ->add('description')
-            ->add('deadline_date', DateTimeType::class, [
+            ->add('deadlineDate', DateTimeType::class, [
                 'widget' => 'single_text']);
     }
 

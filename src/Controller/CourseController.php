@@ -13,9 +13,11 @@ use App\Entity\CourseUser;
 use App\Entity\EntryTask;
 use App\Entity\EntryTaskSubmission;
 use App\Entity\User;
+use App\Event\CourseEvent;
 use App\Form\CourseType;
 use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -33,12 +35,19 @@ class CourseController extends Controller
     private $validator;
 
     /**
-     * EntryTaskController constructor.
-     * @param ValidatorInterface $validator
+     * @var EventDispatcherInterface
      */
-    public function __construct(ValidatorInterface $validator)
+    private $dispatcher;
+
+    /**
+     * CourseController constructor.
+     * @param ValidatorInterface $validator
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function __construct(ValidatorInterface $validator, EventDispatcherInterface $dispatcher)
     {
         $this->validator = $validator;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -84,6 +93,7 @@ class CourseController extends Controller
             $em->persist($course);
             $em->persist($courseUser);
             $em->flush();
+            $this->dispatcher->dispatch('course.join', new CourseEvent($course, $this->getUser()));
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -97,7 +107,7 @@ class CourseController extends Controller
     }
 
     /**
-     * @Route("api/courses/get/{id}", name="api_course_get", methods="GET")
+     * @Route("api/courses/public/get/{id}", name="api_course_get", methods="GET")
      */
     public function getCourse(int $id)
     {
@@ -226,15 +236,41 @@ class CourseController extends Controller
     /**
      * @Route("api/courses/public", name="api_course_getPublic", methods="GET")
      */
-    public function getPublicCourses(){
+    public function getPublicCourses(Request $request){  // for unregistered users
+
+        $search = $request->query->get('query');
+        $offset = $request->query->get('offset');
+        $limit = $request->query->get('limit');
+
         $courses = $this->getDoctrine()
             ->getRepository(Course::class)
-            ->findBy([
-                'is_public'=>true
-            ]);
+            ->findPublicCourses($search, $offset, $limit);
 
         return new JSONResponse(
             $courses
+        );
+    }
+
+    /**
+     * @Route("api/courses/browse", name="api_course_getBrowse", methods="GET")
+     */
+    public function getBrowseCourses(Request $request){
+
+        $courses = [];
+        foreach($this->getUser()->getCourseUsers() as $courseUser){
+            $courses[] = $courseUser->getCourse();
+        }
+
+        $search = $request->query->get('query');
+        $offset = $request->query->get('offset');
+        $limit = $request->query->get('limit');
+
+        $browseCourses = $this->getDoctrine()->
+            getRepository(Course::class)
+            ->findBrowseCourses($courses, $search, $offset, $limit);
+
+        return new JsonResponse(
+            $browseCourses
         );
     }
 
@@ -264,6 +300,7 @@ class CourseController extends Controller
         try {
             $em->remove($course);
             $em->flush();
+            $this->dispatcher->dispatch('course.leave', new CourseEvent($course, $this->getUser()));
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -361,6 +398,7 @@ class CourseController extends Controller
                 'success_message' => 'Successfully sent an application to course '.$id
             ], Response::HTTP_CREATED);
         }
+        $this->dispatcher->dispatch('course.join', new CourseEvent($course, $this->getUser()));
             return new JsonResponse([
                 'success_message' => 'Successfully joined course '.$id
             ], Response::HTTP_CREATED);
@@ -431,11 +469,14 @@ class CourseController extends Controller
         $courseUser->setCourse($course);
         $courseUser->setRole($data['role']);
         $courseUser->setStatus(StatusInterface::INVITED);
+        $courseEvent = new CourseEvent($course, $user);
+        $courseEvent->setRole($data['role']);
 
         try {
             $em = $this->getDoctrine()->getManager();
             $em->persist($courseUser);
             $em->flush();
+            $this->dispatcher->dispatch('course.invited', $courseEvent);
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -501,6 +542,7 @@ class CourseController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($courseUser);
             $em->flush();
+            $this->dispatcher->dispatch('course.join', new CourseEvent($course, $user));
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -546,6 +588,7 @@ class CourseController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
+            $this->dispatcher->dispatch('course.join', new CourseEvent($course, $this->getUser()));
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -616,11 +659,14 @@ class CourseController extends Controller
         }
 
         $courseUser->setRole($data['role']);
+        $courseEvent = new CourseEvent($course, $user);
+        $courseEvent->setRole($data['role']);
 
         try {
             $em = $this->getDoctrine()->getManager();
             $em->persist($courseUser);
             $em->flush();
+            $this->dispatcher->dispatch('course.assign.role', $courseEvent);
         }
         catch (\Exception $e) {
             return new JsonResponse([

@@ -17,7 +17,7 @@ class LandingPage extends React.Component {
       return (
         <Redirect
           to={{
-            pathname: "/main/my-courses",
+            pathname: "/main/dashboard",
             state: { from: this.props.location }
           }}
         />
@@ -42,6 +42,9 @@ class LandingPage extends React.Component {
             </Link>
             <Link to="/login" id="landing-button" className="btn btn-primary">
               Login
+            </Link>
+            <Link to="/main/browse-courses" id="landing-button" className="btn btn-primary">
+              Courses
             </Link>
           </div>
           <div className="img-holder mt-3">
