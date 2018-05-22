@@ -25,11 +25,12 @@ class CourseRepository extends ServiceEntityRepository
 
         $query = $this->createQueryBuilder('c');
         $query = $query->andWhere('c.is_public = :true')
-            ->andWhere('c.id NOT IN (:courses)')
-            ->setParameters([
-                'courses' => $courses,
-                'true' => true
-            ]);
+            ->setParameter('true', true);
+        if($courses){
+            $query = $query->andWhere('c.id NOT IN (:courses)')
+                ->setParameter('courses', $courses);
+        }
+
         if($search != ''){
             $query = $query->andWhere('c.title LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
