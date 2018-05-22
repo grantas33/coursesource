@@ -12,13 +12,13 @@ class BrowseCourses extends React.Component {
     super(props);
 
     this.state = {
-      sortBy: 1,
+      sortBy: "creationDate",
       searchQuery: ""
     };
     this.fetchBrowseCourses = debounce(() => this.props.fetchBrowseCourses(this.state.sortBy, this.state.searchQuery), 500);
   }
   componentWillMount() {
-    this.props.fetchBrowseCourses(1);
+    this.props.fetchBrowseCourses("creationDate");
   }
 
   render() {
@@ -63,10 +63,10 @@ class BrowseCourses extends React.Component {
               <option value="0" disabled>
                 Sort by
               </option>
-              <option value="1">Creation date</option>
-              <option value="2">Mentors count</option>
-              <option value="3">Lectors count</option>
-              <option value="4">Lectures count</option>
+              <option value="creationDate">Creation date</option>
+              <option value="teacherCount">Mentors count</option>
+              <option value="assignmentCount">Lectors count</option>
+              <option value="lecturesCount">Lectures count</option>
             </select>
             <div className="pull-right">
               <div className="has-feedback">
