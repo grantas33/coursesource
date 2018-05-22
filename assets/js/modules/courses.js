@@ -5,11 +5,14 @@ export const FETCH_MYCOURSES_STARTED = "courses/FETCH_MYCOURSES_STARTED";
 export const FETCH_MYCOURSES_ERROR = "courses/FETCH_MYCOURSES_ERROR";
 export const FETCH_MYCOURSES_RECEIVED = "courses/FETCH_MYCOURSES_RECEIVED";
 
-export const FETCH_COURSEENTRYTASK_RECEIVED = "courses/FETCH_COURSEENTRYTASK_RECEIVED";
+export const FETCH_COURSEENTRYTASK_RECEIVED =
+  "courses/FETCH_COURSEENTRYTASK_RECEIVED";
 
-export const FETCH_BROWSECOURSES_STARTED = "courses/FETCH_BROWSECOURSES_STARTED";
+export const FETCH_BROWSECOURSES_STARTED =
+  "courses/FETCH_BROWSECOURSES_STARTED";
 export const FETCH_BROWSECOURSES_ERROR = "courses/FETCH_BROWSECOURSES_ERROR";
-export const FETCH_BROWSECOURSES_RECEIVED = "courses/FETCH_BROWSECOURSES_RECEIVED";
+export const FETCH_BROWSECOURSES_RECEIVED =
+  "courses/FETCH_BROWSECOURSES_RECEIVED";
 
 export const APPLY_TO_COURSE_STARTED = "courses/APPLY_TO_COURSE_STARTED";
 export const APPLY_TO_COURSE_ERROR = "courses/APPLY_TO_COURSE_ERROR";
@@ -177,11 +180,19 @@ export const fetchCourse = courseId => dispatch => {
     type: FETCH_COURSE_STARTED
   });
   axios
-    .get(`api/courses/get/${courseId}`, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .get(
+      `api/courses/` +
+        (window.localStorage.getItem("userToken") ? "" : "public/") +
+        `get/${courseId}`,
+      window.localStorage.getItem("userToken")
+        ? {
+            headers: {
+              Authorization:
+                "Bearer " + window.localStorage.getItem("userToken")
+            }
+          }
+        : {}
+    )
     .then(res => {
       dispatch({
         type: FETCH_COURSE_RECEIVED,
@@ -209,12 +220,10 @@ export const fetchCourse = courseId => dispatch => {
       ) {
         dispatch({
           type: FETCH_COURSEENTRYTASK_RECEIVED,
-          payload: null
-        });
-      } else {
-        dispatch({
-          type: FETCH_COURSEENTRYTASK_RECEIVED,
-          payload: res.data
+          payload:
+            res.data.error_message === "This course does not have an entry task"
+              ? null
+              : res.data
         });
       }
     });
