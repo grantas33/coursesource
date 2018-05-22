@@ -250,4 +250,24 @@ class AssignmentController extends Controller
             'success_message' => 'Successfully deleted assignment '. $id
         ]);
     }
+
+    /**
+     * @Route("api/assignments/get/last", name="api_assignment_getLast", methods="GET")
+     */
+    public function getLastAssignments(){
+
+        $userAssignments = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findUserAssignments($this->getUser());
+
+        usort($userAssignments, function($a, $b)
+        {
+            return $a['assignment']->getDeadlineDate() >  $b['assignment']->getDeadlineDate();
+        });
+
+        return new JsonResponse(
+            array_slice($userAssignments, 0, 3)
+        );
+
+    }
 }
