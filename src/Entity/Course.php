@@ -20,6 +20,7 @@ class Course implements JsonSerializable
         $this->courseUsers = new ArrayCollection();
         $this->lectures = new ArrayCollection();
         $this->assignments = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -222,6 +223,11 @@ class Course implements JsonSerializable
         $this->entryTask = $entryTask;
 
         return $this;
+    }
+
+    public function getCourseUsers(){
+
+        return $this->courseUsers;
     }
 
     public function getTeachers(){

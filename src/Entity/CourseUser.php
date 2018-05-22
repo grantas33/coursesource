@@ -8,6 +8,8 @@
 
 namespace App\Entity;
 
+use App\Interfaces\RoleInterface;
+use App\Interfaces\StatusInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -135,6 +137,18 @@ class CourseUser implements \JsonSerializable
         $this->isNotifiable = $isNotifiable;
 
         return $this;
+    }
+
+    public function isActiveStudent(): ?bool
+    {
+        return $this->role == RoleInterface::STUDENT &&
+               $this->status == StatusInterface::ACTIVE;
+    }
+
+    public function isActiveAdmin(): ?bool
+    {
+        return $this->role == RoleInterface::ADMIN &&
+            $this->status == StatusInterface::ACTIVE;
     }
 
     public function jsonSerialize()
