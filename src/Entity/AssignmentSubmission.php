@@ -60,10 +60,10 @@ class AssignmentSubmission implements \JsonSerializable
     /**
      * @ORM\Column(type="datetime")
      */
-    private $creationDate;
+    private $submissionDate;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $gradingDate;
 
@@ -112,19 +112,19 @@ class AssignmentSubmission implements \JsonSerializable
         return $this->score;
     }
 
-    public function setScore(int $score): void
+    public function setScore($score): void
     {
         $this->score = $score;
     }
 
-    public function getCreationDate()
+    public function getSubmissionDate()
     {
-        return $this->creationDate;
+        return $this->submission;
     }
 
-    public function setCreationDate(\DateTimeInterface $creationDate): void
+    public function setSubmissionDate(\DateTimeInterface $submissionDate): void
     {
-        $this->creationDate = $creationDate;
+        $this->submissionDate = $submissionDate;
     }
 
     public function getGradingDate()
@@ -145,8 +145,8 @@ class AssignmentSubmission implements \JsonSerializable
             'assignment' => $this->assignment,
             'submission' => $this->submission,
             'score' => $this->score,
-            'creation_date' => $this->creationDate->format("Y-m-d H:i:s"),
-            'grading_date' => $this->gradingDate->format("Y-m-d H:i:s")
+            'submission_date' => $this->submissionDate->format("Y-m-d H:i:s"),
+            'grading_date' => $this->gradingDate ? $this->gradingDate->format("Y-m-d H:i:s") : null
         ];
     }
 }

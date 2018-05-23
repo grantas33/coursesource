@@ -10,6 +10,8 @@ namespace App\Controller;
 
 
 use App\Entity\Assignment;
+use App\Entity\AssignmentSubmission;
+use App\Entity\Course;
 use App\Entity\CourseUser;
 use App\Event\AssignmentEvent;
 use App\Form\AssignmentType;
@@ -21,6 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AssignmentController extends Controller
 {
@@ -30,12 +33,19 @@ class AssignmentController extends Controller
     private $dispatcher;
 
     /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
      * LectureController constructor.
      * @param EventDispatcherInterface $dispatcher
+     * @param ValidatorInterface $validator
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(EventDispatcherInterface $dispatcher, ValidatorInterface $validator)
     {
         $this->dispatcher = $dispatcher;
+        $this->validator = $validator;
     }
 
     /**
@@ -286,6 +296,239 @@ class AssignmentController extends Controller
         return new JsonResponse(
             array_slice($userAssignments, 0, 3)
         );
+
+    }
+
+    /**
+     * @Route("api/assignments/{id}/submission", name="api_assignment_setSubmission", methods="PUT")
+     */
+    public function setAssignmentSubmission(int $id, Request $request){
+
+        $assignment = $this->getDoctrine()
+            ->getRepository(Assignment::class)
+            ->find($id);
+
+        if(!$assignment){
+            return new JsonResponse([
+                'error_message' => 'Assignment not found',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if(!$assignment->getCourse()->isStudent($this->getUser())){
+            return new JsonResponse([
+                'error_message' => 'You do not have the permissions to submit to this assignment',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if($assignment->getDeadlineDate() < new \DateTime('now')){
+            return new JsonResponse([
+                'error_message' => 'Submissions to this assignment are closed',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $submission = $this->getDoctrine()
+            ->getRepository(AssignmentSubmission::class)
+            ->findOneBy([
+                'student' => $this->getUser(),
+                'assignment' => $id
+            ]);
+
+        $data = json_decode($request->getContent(), true);
+
+        if(!$submission){
+            $submission = new AssignmentSubmission();
+            $submission->setStudent($this->getUser());
+            $submission->setAssignment($assignment);
+        }
+
+        $submission->setSubmission($data['submission']);
+        $submission->setSubmissionDate(new \DateTime('now'));
+
+        $errors = $this->validator->validate($submission);
+
+        if (count($errors) > 0) {
+            return new JsonResponse([
+                'error_message' => $errors->get(0)->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($submission);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse([
+            'success_message' => 'Successfully posted a submission to an assignment '.$id
+        ]);
+
+    }
+
+    /**
+     * @Route("api/assignments/{id}/submission", name="api_assignment_getSubmission", methods="GET")
+     */
+    public function getAssignmentSubmission(int $id){
+
+        $submission = $this->getDoctrine()
+            ->getRepository(AssignmentSubmission::class)
+            ->findOneBy([
+                'student' => $this->getUser(),
+                'assignment' => $id
+            ]);
+
+        return new JsonResponse(
+            $submission
+        );
+    }
+
+    /**
+     * @Route("api/assignments/{id}/submissions", name="api_assignment_getSubmissions", methods="GET")
+     */
+    public function getAssignmentSubmissions(int $id){
+
+        $assignment = $this->getDoctrine()
+            ->getRepository(Assignment::class)
+            ->find($id);
+
+        if(!$assignment){
+            return new JsonResponse([
+                'error_message' => 'Assignment not found',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if(!$assignment->getCourse()->isTeacher($this->getUser())){
+            return new JsonResponse([
+                'error_message' => 'You do not have the permissions to get the submissions for this assignment',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $submissions = $this->getDoctrine()
+            ->getRepository(AssignmentSubmission::class)
+            ->findBy([
+                'assignment' => $id
+            ]);
+
+        return new JsonResponse(
+            $submissions
+        );
+    }
+
+    /**
+     * @Route("api/assignments/{submissionId}/grade", name="api_assignment_gradeSubmission", methods="PUT")
+     */
+    public function setAssignmentSubmissionGrade(int $submissionId, Request $request){
+
+        $submission = $this->getDoctrine()
+            ->getRepository(AssignmentSubmission::class)
+            ->find($submissionId);
+
+        if(!$submission){
+            return new JsonResponse([
+                'error_message' => 'Assignment submission not found',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if(!$submission->getAssignment()->getCourse()->isTeacher($this->getUser())){
+            return new JsonResponse([
+                'error_message' => 'You do not have the permissions to grade the submission'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $submission->setScore($data['score']);
+        $submission->setGradingDate(new \DateTime('now'));
+
+        $errors = $this->validator->validate($submission);
+
+        if (count($errors) > 0) {
+
+            return new JsonResponse([
+                'error_message' => $errors->get(0)->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($submission);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse([
+            'success_message' => 'Successfully graded an assignment submission'
+        ]);
+    }
+
+    /**
+     * @Route("api/assignments/{courseId}/submissions/student", name="api_assignment_studentSub", methods="GET")
+     */
+    public function getAssignmentSubmissionsForStudent(int $courseId){
+
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($courseId);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'Course not found',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $assignments = $course->getAssignments()->toArray();
+
+        $submissions = $this->getDoctrine()
+            ->getRepository(AssignmentSubmission::class)
+            ->findBy([
+                'student' => $this->getUser(),
+                'assignment' => $assignments
+            ]);
+
+        return new JsonResponse(
+            $submissions
+        );
+    }
+
+    /**
+     * @Route("api/assignments/{courseId}/submissions/teacher", name="api_assignment_teacherSub", methods="GET")
+     */
+    public function getAssignmentSubmissionsForTeacher(int $courseId){
+
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($courseId);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'Course not found',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $assignments = $course->getAssignments()->toArray();
+        $teacherAssignments = [];
+        foreach ($assignments as $assignment){
+            if($assignment->getTeacher() == $this->getUser()){
+                $teacherAssignments[] = $assignment;
+            }
+        }
+
+        $submissions = $this->getDoctrine()
+            ->getRepository(AssignmentSubmission::class)
+            ->findBy([
+                'assignment' => $teacherAssignments
+            ]);
+
+        return new JsonResponse(
+            $submissions
+        );
+
 
     }
 }

@@ -230,6 +230,11 @@ class Course implements JsonSerializable
         return $this->courseUsers;
     }
 
+    public function getAssignments()
+    {
+        return $this->assignments;
+    }
+
     public function getTeachers()
     {
         $teachers = [];
@@ -281,6 +286,20 @@ class Course implements JsonSerializable
         foreach($this->courseUsers as $user){
             if($user->getUser() == $currentUser &&
                 ($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
+                $user->getStatus() == StatusInterface::ACTIVE){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isStudent(User $currentUser)
+    {
+
+        foreach($this->courseUsers as $user){
+            if($user->getUser() == $currentUser &&
+                $user->getRole() == RoleInterface::STUDENT &&
                 $user->getStatus() == StatusInterface::ACTIVE){
                 return true;
             }
