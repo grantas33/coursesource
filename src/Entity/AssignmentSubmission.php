@@ -2,20 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: grantas
- * Date: 18.5.10
- * Time: 10.49
+ * Date: 18.5.23
+ * Time: 13.45
  */
 
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\EntryTaskSubmissionRepository")
+ * @ORM\Entity()
  */
-class EntryTaskSubmission implements JsonSerializable
+class AssignmentSubmission implements \JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -30,19 +29,18 @@ class EntryTaskSubmission implements JsonSerializable
     private $student;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Course")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Assignment")
      */
-    private $course;
+    private $assignment;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\Length(
      *     max = 5000,
-     *     maxMessage="The submission cannot be longer than 5000 characters"
+     *     maxMessage="The comment cannot be longer than 5000 characters"
      * )
      */
     private $submission;
-
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -62,15 +60,19 @@ class EntryTaskSubmission implements JsonSerializable
     /**
      * @ORM\Column(type="datetime")
      */
-    private $date;
+    private $creationDate;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $gradingDate;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function setId($id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -85,14 +87,14 @@ class EntryTaskSubmission implements JsonSerializable
         $this->student = $student;
     }
 
-    public function getCourse()
+    public function getAssignment()
     {
-        return $this->course;
+        return $this->assignment;
     }
 
-    public function setCourse(Course $course): void
+    public function setAssignment(Assignment $assignment): void
     {
-        $this->course = $course;
+        $this->assignment = $assignment;
     }
 
     public function getSubmission()
@@ -110,19 +112,29 @@ class EntryTaskSubmission implements JsonSerializable
         return $this->score;
     }
 
-    public function setScore($score): void
+    public function setScore(int $score): void
     {
         $this->score = $score;
     }
 
-    public function getDate()
+    public function getCreationDate()
     {
-        return $this->date;
+        return $this->creationDate;
     }
 
-    public function setDate(\DateTimeInterface $date): void
+    public function setCreationDate(\DateTimeInterface $creationDate): void
     {
-        $this->date = $date;
+        $this->creationDate = $creationDate;
+    }
+
+    public function getGradingDate()
+    {
+        return $this->gradingDate;
+    }
+
+    public function setGradingDate(\DateTimeInterface $gradingDate): void
+    {
+        $this->gradingDate = $gradingDate;
     }
 
     public function jsonSerialize()
@@ -130,10 +142,11 @@ class EntryTaskSubmission implements JsonSerializable
         return [
             'id' => $this->id,
             'student' => $this->student,
-            'course' => $this->course,
+            'assignment' => $this->assignment,
             'submission' => $this->submission,
             'score' => $this->score,
-            'date' => $this->date->format("Y-m-d H:i:s")
+            'creation_date' => $this->creationDate->format("Y-m-d H:i:s"),
+            'grading_date' => $this->gradingDate->format("Y-m-d H:i:s")
         ];
     }
 }
