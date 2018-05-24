@@ -484,14 +484,9 @@ class AssignmentController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $assignments = $course->getAssignments()->toArray();
-
         $submissions = $this->getDoctrine()
-            ->getRepository(AssignmentSubmission::class)
-            ->findBy([
-                'student' => $this->getUser(),
-                'assignment' => $assignments
-            ]);
+            ->getRepository(Course::class)
+            ->findStudentAssignmentDiary($course, $this->getUser());
 
         return new JsonResponse(
             $submissions
@@ -513,19 +508,9 @@ class AssignmentController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $assignments = $course->getAssignments()->toArray();
-        $teacherAssignments = [];
-        foreach ($assignments as $assignment){
-            if($assignment->getTeacher() == $this->getUser()){
-                $teacherAssignments[] = $assignment;
-            }
-        }
-
         $submissions = $this->getDoctrine()
-            ->getRepository(AssignmentSubmission::class)
-            ->findBy([
-                'assignment' => $teacherAssignments
-            ]);
+            ->getRepository(Course::class)
+            ->findTeacherAssignmentDiary($course, $this->getUser());
 
         return new JsonResponse(
             $submissions
@@ -535,7 +520,7 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/{courseId}/diary", name="api_assignment_diary", methods="GET")
      */
-    public function getAssignmentDiary(int $courseId){
+    public function getAssignmentSubmissionDiary(int $courseId){
 
         $course = $this->getDoctrine()
             ->getRepository(Course::class)
@@ -556,18 +541,6 @@ class AssignmentController extends Controller
         $diary = $this->getDoctrine()
             ->getRepository(Course::class)
             ->findAssignmentDiary($courseId);
-
-        $courseAssignments = $course->getAssignments()->toArray();
-
-        foreach($diary as $key => $stud){
-            $submissions = $this->getDoctrine()
-                ->getRepository(AssignmentSubmission::class)
-                ->findBy([
-                    'student' => $stud['student'],
-                    'assignment' => $courseAssignments,
-                ]);
-            $diary[$key]['submissions'] = $submissions;
-        }
 
         return new JsonResponse(
             $diary
