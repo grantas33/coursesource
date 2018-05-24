@@ -14,6 +14,7 @@ use App\Entity\AssignmentSubmission;
 use App\Entity\Course;
 use App\Entity\CourseUser;
 use App\Event\AssignmentEvent;
+use App\Event\GradeEvent;
 use App\Form\AssignmentType;
 use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
@@ -456,6 +457,7 @@ class AssignmentController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($submission);
             $em->flush();
+            $this->dispatcher->dispatch('assignment.grade', new GradeEvent($submission));
         }
         catch (\Exception $e) {
             return new JsonResponse([
@@ -528,7 +530,48 @@ class AssignmentController extends Controller
         return new JsonResponse(
             $submissions
         );
+    }
 
+    /**
+     * @Route("api/assignments/{courseId}/diary", name="api_assignment_diary", methods="GET")
+     */
+    public function getAssignmentDiary(int $courseId){
+
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($courseId);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'Course not found',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if(!$course->isTeacher($this->getUser())){
+            return new JsonResponse([
+                'error_message' => 'You do not have the permissions to view this diary'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $diary = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->findAssignmentDiary($courseId);
+
+        $courseAssignments = $course->getAssignments()->toArray();
+
+        foreach($diary as $key => $stud){
+            $submissions = $this->getDoctrine()
+                ->getRepository(AssignmentSubmission::class)
+                ->findBy([
+                    'student' => $stud['student'],
+                    'assignment' => $courseAssignments,
+                ]);
+            $diary[$key]['submissions'] = $submissions;
+        }
+
+        return new JsonResponse(
+            $diary
+        );
 
     }
 }

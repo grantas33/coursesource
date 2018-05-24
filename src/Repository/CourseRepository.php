@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Assignment;
+use App\Entity\AssignmentSubmission;
 use App\Entity\Course;
 use App\Entity\CourseUser;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -56,6 +59,22 @@ class CourseRepository extends ServiceEntityRepository
         $query = $query->orderBy('c.creation_date', 'DESC')->
         setMaxResults($limit)->setFirstResult($offset)->getQuery();
         return $query->getResult();
+    }
+
+    public function findAssignmentDiary($course){
+
+        $qb = $this->createQueryBuilder('c')
+            ->select('u as student', 'AVG(sub.score) as average_grade')
+            ->innerJoin(Assignment::class, 'a', 'WITH', 'a.course = c.id')
+            ->innerJoin(AssignmentSubmission::class, 'sub', 'WITH', 'sub.assignment = a.id')
+            ->innerJoin(User::class, 'u', 'WITH', 'sub.student = u.id')
+            ->andWhere('c.id = :course')
+            ->setParameters([
+                'course' => $course
+            ])
+            ->groupBy('u.id');
+
+        return $qb->getQuery()->getResult();
     }
 
 
