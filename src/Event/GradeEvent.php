@@ -9,20 +9,21 @@
 namespace App\Event;
 
 
+use App\Entity\AssignmentSubmission;
 use Symfony\Component\EventDispatcher\Event;
 
 class GradeEvent extends Event
 {
-    protected $grade;
+    protected $assignmentSubmission;
 
-    public function __construct($grade)
+    public function __construct(AssignmentSubmission $assignmentSubmission)
     {
-        $this->grade = $grade;
+        $this->assignmentSubmission = $assignmentSubmission;
     }
 
-    public function getGrade()
+    public function getAssignmentSubmission()
     {
-        return $this->grade;
+        return $this->assignmentSubmission;
     }
 
 }

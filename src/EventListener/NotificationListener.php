@@ -208,27 +208,28 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onGradeCreate(GradeEvent $event){
-        $em = $this->getDoctrine()->getManager();
-        $grade = $event->getGrade();
-        $assignment = $grade->getAssignment();
+    public function onAssignmentGrade(GradeEvent $event){
+
+        $assignmentSubmission = $event->getAssignmentSubmission();
+        $grade = $assignmentSubmission->getScore();
+        $assignment = $assignmentSubmission->getAssignment();
         $course = $assignment->getCourse();
-        $user = $event->getUser();
+        $student = $assignmentSubmission->getStudent();
 
         $notification = new Notification();
 
-        $notification->setUser($user);
+        $notification->setUser($student);
         $notification->setCourse($course);
 
         $message = "You have been graded a ".$grade." for assignment \"".$assignment->getTitle()."\"
-        in course ".$course;
+        in course ".$course->getTitle();
 
         $notification->setMessage($message);
         $notification->setDate(new \DateTime());
         $notification->setIsAcceptable(false);
 
-        $em->persist($notification);
-        $em->flush();
+        $this->entityManager->persist($notification);
+        $this->entityManager->flush();
     }
 
     private function createNotificationsForStudents($course, $message)
