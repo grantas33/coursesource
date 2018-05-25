@@ -8,9 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseRepository")
+ * @Vich\Uploadable
  */
 class Course implements JsonSerializable
 {
@@ -79,6 +82,18 @@ class Course implements JsonSerializable
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $avatar;
+
+    /**
+     *
+     * @Vich\UploadableField(mapping="course_image", fileNameProperty="avatar")
+     * @var File
+     */
+    private $avatarFile;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $avatarUpdatedAt;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="course", cascade={"remove"})
@@ -211,6 +226,24 @@ class Course implements JsonSerializable
         $this->avatar = $avatar;
 
         return $this;
+    }
+
+    /**
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     */
+    public function setAvatarFile(?File $image = null): void
+    {
+        $this->avatarFile = $image;
+
+        if (null !== $image) {
+
+            $this->avatarUpdatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getAvatarFile(): ?File
+    {
+        return $this->avatarFile;
     }
 
     public function getEntryTask()
