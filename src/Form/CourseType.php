@@ -17,6 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Valid;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class CourseType extends AbstractType
 {
