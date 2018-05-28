@@ -15,6 +15,7 @@ use App\Entity\EntryTaskSubmission;
 use App\Entity\User;
 use App\Event\CourseEvent;
 use App\Form\CourseType;
+use App\Interfaces\CourseSortInterface;
 use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -241,10 +242,13 @@ class CourseController extends Controller
         $search = $request->query->get('query');
         $offset = $request->query->get('offset');
         $limit = $request->query->get('limit');
+        $sort = $request->query->get('sortBy');
 
         $courses = $this->getDoctrine()
             ->getRepository(Course::class)
             ->findPublicCourses($search, $offset, $limit);
+
+        $courses = $this->sortCourses($sort, $courses);
 
         return new JSONResponse(
             $courses
@@ -264,14 +268,30 @@ class CourseController extends Controller
         $search = $request->query->get('query');
         $offset = $request->query->get('offset');
         $limit = $request->query->get('limit');
+        $sort = $request->query->get('sortBy');
 
         $browseCourses = $this->getDoctrine()->
             getRepository(Course::class)
             ->findBrowseCourses($courses, $search, $offset, $limit);
 
+        $browseCourses = $this->sortCourses($sort, $browseCourses);
+
         return new JsonResponse(
             $browseCourses
         );
+    }
+
+    private function sortCourses($sort, $courses){
+
+        if(in_array($sort, CourseSortInterface::PARAMETERS)){
+            $method = 'get' . ucfirst($sort);
+            usort($courses, function($a, $b) use($method)
+            {
+                return $a->$method() < $b->$method();
+            });
+        }
+
+        return $courses;
     }
 
 

@@ -36,12 +36,12 @@ const initialState = {
     error: false
   },
   allMyCourses: {
-    courses: [],
+    items: [],
     loading: true,
     error: false
   },
   allBrowseCourses: {
-    courses: [],
+    items: [],
     loading: true,
     error: false
   },
@@ -334,17 +334,17 @@ export const createCourse = newCourse => dispatch => {
         type: CREATE_COURSE_RECEIVED,
         payload: res.data
       });
-      dispatch(push("/course/3"));
     })
     .catch(err => {
       if (err.response && err.response.data.message === "Invalid Token") {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
+      console.dir(err);
       dispatch({
         type: CREATE_COURSE_ERROR,
         payload: err.response
-          ? err.response.data.error_message.title
+          ? err.response.data.error_message[Object.keys(err.response.data.error_message)[0]]
           : "Unknown error"
       });
     });
