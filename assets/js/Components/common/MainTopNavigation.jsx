@@ -4,6 +4,7 @@ import user2img from "../../../Resources/img/user2-160x160.jpg";
 import { getCurrent, signout } from "../../modules/user";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { fetchNotifications } from "../../modules/notifications";
 
 class MainTopNavigation extends React.Component {
   componentDidMount = () => {
@@ -12,6 +13,7 @@ class MainTopNavigation extends React.Component {
     document.body.classList.toggle("sidebar-open", false);
     if (window.localStorage.getItem("userToken")) {
       this.props.getCurrent();
+      this.props.fetchNotifications();
     }
   };
 
@@ -38,21 +40,22 @@ class MainTopNavigation extends React.Component {
               </button>
             </div>
             {/* Collect the nav links, forms, and other content for toggling */}
-            {window.localStorage.getItem("userToken") && <div
-              className="collapse navbar-collapse pull-left"
-              id="navbar-collapse"
-            >
-              <ul className="nav navbar-nav">
-                <li>
-                  <Link to="/main/my-courses">My courses</Link>
-                </li>
+            {window.localStorage.getItem("userToken") && (
+              <div
+                className="collapse navbar-collapse pull-left"
+                id="navbar-collapse"
+              >
+                <ul className="nav navbar-nav">
+                  <li>
+                    <Link to="/main/my-courses">My courses</Link>
+                  </li>
 
-                <li>
-                  <Link to="/main/browse-courses">Browse courses</Link>
-                </li>
-              </ul>
-            </div>
-            }
+                  <li>
+                    <Link to="/main/browse-courses">Browse courses</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
 
             {window.localStorage.getItem("userToken") ? (
               <div className="navbar-custom-menu">
@@ -66,21 +69,28 @@ class MainTopNavigation extends React.Component {
                       data-toggle="dropdown"
                     >
                       <i className="fa fa-bell-o" />
-                      <span className="label label-warning">10</span>
+                      {this.props.notifications.items.length > 0 && (
+                        <span className="label label-warning">
+                          {this.props.notifications.items.length}
+                        </span>
+                      )}
                     </a>
                     <ul className="dropdown-menu">
-                      <li className="header">You have 10 notifications</li>
+                      <li className="header">
+                        You have {" "}
+                        {this.props.notifications.items.length}
+                        {" "} notifications
+                      </li>
                       <li>
-                        {/* Inner Menu: contains the notifications */}
                         <ul className="menu">
-                          <li>
-                            {/* start notification */}
-                            <a href="#">
-                              <i className="fa fa-users text-aqua" /> 5 new
-                              members joined today
-                            </a>
-                          </li>
-                          {/* end notification */}
+                          {this.props.notifications.items.map(notification => (
+                            <li>
+                              <a href="#">
+                                <i className="fa fa-users text-aqua" /> 5 new
+                                members joined today
+                              </a>
+                            </li>
+                          ))}
                         </ul>
                       </li>
                       <li className="footer">
@@ -161,14 +171,16 @@ class MainTopNavigation extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  notifications: state.notifications
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       getCurrent,
-      signout
+      signout,
+      fetchNotifications
     },
     dispatch
   );

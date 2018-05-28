@@ -6,6 +6,7 @@ import lectures from './lectures'
 import user from './user'
 import users from './users'
 import dashboard from './dashboard'
+import notifications from './notifications'
 
 
 export default combineReducers({
@@ -15,5 +16,6 @@ export default combineReducers({
   lectures,
   user,
   users,
-  dashboard
+  dashboard,
+  notifications
 })
