@@ -8,7 +8,6 @@
 
 namespace App\EventListener;
 
-
 use App\Entity\Notification;
 use App\Event\AssignmentEvent;
 use App\Event\CourseEvent;
@@ -35,8 +34,9 @@ class NotificationListener extends Controller
 
     /**
      * NotificationListener constructor.
+     *
      * @param EntityManagerInterface $entityManager
-     * @param RequestStack $requestStack
+     * @param RequestStack           $requestStack
      */
     public function __construct(EntityManagerInterface $entityManager, RequestStack $requestStack)
     {
@@ -45,7 +45,8 @@ class NotificationListener extends Controller
     }
 
 
-    public function onLectureCreate(LectureEvent $event){
+    public function onLectureCreate(LectureEvent $event)
+    {
 
         $lecture = $event->getLecture();
         $course = $lecture->getCourse();
@@ -59,7 +60,8 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onLectureEdit(LectureEvent $event){
+    public function onLectureEdit(LectureEvent $event)
+    {
 
         $lecture = $event->getLecture();
         $course = $lecture->getCourse();
@@ -73,7 +75,8 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onAssignmentCreate(AssignmentEvent $event){
+    public function onAssignmentCreate(AssignmentEvent $event)
+    {
 
         $assignment = $event->getAssignment();
         $course = $assignment->getCourse();
@@ -87,7 +90,8 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onAssignmentEdit(AssignmentEvent $event){
+    public function onAssignmentEdit(AssignmentEvent $event)
+    {
 
         $assignment = $event->getAssignment();
         $course = $assignment->getCourse();
@@ -101,7 +105,8 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onCourseJoin(CourseEvent $event){
+    public function onCourseJoin(CourseEvent $event)
+    {
 
         $course = $event->getCourse();
         $user = $event->getUser();
@@ -123,8 +128,8 @@ class NotificationListener extends Controller
 
         $this->entityManager->persist($notification);
 
-        foreach($course->getCourseUsers() as $courseUser){
-            if($courseUser->isActiveAdmin() && $courseUser->getUser() != $user){
+        foreach ($course->getCourseUsers() as $courseUser) {
+            if ($courseUser->isActiveAdmin() && $courseUser->getUser() != $user) {
                 $notification = new Notification();
 
                 $notification->setUser($courseUser->getUser());
@@ -142,7 +147,8 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onCourseInvited(CourseEvent $event){
+    public function onCourseInvited(CourseEvent $event)
+    {
 
         $course = $event->getCourse();
         $user = $event->getUser();
@@ -165,7 +171,8 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onCourseAssignRole(CourseEvent $event){
+    public function onCourseAssignRole(CourseEvent $event)
+    {
 
         $course = $event->getCourse();
         $user = $event->getUser();
@@ -189,7 +196,8 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onCourseLeave(CourseEvent $event){
+    public function onCourseLeave(CourseEvent $event)
+    {
 
         $course = $event->getCourse();
         $user = $event->getUser();
@@ -208,7 +216,8 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
-    public function onAssignmentGrade(GradeEvent $event){
+    public function onAssignmentGrade(GradeEvent $event)
+    {
 
         $assignmentSubmission = $event->getAssignmentSubmission();
         $grade = $assignmentSubmission->getScore();
@@ -249,5 +258,4 @@ class NotificationListener extends Controller
             }
         }
     }
-
 }

@@ -7,6 +7,7 @@
  */
 
 namespace App\Form;
+
 use App\Entity\Assignment;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\AbstractType;
@@ -22,17 +23,23 @@ class AssignmentType extends AbstractType
             ->add('title')
             ->add('description')
             ->add('course')
-            ->add('deadline_date', DateTimeType::class, array(
-                'widget' => 'single_text'))
+            ->add(
+                'deadline_date',
+                DateTimeType::class,
+                array(
+                'widget' => 'single_text')
+            )
             ->add('is_gradeable', CheckboxType::class)
             ->add('is_submittable', CheckboxType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults(
+            array(
             'data_class' => Assignment::class,
             'csrf_protection' => false
-        ));
+            )
+        );
     }
 }

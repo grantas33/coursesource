@@ -16,7 +16,7 @@ class CreateNewCourse extends React.Component {
         title: "",
         description: "",
         slogan: "",
-        photo: "",
+        avatar: "",
         is_submittable: false,
         entry_task_submission: "",
         entry_task_deadline: ""
@@ -88,8 +88,8 @@ class CreateNewCourse extends React.Component {
     ) {
       validations.slogan = "The slogan cannot be longer than 150 characters";
     }
-    if (this.state.newCourse.image === "") {
-      validations.image = "The image should be valid and under 5MB";
+    if (this.state.newCourse.avatar === "") {
+      validations.avatar = "The image should be valid and under 5MB";
     }
     return validations;
   };
@@ -245,25 +245,25 @@ class CreateNewCourse extends React.Component {
                   }
                 >
                   <label>Image</label>
-                  {this.state.newCourse.image !== "" && (
+                  {this.state.newCourse.avatar !== "" && (
                     <img
                       style={{ display: "block" }}
                       width="100 px"
-                      src={this.state.newCourse.image}
+                      src={this.state.newCourse.avatar}
                     />
                   )}
                   <FileBase64
                     multiple={false}
                     onDone={file => {
                       if (file.type === "image/png") {
-                        this.handleUpdateField("image", file.base64);
+                        this.handleUpdateField("avatar", file.base64);
                       } else {
-                        this.handleUpdateField("image", "");
+                        this.handleUpdateField("avatar", "");
                         this.setState({
                           ...this.state,
                           validations: {
                             ...this.state.validations,
-                            image: "Please upload valid photo under 5MB"
+                            avatar: "Please upload valid photo under 5MB"
                           }
                         });
                       }
@@ -356,10 +356,10 @@ class CreateNewCourse extends React.Component {
                   </div>
                 )}
 
-                {this.state.editted.image &&
-                  this.state.validations.image && (
+                {this.state.editted.avatar &&
+                  this.state.validations.avatar && (
                     <span className="help-block">
-                      {this.state.validations.image}
+                      {this.state.validations.avatar}
                     </span>
                   )}
               </form>
@@ -388,7 +388,7 @@ class CreateNewCourse extends React.Component {
                             description: this.state.newCourse.description,
                             slogan: this.state.newCourse.slogan,
                             is_submittable: this.state.newCourse.is_submittable,
-                            image: this.state.newCourse.image,
+                            avatar: this.state.newCourse.avatar,
                             entry_task: {
                               description: this.state.newCourse
                                 .entry_task_submission,
@@ -401,7 +401,7 @@ class CreateNewCourse extends React.Component {
                             description: this.state.newCourse.description,
                             slogan: this.state.newCourse.slogan,
                             is_submittable: this.state.newCourse.is_submittable,
-                            image: this.state.newCourse.image
+                            avatar: this.state.newCourse.avatar
                           }
                     );
                     this.setState({

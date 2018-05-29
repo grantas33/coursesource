@@ -23,15 +23,21 @@ class EntryTaskType extends AbstractType
     {
         $builder
             ->add('description')
-            ->add('deadlineDate', DateTimeType::class, [
-                'widget' => 'single_text']);
+            ->add(
+                'deadlineDate',
+                DateTimeType::class,
+                [
+                'widget' => 'single_text']
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults(
+            array(
             'data_class' => EntryTask::class,
             'csrf_protection' => false
-        ));
+            )
+        );
     }
 }

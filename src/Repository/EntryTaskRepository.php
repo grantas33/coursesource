@@ -12,7 +12,6 @@ use App\Entity\EntryTask;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-
 /**
  * @method EntryTask|null find($id, $lockMode = null, $lockVersion = null)
  * @method EntryTask|null findOneBy(array $criteria, array $orderBy = null)
@@ -31,12 +30,13 @@ class EntryTaskRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->andWhere('e.course = :courseId')
             ->andWhere('e.deadlineDate > :currentDate')
-            ->setParameters([
+            ->setParameters(
+                [
                 'courseId' => $courseId,
                 'currentDate' => new \DateTime('now')
-            ])
+                ]
+            )
             ->getQuery()
             ->getResult();
     }
-
 }

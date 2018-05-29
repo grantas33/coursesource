@@ -4,10 +4,13 @@ import { bindActionCreators } from "redux";
 import { fetchDashboard } from "../../../modules/dashboard";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
+import Calendar from "../../Course/Schedule/Calendar/Calendar";
+import { fetchMyCourses } from "../../../modules/courses";
 
 class Dashboard extends React.Component {
   componentWillMount() {
     this.props.fetchDashboard();
+    this.props.fetchMyCourses();
   }
 
   render() {
@@ -32,120 +35,53 @@ class Dashboard extends React.Component {
         />
         <section className="content">
           <div className="row">
-            <div className="col-md-6 col-xs-12">
-              <ul className="timeline">
-                <li className="time-label">
-                  <span className="bg-red">10 Feb. 2014</span>
-                </li>
-                <li>
-                  <i className="fa fa-envelope bg-blue" />
-                  <div className="timeline-item">
-                    <span className="time">
-                      <i className="fa fa-clock-o" /> 12:05
-                    </span>
-                    <h3 className="timeline-header">
-                      <a href="#">Support Team</a> sent you an email
-                    </h3>
-                    <div className="timeline-body">
-                      Etsy doostang zoodles disqus groupon greplin oooj voxy
-                      zoodles, weebly ning heekya handango imeem plugg dopplr
-                      jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
-                      Babblely odeo kaboodle quora plaxo ideeli hulu weebly
-                      balihoo...
-                    </div>
-                    <div className="timeline-footer">
-                      <a className="btn btn-primary btn-xs">Read more</a>
-                      <a className="btn btn-danger btn-xs">Delete</a>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <i className="fa fa-user bg-aqua" />
-                  <div className="timeline-item">
-                    <span className="time">
-                      <i className="fa fa-clock-o" /> 5 mins ago
-                    </span>
-                    <h3 className="timeline-header no-border">
-                      <a href="#">Sarah Young</a> accepted your friend request
-                    </h3>
-                  </div>
-                </li>
-                <li>
-                  <i className="fa fa-comments bg-yellow" />
-                  <div className="timeline-item">
-                    <span className="time">
-                      <i className="fa fa-clock-o" /> 27 mins ago
-                    </span>
-                    <h3 className="timeline-header">
-                      <a href="#">Jay White</a> commented on your post
-                    </h3>
-                    <div className="timeline-body">
-                      Take me to your leader! Switzerland is small and neutral!
-                      We are more like Germany, ambitious and misunderstood!
-                    </div>
-                    <div className="timeline-footer">
-                      <a className="btn btn-warning btn-flat btn-xs">
-                        View comment
-                      </a>
-                    </div>
-                  </div>
-                </li>
-                <li className="time-label">
-                  <span className="bg-green">3 Jan. 2014</span>
-                </li>
-                <li>
-                  <i className="fa fa-camera bg-purple" />
-                  <div className="timeline-item">
-                    <span className="time">
-                      <i className="fa fa-clock-o" /> 2 days ago
-                    </span>
-                    <h3 className="timeline-header">
-                      <a href="#">Mina Lee</a> uploaded new photos
-                    </h3>
-                    <div className="timeline-body" />
-                  </div>
-                </li>
-
-                <li>
-                  <i className="fa fa-video-camera bg-maroon" />
-                  <div className="timeline-item">
-                    <span className="time">
-                      <i className="fa fa-clock-o" /> 5 days ago
-                    </span>
-                    <h3 className="timeline-header">
-                      <a href="#">Mr. Doe</a> shared a video
-                    </h3>
-                    <div className="timeline-body">
-                      <div className="embed-responsive embed-responsive-16by9">
-                        <iframe
-                          className="embed-responsive-item"
-                          src="https://www.youtube.com/embed/tMWkeBIohBs"
-                          frameBorder={0}
-                          allowFullScreen
-                        />
-                      </div>
-                    </div>
-                    <div className="timeline-footer">
-                      <a href="#" className="btn btn-xs bg-maroon">
-                        See comments
-                      </a>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <i className="fa fa-clock-o bg-gray" />
-                </li>
-              </ul>
+            <div className="col-sm-9">
+              <h3>Upcoming events</h3>
+              <Calendar
+                events={[]}
+                view={"week"}
+                views={["month", "week", "day", "agenda"]}
+                toolbar={false}
+                eventStyleGetter={this.eventStyleGetter}
+              />
             </div>
-            <div className="col-md-6 col-xs-12">
-              <h4>Notifications</h4>
-              <div className="box box-warning">
-                <div className="box-header with-border">
-                  <h3 className="box-title">Collapsable</h3>
+            <div className="col-sm-3">
+              <h3>Other info</h3>
+              <div className="small-box bg-red">
+                <div className="inner">
+                  <h3>{this.props.courses.items.filter(c => c.status === "PENDING").length}</h3>
+                  <p>Pending invites</p>
                 </div>
-                <div className="box-body" style={{}}>
-                  The body of the box
+                <div className="icon">
+                  <i className="ion ion-person-add" />
                 </div>
+                <Link to="/main/my-courses" className="small-box-footer">
+                  More info <i className="fa fa-arrow-circle-right" />
+                </Link>
+              </div>
+              <div className="small-box bg-green">
+                <div className="inner">
+                  <h3>{this.props.courses.items.filter(c => c.status === "ACTIVE").length}</h3>
+                  <p>Active courses</p>
+                </div>
+                <div className="icon">
+                  <i className="ion ion-stats-bars" />
+                </div>
+                <Link to="/main/my-courses" className="small-box-footer">
+                  More info <i className="fa fa-arrow-circle-right" />
+                </Link>
+              </div>
+              <div className="small-box bg-blue">
+                <div className="inner">
+                  <h3>{this.props.courses.items.filter(c => c.status === "FINISHED").length}</h3>
+                  <p>Finished courses</p>
+                </div>
+                <div className="icon">
+                  <i className="ion ion-pie-graph" />
+                </div>
+                <Link to="/main/my-courses" className="small-box-footer">
+                  More info <i className="fa fa-arrow-circle-right" />
+                </Link>
               </div>
             </div>
           </div>
@@ -156,13 +92,15 @@ class Dashboard extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  dashboard: state.dashboard
+  dashboard: state.dashboard,
+  courses: state.courses.allMyCourses
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchDashboard
+      fetchDashboard,
+      fetchMyCourses
     },
     dispatch
   );

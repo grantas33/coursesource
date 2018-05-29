@@ -79,7 +79,7 @@ class User extends BaseUser implements JsonSerializable
     protected $plainPassword;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $avatar;
 
@@ -144,7 +144,8 @@ class User extends BaseUser implements JsonSerializable
         return $this;
     }
 
-    public function getCourseUsers(){
+    public function getCourseUsers()
+    {
 
         return $this->courseUsers;
     }

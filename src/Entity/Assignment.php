@@ -73,7 +73,8 @@ class Assignment implements \JsonSerializable
         return $this->id;
     }
 
-    public function setId(int $id){
+    public function setId(int $id)
+    {
 
         $this->id = $id;
     }
@@ -141,7 +142,6 @@ class Assignment implements \JsonSerializable
     public function setCreationDateManually(string $date): void
     {
         $this->creation_date = \DateTime::createFromFormat("Y-m-d H:i:s", $date);
-
     }
 
     public function setCreationDateByDatetime(\DateTimeInterface $date): void

@@ -21,7 +21,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-
 class LectureController extends Controller
 {
 
@@ -32,6 +31,7 @@ class LectureController extends Controller
 
     /**
      * LectureController constructor.
+     *
      * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(EventDispatcherInterface $dispatcher)
@@ -48,37 +48,45 @@ class LectureController extends Controller
         $form = $this->createForm(LectureType::class, $lecture);
         $data = json_decode($request->getContent(), true);
         $teacher = $this->getDoctrine()->getRepository(CourseUser::class)
-            ->findOneBy([
+            ->findOneBy(
+                [
                 'user' => $this->getUser(),
                 'role' => [RoleInterface::TEACHER, RoleInterface::ADMIN],
                 'course' => $data['course'],
                 'status' => StatusInterface::ACTIVE
-            ]);
+                ]
+            );
 
-        if(!$teacher){
-            return new JsonResponse([
+        if (!$teacher) {
+            return new JsonResponse(
+                [
                 'error_message' => 'You do not have permissions to create this lecture'
-            ], Response::HTTP_UNAUTHORIZED);
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
         }
 
         $form->submit($data, false);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $lecture->setTeacher($this->getUser());
             $lecture->setCreationDate();
-        }
-        else{
+        } else {
             $errors = array();
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error)
+                    foreach ($child->getErrors() as $error) {
                         $errors[$child->getName()] = $error->getMessage();
+                    }
                 }
             }
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'error_message' => $errors
-            ], Response::HTTP_BAD_REQUEST);
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         try {
@@ -86,16 +94,20 @@ class LectureController extends Controller
             $em->persist($lecture);
             $em->flush();
             $this->dispatcher->dispatch('lecture.create', new LectureEvent($lecture));
-        }
-        catch (\Exception $e) {
-            return new JsonResponse([
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                [
                 'error_message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-        return new JsonResponse([
+        return new JsonResponse(
+            [
             'success_message' => 'Successfully created new lecture'
-        ], Response::HTTP_CREATED);
-
+            ],
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -108,41 +120,55 @@ class LectureController extends Controller
             ->find($id);
 
         if (!$lecture) {
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'error_message' => 'No lecture found for id '. $id
-            ], Response::HTTP_BAD_REQUEST);
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         $user = $this->getDoctrine()->getRepository(CourseUser::class)
-            ->findOneBy([
+            ->findOneBy(
+                [
                 'user' => $this->getUser(),
                 'course' => $lecture->getCourse(),
-            ]);
+                ]
+            );
 
-        if(!$user){
-            return new JsonResponse([
+        if (!$user) {
+            return new JsonResponse(
+                [
                 'error_message' => 'You do not have permissions to view this lecture'
-            ], Response::HTTP_UNAUTHORIZED);
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
         }
 
-        return new JSONResponse([
+        return new JSONResponse(
+            [
                 $lecture
-        ]);
+            ]
+        );
     }
 
     /**
      * @Route("api/lectures/{id}", name="api_lecture_update", methods="PUT")
      */
-    public function editLecture(int $id, Request $request){
+    public function editLecture(int $id, Request $request)
+    {
 
         $em = $this->getDoctrine()->getManager();
         $lecture = $em->getRepository(Lecture::class)
             ->find($id);
 
         if (!$lecture) {
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'error_message' => 'No lecture found for id '. $id
-            ], Response::HTTP_BAD_REQUEST);
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         $currentCourse = $lecture->getCourse();
@@ -150,55 +176,69 @@ class LectureController extends Controller
         $form = $this->createForm(LectureType::class, $lecture);
         $data = json_decode($request->getContent(), true);
         $teacher = $this->getDoctrine()->getRepository(CourseUser::class)
-            ->findOneBy([
+            ->findOneBy(
+                [
                 'user' => $this->getUser(),
                 'course' => $data['course'],
                 'role' => [RoleInterface::ADMIN, RoleInterface::TEACHER],
                 'status' => StatusInterface::ACTIVE
-            ]);
+                ]
+            );
 
-        if(!$teacher || $data['course'] != $currentCourse->getId()){
-            return new JsonResponse([
+        if (!$teacher || $data['course'] != $currentCourse->getId()) {
+            return new JsonResponse(
+                [
                 'error_message' => 'You do not have permissions to edit this'
-            ], Response::HTTP_UNAUTHORIZED);
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
         }
 
         $form->submit($data, false);
 
-        if(!($form->isSubmitted() && $form->isValid())){
+        if (!($form->isSubmitted() && $form->isValid())) {
             $errors = array();
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error)
+                    foreach ($child->getErrors() as $error) {
                         $errors[$child->getName()] = $error->getMessage();
+                    }
                 }
             }
 
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'error_message' => $errors
-            ], Response::HTTP_BAD_REQUEST);
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         try {
             $em->persist($lecture);
             $em->flush();
             $this->dispatcher->dispatch('lecture.edit', new LectureEvent($lecture));
-        }
-        catch (\Exception $e) {
-            return new JsonResponse([
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                [
                 'error_message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-        return new JsonResponse([
+        return new JsonResponse(
+            [
             'success_message' => 'Successfully updated lecture '. $id
-        ]);
+            ]
+        );
     }
 
     /**
      * @Route("api/lectures", name="api_lecture_filter", methods="GET")
      */
-    public function filterLectures(Request $request){
+    public function filterLectures(Request $request)
+    {
 
         $repository = $this->getDoctrine()->getRepository(Lecture::class);
         $course = $request->query->get('course');
@@ -206,18 +246,23 @@ class LectureController extends Controller
         $is_future = $request->query->get('is_future');
 
         $user = $this->getDoctrine()->getRepository(CourseUser::class)
-            ->findOneBy([
+            ->findOneBy(
+                [
                 'user' => $this->getUser(),
                 'course' => $course,
-            ]);
+                ]
+            );
 
-        if(!$user){
-            return new JsonResponse([
+        if (!$user) {
+            return new JsonResponse(
+                [
                 'error_message' => 'You do not have permissions to view the lectures'
-            ], Response::HTTP_UNAUTHORIZED);
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
         }
 
-        $lectures = $repository->filter($course, $teacher, $is_future) ;
+        $lectures = $repository->filter($course, $teacher, $is_future);
 
         return new JsonResponse(
             $lectures
@@ -227,67 +272,81 @@ class LectureController extends Controller
     /**
      * @Route("api/lectures/{id}", name="api_lecture_delete", methods="DELETE")
      */
-    public function deleteLecture(int $id){
+    public function deleteLecture(int $id)
+    {
 
         $lecture = $this->getDoctrine()
             ->getRepository(Lecture::class)
             ->find($id);
 
         if (!$lecture) {
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'error_message' => 'No lecture found for id '. $id
-            ], Response::HTTP_BAD_REQUEST);
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         $currentCourse = $lecture->getCourse();
         $teacher = $this->getDoctrine()->getRepository(CourseUser::class)
-            ->findOneBy([
+            ->findOneBy(
+                [
                 'user' => $this->getUser(),
                 'course' => $currentCourse,
                 'role' => [RoleInterface::ADMIN, RoleInterface::TEACHER],
                 'status' => StatusInterface::ACTIVE
-            ]);
+                ]
+            );
 
-        if(!$teacher){
-            return new JsonResponse([
+        if (!$teacher) {
+            return new JsonResponse(
+                [
                 'error_message' => 'You do not have permissions to delete this'
-            ], Response::HTTP_UNAUTHORIZED);
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
         }
 
         $em = $this->getDoctrine()->getManager();
         try {
             $em->remove($lecture);
             $em->flush();
-        }
-        catch (\Exception $e) {
-            return new JsonResponse([
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                [
                 'error_message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
-        return new JSONResponse([
+        return new JSONResponse(
+            [
             'success_message' => 'Successfully deleted lecture '. $id
-        ]);
+            ]
+        );
     }
 
     /**
      * @Route("api/lectures/get/last", name="api_lecture_getLast", methods="GET")
      */
-    public function getLastLectures(){
+    public function getLastLectures()
+    {
 
         $userLectures = $this->getDoctrine()
             ->getRepository(CourseUser::class)
             ->findUserLectures($this->getUser());
 
-        usort($userLectures, function($a, $b)
-        {
-            return $a['lecture']->getStartDate() >  $b['lecture']->getStartDate();
-        });
+        usort(
+            $userLectures,
+            function ($a, $b) {
+                return $a['lecture']->getStartDate() >  $b['lecture']->getStartDate();
+            }
+        );
 
         return new JsonResponse(
             array_slice($userLectures, 0, 3)
         );
-
     }
-
 }

@@ -24,9 +24,11 @@ class NotificationController extends Controller
 
         $notifications = $this->getDoctrine()
             ->getRepository(Notification::class)
-            ->findBy([
+            ->findBy(
+                [
                 'user' => $this->getUser()],
-                ['date' => 'DESC']);
+                ['date' => 'DESC']
+            );
 
         return new JSONResponse(
             $notifications
@@ -41,10 +43,12 @@ class NotificationController extends Controller
 
         $notifications = $this->getDoctrine()
             ->getRepository(Notification::class)
-            ->findBy([
+            ->findBy(
+                [
                 'user' => $this->getUser(),
                 'course' => $course],
-                ['date' => 'DESC']);
+                ['date' => 'DESC']
+            );
 
         return new JSONResponse(
             $notifications
@@ -59,10 +63,12 @@ class NotificationController extends Controller
 
         $notifications = $this->getDoctrine()
             ->getRepository(Notification::class)
-            ->findBy([
+            ->findBy(
+                [
                 'user' => $this->getUser()],
                 ['date' => 'DESC'],
-                5);
+                5
+            );
 
         return new JSONResponse(
             $notifications
@@ -78,11 +84,13 @@ class NotificationController extends Controller
 
         $notifications = $this->getDoctrine()
             ->getRepository(Notification::class)
-            ->findBy([
+            ->findBy(
+                [
                 'user' => $this->getUser(),
                 'isSeen' => false],
                 ['date' => 'DESC'],
-                5);
+                5
+            );
 
         foreach ($notifications as $notification) {
             if (!$notification->getIsAcceptable()) {
@@ -94,9 +102,12 @@ class NotificationController extends Controller
         try {
             $em->flush();
         } catch (\Exception $e) {
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'error_message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
         return new JSONResponse(
@@ -113,15 +124,20 @@ class NotificationController extends Controller
 
         $notification = $this->getDoctrine()
             ->getRepository(Notification::class)
-            ->findOneBy([
+            ->findOneBy(
+                [
                 'user' => $this->getUser(),
                 'id' => $id
-            ]);
+                ]
+            );
 
-        if(!$notification){
-            return new JsonResponse([
+        if (!$notification) {
+            return new JsonResponse(
+                [
                 'error_message' => 'Cannot find notification',
-            ], Response::HTTP_BAD_REQUEST);
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         $notification->setIsSeen(true);
@@ -130,14 +146,18 @@ class NotificationController extends Controller
             $em->persist($notification);
             $em->flush();
         } catch (\Exception $e) {
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'error_message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
-        return new JSONResponse([
+        return new JSONResponse(
+            [
             'success_message' => 'Successfully read the notification'
-        ]);
+            ]
+        );
     }
-
 }

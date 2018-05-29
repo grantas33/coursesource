@@ -12,7 +12,9 @@ const MyCourseItem = props => (
           src="https://www.designrepublic.com/11094-cart_default/krossing-100x100-cm.jpg"
         />
         <div className="course-text">
-          <h3 id="course-title" className="widget-user-username">{props.courseInfo.course.title}</h3>
+          <h3 id="course-title" className="widget-user-username">
+            {props.courseInfo.course.title}
+          </h3>
           <p>{props.courseInfo.course.slogan}</p>
         </div>
       </div>
@@ -41,9 +43,16 @@ const MyCourseItem = props => (
             </a>
           </li>
           <li>
-            <Link to={`/course/${props.courseInfo.course.id}`}>
-              <button className="btn btn-info">Open course</button>
-            </Link>
+            {props.courseInfo.status === "PENDING" ? (
+              <div>
+                <button className="btn btn-success">Accept invitation</button>
+                <button className="btn btn-danger">Decline invitation</button>
+              </div>
+            ) : (
+              <Link to={`/course/${props.courseInfo.course.id}`}>
+                <button className="btn btn-info">Open course</button>
+              </Link>
+            )}
           </li>
         </ul>
       </div>

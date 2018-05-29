@@ -161,6 +161,6 @@ class CourseUser implements \JsonSerializable
         'tag' => $this->tag,
         'status' => $this->status,
         'isNotifiable' => $this->isNotifiable
-    ];
+        ];
     }
 }

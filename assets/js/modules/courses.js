@@ -58,13 +58,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
         allMyCourses: {
-          loading: true
+          loading: true,
+          items: []
         }
       };
     case FETCH_MYCOURSES_ERROR:
       return {
         ...state,
         allMyCourses: {
+          ...state.allMyCourses,
           loading: false,
           error: true
         }

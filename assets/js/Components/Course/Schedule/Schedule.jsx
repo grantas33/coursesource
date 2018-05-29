@@ -44,7 +44,8 @@ class Schedule extends React.Component {
     return (
       <div>
         <Calendar 
-          events={events} 
+          events={events}
+          views={['month', 'week', 'day', 'agenda']}
           eventStyleGetter={this.eventStyleGetter}
         />
       </div>
