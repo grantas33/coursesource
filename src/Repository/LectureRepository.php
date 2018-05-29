@@ -28,20 +28,20 @@ class LectureRepository extends ServiceEntityRepository
 
         $qb = $this->createQueryBuilder('l')
             ->andWhere('l.course = :course')
-                ->setParameter('course', $course);
+            ->setParameter('course', $course);
 
-        if(!empty($teacher)){
+        if(!empty($teacher)) {
             $qb->andWhere('l.teacher = :teacher')
                 ->setParameter('teacher', $teacher);
         }
-        if($is_future){
+        if($is_future) {
             $qb->andWhere('l.end_date >= :today')
                 ->setParameter('today', new \DateTime('now'));
         }
 
         return $qb->orderBy('l.start_date', 'ASC')
-        ->getQuery()
-        ->getResult();
+            ->getQuery()
+            ->getResult();
     }
 
 

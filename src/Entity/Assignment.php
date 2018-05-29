@@ -73,7 +73,8 @@ class Assignment implements \JsonSerializable
         return $this->id;
     }
 
-    public function setId(int $id){
+    public function setId(int $id)
+    {
 
         $this->id = $id;
     }

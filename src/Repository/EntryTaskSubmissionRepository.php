@@ -31,15 +31,20 @@ class EntryTaskSubmissionRepository extends ServiceEntityRepository
     {
         $qb =  $this->createQueryBuilder('s');
 
-        $qb->leftJoin(EntryTaskGrade::class, 'g', 'WITH',
+        $qb->leftJoin(
+            EntryTaskGrade::class, 'g', 'WITH',
             $qb->expr()->andX(
                 $qb->expr()->eq('s.student', 'g.student'),
-                $qb->expr()->eq('s.course', 'g.course')))
+                $qb->expr()->eq('s.course', 'g.course')
+            )
+        )
             ->select(['s as submission', 'g.score', 'g.gradingDate'])
             ->andWhere('s.course = :courseId')
-            ->setParameters([
+            ->setParameters(
+                [
                 'courseId' => $courseId,
-            ]);
+                ]
+            );
 
         return $qb->getQuery()->getResult();
     }

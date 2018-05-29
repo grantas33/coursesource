@@ -22,20 +22,25 @@ class LectureType extends AbstractType
             ->add('title')
             ->add('description')
             ->add('course')
-            ->add('start_date', DateTimeType::class, array(
-                'widget' => 'single_text'))
-            ->add('end_date', DateTimeType::class, array(
-                'widget' => 'single_text'))
+            ->add(
+                'start_date', DateTimeType::class, array(
+                'widget' => 'single_text')
+            )
+            ->add(
+                'end_date', DateTimeType::class, array(
+                'widget' => 'single_text')
+            )
             ->add('preparation_tasks')
-            ->add('location')
-        ;
+            ->add('location');
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults(
+            array(
             'data_class' => Lecture::class,
             'csrf_protection' => false
-        ));
+            )
+        );
     }
 }

@@ -26,7 +26,8 @@ class DefaultController extends Controller
     /**
      * @Route("/api/data", name="data-getter")
      */
-    public function dataAction(){
+    public function dataAction()
+    {
         return new JsonResponse(['title' => 'HElloo']);
     }
 }

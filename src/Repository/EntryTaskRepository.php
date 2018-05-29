@@ -31,10 +31,12 @@ class EntryTaskRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->andWhere('e.course = :courseId')
             ->andWhere('e.deadlineDate > :currentDate')
-            ->setParameters([
+            ->setParameters(
+                [
                 'courseId' => $courseId,
                 'currentDate' => new \DateTime('now')
-            ])
+                ]
+            )
             ->getQuery()
             ->getResult();
     }

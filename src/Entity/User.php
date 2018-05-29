@@ -144,7 +144,8 @@ class User extends BaseUser implements JsonSerializable
         return $this;
     }
 
-    public function getCourseUsers(){
+    public function getCourseUsers()
+    {
 
         return $this->courseUsers;
     }
