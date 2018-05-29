@@ -40,7 +40,6 @@ before_script:
 
 script:
   - cd $TRAVIS_BUILD_DIR && vendor/bin/phpcs -p --standard=PSR2 --extensions=php ./src
-  - cd $TRAVIS_BUILD_DIR && bin/phpunit
   - cd $TRAVIS_BUILD_DIR/acceptance-tests && vendor/bin/codecept run --debug
 
 after_failure:
