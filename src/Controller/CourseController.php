@@ -575,6 +575,67 @@ class CourseController extends Controller
     }
 
     /**
+     * @Route("api/courses/{id}/declinesubmission", name="api_course_declineSubmission", methods="DELETE")
+     */
+    public function declineSubmission(int $id, Request $request){
+
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'No course found for id '.$id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if(!$course->isAdmin($this->getUser())){
+            return new JsonResponse([
+                'error_message' => 'You do not have the rights to decline the submission'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->find($data['user_id']);
+
+        if(!$user){
+            return new JsonResponse([
+                'error_message' => 'User does not exist'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $courseUser = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy([
+                'user'=>$user,
+                'course'=>$course,
+                'status'=>StatusInterface::PENDING]);
+
+        if(!$courseUser){
+            return new JsonResponse([
+                'error_message' => 'User does not participate in this course or has not submitted an application'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($courseUser);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse([
+            'success_message' => 'Successfully declined the submission'
+        ]);
+    }
+
+    /**
      * @Route("api/courses/{id}/acceptinvitation", name="api_course_acceptInvitation", methods="PUT")
      */
     public function acceptInvitation(int $id){
@@ -617,6 +678,48 @@ class CourseController extends Controller
         }
         return new JsonResponse([
             'success_message' => 'Successfully accepted invitation to course '.$id
+        ]);
+    }
+
+    /**
+     * @Route("api/courses/{id}/declineinvitation", name="api_course_declineInvitation", methods="DELETE")
+     */
+    public function declineInvitation(int $id){
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($id);
+
+        if(!$course){
+            return new JsonResponse([
+                'error_message' => 'No course found for id '.$id
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->getDoctrine()
+            ->getRepository(CourseUser::class)
+            ->findOneBy([
+                'user'=>$this->getUser(),
+                'course'=>$course,
+                'status'=>StatusInterface::INVITED]);
+
+        if(!$user){
+            return new JsonResponse([
+                'error_message' => 'No invitation to decline'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($user);
+            $em->flush();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse([
+            'success_message' => 'Successfully declined invitation to course '.$id
         ]);
     }
 
