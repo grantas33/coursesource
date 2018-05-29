@@ -8,7 +8,6 @@
 
 namespace App\Interfaces;
 
-
 interface StatusInterface
 {
     public const ACTIVE = 'ACTIVE';

@@ -12,7 +12,6 @@ use App\Entity\EntryTask;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-
 /**
  * @method EntryTask|null find($id, $lockMode = null, $lockVersion = null)
  * @method EntryTask|null findOneBy(array $criteria, array $orderBy = null)
@@ -40,5 +39,4 @@ class EntryTaskRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
 }

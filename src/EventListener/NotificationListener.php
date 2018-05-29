@@ -8,7 +8,6 @@
 
 namespace App\EventListener;
 
-
 use App\Entity\Notification;
 use App\Event\AssignmentEvent;
 use App\Event\CourseEvent;
@@ -129,8 +128,8 @@ class NotificationListener extends Controller
 
         $this->entityManager->persist($notification);
 
-        foreach($course->getCourseUsers() as $courseUser){
-            if($courseUser->isActiveAdmin() && $courseUser->getUser() != $user) {
+        foreach ($course->getCourseUsers() as $courseUser) {
+            if ($courseUser->isActiveAdmin() && $courseUser->getUser() != $user) {
                 $notification = new Notification();
 
                 $notification->setUser($courseUser->getUser());
@@ -259,5 +258,4 @@ class NotificationListener extends Controller
             }
         }
     }
-
 }

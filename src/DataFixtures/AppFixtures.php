@@ -18,12 +18,10 @@ class AppFixtures extends Fixture
     {
         $loader = new NativeLoader();
         $objectSet = $loader->loadFile(__DIR__.'/fixtures.yml')->getObjects();
-        foreach($objectSet as $object) {
+        foreach ($objectSet as $object) {
             $manager->persist($object);
         }
 
         $manager->flush();
     }
-
 }
-

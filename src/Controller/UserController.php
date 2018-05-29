@@ -102,19 +102,19 @@ class UserController extends Controller
         $form->setData($user);
         $form->submit($data);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $event = new FormEvent($form, $request);
             $this->dispatcher->dispatch(
-                FOSUserEvents::REGISTRATION_SUCCESS, $event
+                FOSUserEvents::REGISTRATION_SUCCESS,
+                $event
             );
             $user->setEnabled(true);
-        }
-        else{
+        } else {
             $errors = array();
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error) {
+                    foreach ($child->getErrors() as $error) {
                         $errors[$child->getName()] = $error->getMessage();
                     }
                 }
@@ -122,26 +122,27 @@ class UserController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => $errors
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
         try {
             $this->userManager->updateUser($user);
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             return new JsonResponse(
                 [
                 'error_message' => $e->getMessage()
-                ], Response::HTTP_INTERNAL_SERVER_ERROR
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
         return new JsonResponse(
             [
             'success_message' => 'Successfully registered new user'
-            ], Response::HTTP_CREATED
+            ],
+            Response::HTTP_CREATED
         );
-
     }
 
     /**
@@ -161,7 +162,8 @@ class UserController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => 'Bad credentials'
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -172,7 +174,8 @@ class UserController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => 'Bad credentials'
-                ], Response::HTTP_UNAUTHORIZED
+                ],
+                Response::HTTP_UNAUTHORIZED
             );
         }
 
@@ -190,7 +193,7 @@ class UserController extends Controller
      */
     public function getCurrentUser()
     {
-        if($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY') ) {
+        if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
             $user = $this->tokenStorage->getToken()->getUser();
             return new JsonResponse(
                 $user
@@ -199,7 +202,8 @@ class UserController extends Controller
         return new JsonResponse(
             [
             'error_message' => 'Cannot retrieve the user'
-            ], Response::HTTP_UNAUTHORIZED
+            ],
+            Response::HTTP_UNAUTHORIZED
         );
     }
 
@@ -209,11 +213,12 @@ class UserController extends Controller
     public function getUserById($id)
     {
         $user = $this->userManager->findUserBy(array('id'=>$id));
-        if(!$user) {
+        if (!$user) {
             return new JsonResponse(
                 [
                 'error_message' => 'No user for id '.$id
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
         return new JsonResponse(
@@ -267,5 +272,4 @@ class UserController extends Controller
         }
         return $now->format('U');
     }
-
 }

@@ -7,6 +7,7 @@
  */
 
 namespace App\Form;
+
 use App\Entity\Lecture;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -23,11 +24,15 @@ class LectureType extends AbstractType
             ->add('description')
             ->add('course')
             ->add(
-                'start_date', DateTimeType::class, array(
+                'start_date',
+                DateTimeType::class,
+                array(
                 'widget' => 'single_text')
             )
             ->add(
-                'end_date', DateTimeType::class, array(
+                'end_date',
+                DateTimeType::class,
+                array(
                 'widget' => 'single_text')
             )
             ->add('preparation_tasks')

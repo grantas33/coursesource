@@ -8,7 +8,6 @@
 
 namespace App\Interfaces;
 
-
 interface RoleInterface
 {
     public const ADMIN = 'ADMIN';

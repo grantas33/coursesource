@@ -105,7 +105,8 @@ class NotificationController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => $e->getMessage(),
-                ], Response::HTTP_INTERNAL_SERVER_ERROR
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
@@ -130,11 +131,12 @@ class NotificationController extends Controller
                 ]
             );
 
-        if(!$notification) {
+        if (!$notification) {
             return new JsonResponse(
                 [
                 'error_message' => 'Cannot find notification',
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -147,7 +149,8 @@ class NotificationController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => $e->getMessage(),
-                ], Response::HTTP_INTERNAL_SERVER_ERROR
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
@@ -157,5 +160,4 @@ class NotificationController extends Controller
             ]
         );
     }
-
 }

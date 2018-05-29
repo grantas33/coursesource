@@ -29,11 +29,11 @@ class AssignmentRepository extends ServiceEntityRepository
             ->andWhere('a.course = :course')
             ->setParameter('course', $course);
 
-        if(!empty($teacher)) {
+        if (!empty($teacher)) {
             $qb->andWhere('a.teacher = :teacher')
                 ->setParameter('teacher', $teacher);
         }
-        if($is_future) {
+        if ($is_future) {
             $qb->andWhere('a.deadline_date >= :today')
                 ->setParameter('today', new \DateTime('now'));
         }

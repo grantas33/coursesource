@@ -31,7 +31,10 @@ class CourseUserRepository extends ServiceEntityRepository
             $qbTeacher = $qbTeacher->select('l as lecture, cu.role')
                 ->innerJoin(Course::class, 'c', 'WITH', 'cu.course = c.id')
                 ->innerJoin(
-                    Lecture::class, 'l', 'WITH', $qbTeacher->expr()->andX(
+                    Lecture::class,
+                    'l',
+                    'WITH',
+                    $qbTeacher->expr()->andX(
                         $qbTeacher->expr()->eq('l.course', 'c.id'),
                         $qbTeacher->expr()->eq('l.teacher', ':user')
                     )
@@ -76,7 +79,10 @@ class CourseUserRepository extends ServiceEntityRepository
         $qbTeacher = $qbTeacher->select('a as assignment, cu.role')
             ->innerJoin(Course::class, 'c', 'WITH', 'cu.course = c.id')
             ->innerJoin(
-                Assignment::class, 'a', 'WITH', $qbTeacher->expr()->andX(
+                Assignment::class,
+                'a',
+                'WITH',
+                $qbTeacher->expr()->andX(
                     $qbTeacher->expr()->eq('a.course', 'c.id'),
                     $qbTeacher->expr()->eq('a.teacher', ':user')
                 )
@@ -113,5 +119,4 @@ class CourseUserRepository extends ServiceEntityRepository
 
         return array_merge($qbStudent->getQuery()->getResult(), $qbTeacher->getQuery()->getResult());
     }
-
 }

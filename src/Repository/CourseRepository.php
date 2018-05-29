@@ -29,12 +29,12 @@ class CourseRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('c');
         $query = $query->andWhere('c.is_public = :true')
             ->setParameter('true', true);
-        if($courses) {
+        if ($courses) {
             $query = $query->andWhere('c.id NOT IN (:courses)')
                 ->setParameter('courses', $courses);
         }
 
-        if($search != '') {
+        if ($search != '') {
             $query = $query->andWhere('c.title LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
         }
@@ -51,7 +51,7 @@ class CourseRepository extends ServiceEntityRepository
         $query = $query->andWhere('c.is_public = :true')
             ->setParameter('true', true);
 
-        if($search != '') {
+        if ($search != '') {
             $query = $query->andWhere('c.title LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
         }
@@ -77,7 +77,7 @@ class CourseRepository extends ServiceEntityRepository
             );
 
         $diary = $qb->getQuery()->getResult();
-        foreach($diary as $key => $stud){
+        foreach ($diary as $key => $stud) {
             $submissions = $this->findStudentAssignmentDiary($course, $stud);
             $diary[$key] = array_merge($diary[$key], $submissions);
         }
@@ -137,6 +137,4 @@ class CourseRepository extends ServiceEntityRepository
 
         return $qbSubs->getQuery()->getResult();
     }
-
-
 }

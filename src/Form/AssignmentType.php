@@ -7,6 +7,7 @@
  */
 
 namespace App\Form;
+
 use App\Entity\Assignment;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\AbstractType;
@@ -23,7 +24,9 @@ class AssignmentType extends AbstractType
             ->add('description')
             ->add('course')
             ->add(
-                'deadline_date', DateTimeType::class, array(
+                'deadline_date',
+                DateTimeType::class,
+                array(
                 'widget' => 'single_text')
             )
             ->add('is_gradeable', CheckboxType::class)

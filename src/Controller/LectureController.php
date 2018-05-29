@@ -21,7 +21,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-
 class LectureController extends Controller
 {
 
@@ -58,26 +57,26 @@ class LectureController extends Controller
                 ]
             );
 
-        if(!$teacher) {
+        if (!$teacher) {
             return new JsonResponse(
                 [
                 'error_message' => 'You do not have permissions to create this lecture'
-                ], Response::HTTP_UNAUTHORIZED
+                ],
+                Response::HTTP_UNAUTHORIZED
             );
         }
 
         $form->submit($data, false);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $lecture->setTeacher($this->getUser());
             $lecture->setCreationDate();
-        }
-        else{
+        } else {
             $errors = array();
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error) {
+                    foreach ($child->getErrors() as $error) {
                         $errors[$child->getName()] = $error->getMessage();
                     }
                 }
@@ -85,7 +84,8 @@ class LectureController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => $errors
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -94,20 +94,20 @@ class LectureController extends Controller
             $em->persist($lecture);
             $em->flush();
             $this->dispatcher->dispatch('lecture.create', new LectureEvent($lecture));
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(
                 [
                 'error_message' => $e->getMessage(),
-                ], Response::HTTP_INTERNAL_SERVER_ERROR
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
         return new JsonResponse(
             [
             'success_message' => 'Successfully created new lecture'
-            ], Response::HTTP_CREATED
+            ],
+            Response::HTTP_CREATED
         );
-
     }
 
     /**
@@ -123,7 +123,8 @@ class LectureController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => 'No lecture found for id '. $id
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -135,11 +136,12 @@ class LectureController extends Controller
                 ]
             );
 
-        if(!$user) {
+        if (!$user) {
             return new JsonResponse(
                 [
                 'error_message' => 'You do not have permissions to view this lecture'
-                ], Response::HTTP_UNAUTHORIZED
+                ],
+                Response::HTTP_UNAUTHORIZED
             );
         }
 
@@ -164,7 +166,8 @@ class LectureController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => 'No lecture found for id '. $id
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -182,22 +185,23 @@ class LectureController extends Controller
                 ]
             );
 
-        if(!$teacher || $data['course'] != $currentCourse->getId()) {
+        if (!$teacher || $data['course'] != $currentCourse->getId()) {
             return new JsonResponse(
                 [
                 'error_message' => 'You do not have permissions to edit this'
-                ], Response::HTTP_UNAUTHORIZED
+                ],
+                Response::HTTP_UNAUTHORIZED
             );
         }
 
         $form->submit($data, false);
 
-        if(!($form->isSubmitted() && $form->isValid())) {
+        if (!($form->isSubmitted() && $form->isValid())) {
             $errors = array();
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error) {
+                    foreach ($child->getErrors() as $error) {
                         $errors[$child->getName()] = $error->getMessage();
                     }
                 }
@@ -206,7 +210,8 @@ class LectureController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => $errors
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -214,12 +219,12 @@ class LectureController extends Controller
             $em->persist($lecture);
             $em->flush();
             $this->dispatcher->dispatch('lecture.edit', new LectureEvent($lecture));
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(
                 [
                 'error_message' => $e->getMessage(),
-                ], Response::HTTP_INTERNAL_SERVER_ERROR
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
         return new JsonResponse(
@@ -248,11 +253,12 @@ class LectureController extends Controller
                 ]
             );
 
-        if(!$user) {
+        if (!$user) {
             return new JsonResponse(
                 [
                 'error_message' => 'You do not have permissions to view the lectures'
-                ], Response::HTTP_UNAUTHORIZED
+                ],
+                Response::HTTP_UNAUTHORIZED
             );
         }
 
@@ -277,7 +283,8 @@ class LectureController extends Controller
             return new JsonResponse(
                 [
                 'error_message' => 'No lecture found for id '. $id
-                ], Response::HTTP_BAD_REQUEST
+                ],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -292,11 +299,12 @@ class LectureController extends Controller
                 ]
             );
 
-        if(!$teacher) {
+        if (!$teacher) {
             return new JsonResponse(
                 [
                 'error_message' => 'You do not have permissions to delete this'
-                ], Response::HTTP_UNAUTHORIZED
+                ],
+                Response::HTTP_UNAUTHORIZED
             );
         }
 
@@ -304,12 +312,12 @@ class LectureController extends Controller
         try {
             $em->remove($lecture);
             $em->flush();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(
                 [
                 'error_message' => $e->getMessage(),
-                ], Response::HTTP_INTERNAL_SERVER_ERROR
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
@@ -331,7 +339,8 @@ class LectureController extends Controller
             ->findUserLectures($this->getUser());
 
         usort(
-            $userLectures, function ($a, $b) {
+            $userLectures,
+            function ($a, $b) {
                 return $a['lecture']->getStartDate() >  $b['lecture']->getStartDate();
             }
         );
@@ -339,7 +348,5 @@ class LectureController extends Controller
         return new JsonResponse(
             array_slice($userLectures, 0, 3)
         );
-
     }
-
 }
