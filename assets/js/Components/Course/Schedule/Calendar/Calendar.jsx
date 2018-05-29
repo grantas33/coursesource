@@ -18,10 +18,12 @@ const Calendar = props => (
   <div>
     <BigCalendar 
       events={props.events} 
-      views={['month', 'week', 'day', 'agenda']} 
+      views={props.views} 
       step={60} 
       defaultDate={new Date()}
       eventPropGetter={(props.eventStyleGetter)}
+      defaultView={props.view}
+      toolbar={props.toolbar}
     />
       
   </div>

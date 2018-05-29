@@ -1,8 +1,7 @@
 import axios from "axios";
 
-export const FETCH_DASHBOARD_STARTED = "DASHBOARD/FETCH_DASHBOARD_STARTED";
-export const FETCH_DASHBOARD_ERROR = "DASHBOARD/FETCH_DASHBOARD_ERROR";
-export const FETCH_DASHBOARD_RECEIVED = "DASHBOARD/FETCH_DASHBOARD_RECEIVED";
+export const FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED = "DASHBOARD/FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED";
+export const FETCH_DASHBOARD_LECTURES_RECEIVED = "DASHBOARD/FETCH_DASHBOARD_LECTURES_RECEIVED";
 
 axios.defaults.baseURL = "/";
 
@@ -14,24 +13,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_DASHBOARD_STARTED:
-      return {
-        ...state,
-        loading: true,
-        error: false
-      };
-    case FETCH_DASHBOARD_ERROR:
+    case FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED:
       return {
         ...state,
         loading: false,
-        error: true
-      };
-    case FETCH_DASHBOARD_RECEIVED:
-      return {
-        ...state,
-        items: action.payload,
-        loading: false,
-        error: false
+        assignments: action.payload,
       };
     default:
       return state;
@@ -39,18 +25,15 @@ export default (state = initialState, action) => {
 };
 
 export const fetchDashboard = () => dispatch => {
-  dispatch({
-    type: FETCH_DASHBOARD_STARTED
-  });
   axios
-    .get("api/DASHBOARD", {
+    .get("api/assignments/get/last", {
       headers: {
         Authorization: "Bearer " + window.localStorage.getItem("userToken")
       }
     })
     .then(res => {
       dispatch({
-        type: FETCH_DASHBOARD_RECEIVED,
+        type: FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED,
         payload: res.data
       });
     })
@@ -59,8 +42,23 @@ export const fetchDashboard = () => dispatch => {
         window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
       }
+    });
+  axios
+    .get("api/lectures/get/last", {
+      headers: {
+        Authorization: "Bearer " + window.localStorage.getItem("userToken")
+      }
+    })
+    .then(res => {
       dispatch({
-        type: FETCH_DASHBOARD_ERROR
+        type: FETCH_DASHBOARD_LECTURES_RECEIVED,
+        payload: res.data
       });
+    })
+    .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        window.localStorage.removeItem("userToken");
+        dispatch(push("/login"));
+      }
     });
 };
