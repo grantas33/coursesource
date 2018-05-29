@@ -18,6 +18,7 @@ use App\Form\CourseType;
 use App\Interfaces\CourseSortInterface;
 use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
+use App\Services\CourseService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,14 +42,23 @@ class CourseController extends Controller
     private $dispatcher;
 
     /**
+     * @var CourseService
+     */
+    private $courseService;
+
+    /**
      * CourseController constructor.
      * @param ValidatorInterface $validator
      * @param EventDispatcherInterface $dispatcher
+     * @param CourseService $courseService
      */
-    public function __construct(ValidatorInterface $validator, EventDispatcherInterface $dispatcher)
+    public function __construct(ValidatorInterface $validator, EventDispatcherInterface $dispatcher,
+        CourseService $courseService)
     {
         $this->validator = $validator;
         $this->dispatcher = $dispatcher;
+        $this->courseService = $courseService;
+
     }
 
     /**
@@ -248,7 +258,7 @@ class CourseController extends Controller
             ->getRepository(Course::class)
             ->findPublicCourses($search, $offset, $limit);
 
-        $courses = $this->sortCourses($sort, $courses);
+        $courses = $this->courseService->sortCourses($sort, $courses);
 
         return new JSONResponse(
             $courses
@@ -280,20 +290,6 @@ class CourseController extends Controller
             $browseCourses
         );
     }
-
-    private function sortCourses($sort, $courses){
-
-        if(in_array($sort, CourseSortInterface::PARAMETERS)){
-            $method = 'get' . ucfirst($sort);
-            usort($courses, function($a, $b) use($method)
-            {
-                return $a->$method() < $b->$method();
-            });
-        }
-
-        return $courses;
-    }
-
 
     /**
      * @Route("api/courses/{id}", name="api_course_delete", methods="DELETE")

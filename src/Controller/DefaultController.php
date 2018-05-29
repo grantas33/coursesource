@@ -23,10 +23,4 @@ class DefaultController extends Controller
         return $this->render('index.html.twig', []);
     }
 
-    /**
-     * @Route("/api/data", name="data-getter")
-     */
-    public function dataAction(){
-        return new JsonResponse(['title' => 'HElloo']);
-    }
 }
