@@ -201,7 +201,29 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("api/user/course/{courseId}", name="api_user_getAll", methods="GET")
+     * @Route("api/user/get/all", name="api_user_getAll", methods="GET")
+     */
+    public function getAllUsers(Request $request)
+    {
+
+        $query = $request->query->get('query');
+
+        $users = $this->getDoctrine()->getRepository(User::class)
+            ->filter($query);
+
+        if(count($users) >= 21) {
+            return new JsonResponse([
+                'error_message' => 'Search query too broad. '
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse(
+            $users
+        );
+    }
+
+    /**
+     * @Route("api/user/course/{courseId}", name="api_user_getAllFromCourse", methods="GET")
      */
     public function getAllUsersFromCourse(int $courseId){
         $courseUsers = $this->getDoctrine()->getRepository(CourseUser::class)

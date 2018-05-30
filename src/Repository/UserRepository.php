@@ -19,4 +19,21 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function filter($query)
+    {
+
+        $qb = $this->createQueryBuilder('u');
+           $qb = $qb->where(
+                 $qb->expr()->like(
+                     $qb->expr()->concat(
+                         $qb->expr()->concat('u.name', ':space'), 'u.surname'),
+                            ':query'))
+            ->setParameter('query', '%'.$query.'%')
+            ->setParameter('space', ' ')
+            ->setMaxResults(21)
+            ->orderBy('u.name');
+
+        return $qb->getQuery()->getResult();
+    }
+
 }
