@@ -33,13 +33,16 @@ install:
   - cd $TRAVIS_BUILD_DIR/acceptance-tests && composer install
 
 before_script:
+# Get the token from github and put it in travis repo under GITHUB_COMPOSER_AUTH ENV variable, then uncomment line below.
+#  - composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH
   - cd $TRAVIS_BUILD_DIR && yarn run encore production
   - cd $TRAVIS_BUILD_DIR && bin/console doctrine:database:create
   - cd $TRAVIS_BUILD_DIR && bin/console doctrine:migrations:migrate --allow-no-migration --no-interaction
   - (php -S 172.17.0.1:8000 -t public &> /dev/null) &
 
 script:
-  - cd $TRAVIS_BUILD_DIR && vendor/bin/phpcs -p --standard=PSR2 --extensions=php ./src
+  - vendor/bin/phpcs -p --standard=PSR2 --extensions=php ./src --ignore=./src/Migrations
+  - cd $TRAVIS_BUILD_DIR && bin/phpunit
   - cd $TRAVIS_BUILD_DIR/acceptance-tests && vendor/bin/codecept run --debug --env=live
 
 after_failure:

@@ -51,7 +51,7 @@ export const fetchUsers = courseId => dispatch => {
     type: FETCH_USERS_STARTED
   });
   axios
-    .get("api/user?course=" + courseId, {
+    .get("api/user/course/" + courseId, {
       headers: {
         Authorization: "Bearer " + window.localStorage.getItem("userToken")
       }

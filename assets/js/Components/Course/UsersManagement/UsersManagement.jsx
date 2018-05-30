@@ -56,10 +56,10 @@ class UsersManagement extends React.Component {
                       </tr>
                       {this.props.users.items.map(user => {
                         return (
-                          <tr key={user.id}>
-                            <td>{user.avatar}</td>
-                            <td>{user.name + " " + user.surname}</td>
-                            <td>{user.email}</td>
+                          <tr key={user.user.id}>
+                            <td>{user.user.avatar}</td>
+                            <td>{user.user.name + " " + user.user.surname}</td>
+                            <td>{user.user.email}</td>
                             <td>
                               <span className="label label-success">Admin</span>
                             </td>
@@ -72,7 +72,7 @@ class UsersManagement extends React.Component {
                                   this.props.history.push(
                                     `/course/${
                                       this.props.match.params.course
-                                    }/users-management/${user.id}`
+                                    }/users-management/${user.user.id}`
                                   )
                                 }
                                 className="btn-info"

@@ -41,8 +41,7 @@ class CourseController extends Controller
 
     /**
      * CourseController constructor.
-     *
-     * @param ValidatorInterface       $validator
+     * @param ValidatorInterface $validator
      * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(ValidatorInterface $validator, EventDispatcherInterface $dispatcher)
@@ -72,12 +71,9 @@ class CourseController extends Controller
             }
 
             if (count($errors) > 0) {
-                return new JsonResponse(
-                    [
+                return new JsonResponse([
                     'error_message' => $jsonErrors,
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
+                ], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -97,19 +93,13 @@ class CourseController extends Controller
             $em->flush();
             $this->dispatcher->dispatch('course.join', new CourseEvent($course, $this->getUser()));
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                      'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+               ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(
-            [
+        return new JsonResponse([
             $course
-            ],
-            Response::HTTP_CREATED
-        );
+        ], Response::HTTP_CREATED);
     }
 
     /**
@@ -123,38 +113,28 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '. $id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if (!$course->getIsPublic()) {
             $isCourseVisible = $this->getDoctrine()
                 ->getRepository(CourseUser::class)
-                ->findOneBy(
-                    array(
+                ->findOneBy(array(
                     'user'=>$this->getUser(),
-                    'course'=>$course)
-                );
+                    'course'=>$course));
 
             if (!$isCourseVisible) {
-                return new JsonResponse(
-                    [
+                return new JsonResponse([
                     'error_message' => 'No permissions to view course '. $id
-                    ],
-                    Response::HTTP_UNAUTHORIZED
-                );
+                ], Response::HTTP_UNAUTHORIZED);
             }
         }
 
-        return new JSONResponse(
-            [
+        return new JSONResponse([
             $course
-            ]
-        );
+        ]);
     }
 
     /**
@@ -168,21 +148,15 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '. $id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if (!$course->isAdmin($this->getUser())) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'You do not have the rights to edit this course'
-                ],
-                Response::HTTP_UNAUTHORIZED
-            );
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $form = $this->createForm(CourseType::class, $course);
@@ -200,30 +174,22 @@ class CourseController extends Controller
                 }
             }
 
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $errors
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         try {
             $em->persist($course);
             $em->flush();
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(
-            [
+        return new JsonResponse([
             'success_message' => 'Successfully updated course '. $id
-            ]
-        );
+        ]);
     }
 
     /**
@@ -250,20 +216,15 @@ class CourseController extends Controller
 
         $courseUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user' => $this->getUser(),
                 'course' => $id
-                ]
-            );
+            ]);
 
         if (!$courseUser) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'You do not participate in course '. $id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         return new JSONResponse(
@@ -276,7 +237,7 @@ class CourseController extends Controller
      */
     public function getPublicCourses(Request $request)
     {
-        // for unregistered users
+  // for unregistered users
 
         $search = $request->query->get('query');
         $offset = $request->query->get('offset');
@@ -310,8 +271,8 @@ class CourseController extends Controller
         $limit = $request->query->get('limit');
         $sort = $request->query->get('sortBy');
 
-        $browseCourses = $this->getDoctrine()
-            ->getRepository(Course::class)
+        $browseCourses = $this->getDoctrine()->
+            getRepository(Course::class)
             ->findBrowseCourses($courses, $search, $offset, $limit);
 
         $browseCourses = $this->sortCourses($sort, $browseCourses);
@@ -326,12 +287,9 @@ class CourseController extends Controller
 
         if (in_array($sort, CourseSortInterface::PARAMETERS)) {
             $method = 'get' . ucfirst($sort);
-            usort(
-                $courses,
-                function ($a, $b) use ($method) {
-                    return $a->$method() < $b->$method();
-                }
-            );
+            usort($courses, function ($a, $b) use ($method) {
+                return $a->$method() < $b->$method();
+            });
         }
 
         return $courses;
@@ -349,21 +307,15 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '. $id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if (!$course->isAdmin($this->getUser())) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'You do not have the rights to edit this course'
-                ],
-                Response::HTTP_UNAUTHORIZED
-            );
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -372,19 +324,14 @@ class CourseController extends Controller
             $em->flush();
             $this->dispatcher->dispatch('course.leave', new CourseEvent($course, $this->getUser()));
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return new JSONResponse(
-            [
+        return new JSONResponse([
             'success_message' => 'Successfully deleted course '. $id
-            ]
-        );
+        ]);
     }
 
     /**
@@ -398,29 +345,21 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course || !$course->getIsPublic()) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'This course is not open for applications'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $user = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user'=>$this->getUser(),
-                'course'=>$course]
-            );
+                'course'=>$course]);
 
         if ($user) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'Already submitted an application, joined or got invited to this course'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $courseUser = new CourseUser();
@@ -433,12 +372,9 @@ class CourseController extends Controller
                 ->findLive($id);
 
             if (!$entryTask) {
-                return new JSONResponse(
-                    [
+                return new JSONResponse([
                     'error_message' => 'This course does not have an active entry task'
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             $courseUser->setRole(RoleInterface::APPLICANT);
@@ -454,12 +390,9 @@ class CourseController extends Controller
             $errors = $this->validator->validate($entryTaskSubmission);
 
             if (count($errors) > 0) {
-                return new JsonResponse(
-                    [
+                return new JsonResponse([
                     'error_message' => $errors->get(0)->getMessage(),
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
+                ], Response::HTTP_BAD_REQUEST);
             }
         } else {
             $courseUser->setRole(RoleInterface::STUDENT);
@@ -475,28 +408,19 @@ class CourseController extends Controller
 
             $em->flush();
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         if ($course->getIsSubmittable()) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'success_message' => 'Successfully sent an application to course '.$id
-                ],
-                Response::HTTP_CREATED
-            );
+            ], Response::HTTP_CREATED);
         }
         $this->dispatcher->dispatch('course.join', new CourseEvent($course, $this->getUser()));
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'success_message' => 'Successfully joined course '.$id
-                ],
-                Response::HTTP_CREATED
-            );
+            ], Response::HTTP_CREATED);
     }
 
     /**
@@ -510,21 +434,15 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '.$id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if (!$course->isAdmin($this->getUser())) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'You do not have the rights to invite this user'
-                ],
-                Response::HTTP_UNAUTHORIZED
-            );
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -533,48 +451,35 @@ class CourseController extends Controller
             ->find($data['user_id']);
 
         if (!$user) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User does not exist'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $activeUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user'=>$user,
                 'course'=>$course,
-                'status'=>StatusInterface::ACTIVE]
-            );
+                'status'=>StatusInterface::ACTIVE]);
 
         if ($activeUser) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User is already enrolled in this course'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $invitedUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user'=>$user,
                 'course'=>$course,
-                'status'=>StatusInterface::INVITED]
-            );
+                'status'=>StatusInterface::INVITED]);
 
         if ($invitedUser) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User is already invited to this course'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $courseUser = new CourseUser();
@@ -591,19 +496,13 @@ class CourseController extends Controller
             $em->flush();
             $this->dispatcher->dispatch('course.invited', $courseEvent);
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(
-            [
+        return new JsonResponse([
             'success_message' => 'Successfully invited user to course '.$id
-            ],
-            Response::HTTP_CREATED
-        );
+        ], Response::HTTP_CREATED);
     }
 
     /**
@@ -617,21 +516,15 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '.$id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if (!$course->isAdmin($this->getUser())) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'You do not have the rights to accept the submission'
-                ],
-                Response::HTTP_UNAUTHORIZED
-            );
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -641,30 +534,22 @@ class CourseController extends Controller
             ->find($data['user_id']);
 
         if (!$user) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User does not exist'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $courseUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user'=>$user,
                 'course'=>$course,
-                'status'=>StatusInterface::PENDING]
-            );
+                'status'=>StatusInterface::PENDING]);
 
         if (!$courseUser) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User does not participate in this course or has not submitted an application'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $courseUser->setRole(RoleInterface::STUDENT);
@@ -676,18 +561,13 @@ class CourseController extends Controller
             $em->flush();
             $this->dispatcher->dispatch('course.join', new CourseEvent($course, $user));
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(
-            [
+        return new JsonResponse([
             'success_message' => 'Successfully accepted the submission'
-            ]
-        );
+        ]);
     }
 
     /**
@@ -701,21 +581,15 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '.$id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if (!$course->isAdmin($this->getUser())) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'You do not have the rights to decline the submission'
-                ],
-                Response::HTTP_UNAUTHORIZED
-            );
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -725,30 +599,22 @@ class CourseController extends Controller
             ->find($data['user_id']);
 
         if (!$user) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User does not exist'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $courseUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user'=>$user,
                 'course'=>$course,
-                'status'=>StatusInterface::PENDING]
-            );
+                'status'=>StatusInterface::PENDING]);
 
         if (!$courseUser) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User does not participate in this course or has not submitted an application'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         try {
@@ -756,18 +622,13 @@ class CourseController extends Controller
             $em->remove($courseUser);
             $em->flush();
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(
-            [
+        return new JsonResponse([
             'success_message' => 'Successfully declined the submission'
-            ]
-        );
+        ]);
     }
 
     /**
@@ -781,30 +642,22 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '.$id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $user = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user'=>$this->getUser(),
                 'course'=>$course,
-                'status'=>StatusInterface::INVITED]
-            );
+                'status'=>StatusInterface::INVITED]);
 
         if (!$user) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No invitation to accept'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $user->setStatus(StatusInterface::ACTIVE);
@@ -815,18 +668,13 @@ class CourseController extends Controller
             $em->flush();
             $this->dispatcher->dispatch('course.join', new CourseEvent($course, $this->getUser()));
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(
-            [
+        return new JsonResponse([
             'success_message' => 'Successfully accepted invitation to course '.$id
-            ]
-        );
+        ]);
     }
 
     /**
@@ -839,30 +687,22 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '.$id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $user = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user'=>$this->getUser(),
                 'course'=>$course,
-                'status'=>StatusInterface::INVITED]
-            );
+                'status'=>StatusInterface::INVITED]);
 
         if (!$user) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No invitation to decline'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         try {
@@ -870,18 +710,13 @@ class CourseController extends Controller
             $em->remove($user);
             $em->flush();
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(
-            [
+        return new JsonResponse([
             'success_message' => 'Successfully declined invitation to course '.$id
-            ]
-        );
+        ]);
     }
 
     /**
@@ -895,21 +730,15 @@ class CourseController extends Controller
             ->find($id);
 
         if (!$course) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'No course found for id '.$id
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if (!$course->isAdmin($this->getUser())) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'You do not have the rights to assign roles'
-                ],
-                Response::HTTP_UNAUTHORIZED
-            );
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -919,47 +748,34 @@ class CourseController extends Controller
             ->find($data['user_id']);
 
         if (!$user) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User does not exist'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $adminCount = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->count(
-                [
+            ->count([
                 'course'=>$course,
-                'role'=>RoleInterface::ADMIN]
-            );
+                'role'=>RoleInterface::ADMIN]);
 
         if ($user == $this->getUser() && $adminCount < 2) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'You can not assign this role to yourself'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $courseUser = $this->getDoctrine()
             ->getRepository(CourseUser::class)
-            ->findOneBy(
-                [
+            ->findOneBy([
                 'user'=>$user,
                 'course'=>$course,
-                'status'=>StatusInterface::ACTIVE]
-            );
+                'status'=>StatusInterface::ACTIVE]);
 
         if (!$courseUser) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => 'User does not participate in this course'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $courseUser->setRole($data['role']);
@@ -972,17 +788,12 @@ class CourseController extends Controller
             $em->flush();
             $this->dispatcher->dispatch('course.assign.role', $courseEvent);
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+            return new JsonResponse([
                 'error_message' => $e->getMessage(),
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new JsonResponse(
-            [
+        return new JsonResponse([
             'success_message' => 'Successfully assigned role to user'
-            ]
-        );
+        ]);
     }
 }

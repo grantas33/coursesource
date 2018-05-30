@@ -81,6 +81,29 @@ class Course implements JsonSerializable
     private $avatar;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 80,
+     *     maxMessage="The location cannot be longer than 80 characters"
+     * )
+     */
+    private $location;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $start_date;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 200,
+     *     maxMessage="The schedule overview cannot be longer than 200 characters"
+     * )
+     */
+    private $scheduleOverview;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="course", cascade={"remove"})
      */
     private $courseUsers;
@@ -212,6 +235,36 @@ class Course implements JsonSerializable
         return $this;
     }
 
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    public function setLocation($location): void
+    {
+        $this->location = $location;
+    }
+
+    public function getStartDate()
+    {
+        return $this->start_date;
+    }
+
+    public function setStartDate($start_date): void
+    {
+        $this->start_date = $start_date;
+    }
+
+    public function getScheduleOverview()
+    {
+        return $this->scheduleOverview;
+    }
+
+    public function setScheduleOverview($scheduleOverview): void
+    {
+        $this->scheduleOverview = $scheduleOverview;
+    }
+
     public function getEntryTask()
     {
         return $this->entryTask;
@@ -238,13 +291,13 @@ class Course implements JsonSerializable
     {
         $teachers = [];
         foreach ($this->courseUsers as $user) {
-            if (($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN)
-                && $user->getStatus() == StatusInterface::ACTIVE
-            ) {
+            if (($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 $teachers[] = [
                     'name' => $user->getUser()->getName(),
                     'surname' => $user->getUser()->getSurname(),
-                    'tag' => $user->getTag()
+                    'tag' => $user->getTag(),
+                    'avatar' => $user->getUser()->getAvatar()
                 ];
             }
         }
@@ -257,9 +310,8 @@ class Course implements JsonSerializable
         $teacherCount = 0;
 
         foreach ($this->courseUsers as $user) {
-            if (($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN)
-                && $user->getStatus() == StatusInterface::ACTIVE
-            ) {
+            if (($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 $teacherCount++;
             }
         }
@@ -271,10 +323,9 @@ class Course implements JsonSerializable
     {
 
         foreach ($this->courseUsers as $user) {
-            if ($user->getUser() == $currentUser
-                && $user->getRole() == RoleInterface::ADMIN
-                && $user->getStatus() == StatusInterface::ACTIVE
-            ) {
+            if ($user->getUser() == $currentUser &&
+                $user->getRole() == RoleInterface::ADMIN &&
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 return true;
             }
         }
@@ -286,10 +337,9 @@ class Course implements JsonSerializable
     {
 
         foreach ($this->courseUsers as $user) {
-            if ($user->getUser() == $currentUser
-                && ($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN)
-                && $user->getStatus() == StatusInterface::ACTIVE
-            ) {
+            if ($user->getUser() == $currentUser &&
+                ($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 return true;
             }
         }
@@ -301,10 +351,9 @@ class Course implements JsonSerializable
     {
 
         foreach ($this->courseUsers as $user) {
-            if ($user->getUser() == $currentUser
-                && $user->getRole() == RoleInterface::STUDENT
-                && $user->getStatus() == StatusInterface::ACTIVE
-            ) {
+            if ($user->getUser() == $currentUser &&
+                $user->getRole() == RoleInterface::STUDENT &&
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 return true;
             }
         }
@@ -329,7 +378,10 @@ class Course implements JsonSerializable
             'teacherCount' => count($teachers),
             'teachers' => $teachers,
             'is_submittable' => $this->is_submittable,
-            'avatar' => $this->avatar
+            'avatar' => $this->avatar,
+            'location' => $this->location,
+            'start_date' => $this->start_date,
+            'schedule_overview' => $this->scheduleOverview
         ];
     }
 }

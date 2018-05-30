@@ -28,16 +28,19 @@ class CourseType extends AbstractType
             ->add('is_public', CheckboxType::class)
             ->add('is_submittable', CheckboxType::class)
             ->add('avatar')
-            ->add('entry_task', EntryTaskType::class);
+            ->add('location')
+            ->add('start_date', DateTimeType::class, array(
+                'widget' => 'single_text'))
+            ->add('schedule_overview')
+            ->add('entry_task', EntryTaskType::class)
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            array(
+        $resolver->setDefaults(array(
             'data_class' => Course::class,
             'csrf_protection' => false
-            )
-        );
+        ));
     }
 }
