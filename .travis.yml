@@ -42,7 +42,7 @@ before_script:
 
 script:
   - vendor/bin/phpcs -p --standard=PSR2 --extensions=php ./src --ignore=./src/Migrations
-  - cd $TRAVIS_BUILD_DIR && bin/phpunit
+  - cd $TRAVIS_BUILD_DIR && APP_ENV=test bin/phpunit
   - cd $TRAVIS_BUILD_DIR/acceptance-tests && vendor/bin/codecept run --debug --env=live
 
 after_failure:
