@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class CoursesViewTest extends WebTestCase
+class ReactRouterTest extends WebTestCase
 {
     public function testReactRouterHandler()
     {
