@@ -8,7 +8,6 @@
 
 namespace App\Security;
 
-
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -64,9 +63,11 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        return new JsonResponse([
+        return new JsonResponse(
+            [
             'error_message' => 'Token is missing!'],
-            Response::HTTP_UNAUTHORIZED);
+            Response::HTTP_UNAUTHORIZED
+        );
     }
 
     /**

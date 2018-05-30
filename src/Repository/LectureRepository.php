@@ -30,11 +30,11 @@ class LectureRepository extends ServiceEntityRepository
             ->andWhere('l.course = :course')
                 ->setParameter('course', $course);
 
-        if(!empty($teacher)){
+        if (!empty($teacher)) {
             $qb->andWhere('l.teacher = :teacher')
                 ->setParameter('teacher', $teacher);
         }
-        if($is_future){
+        if ($is_future) {
             $qb->andWhere('l.end_date >= :today')
                 ->setParameter('today', new \DateTime('now'));
         }

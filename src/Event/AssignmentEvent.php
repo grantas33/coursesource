@@ -8,7 +8,6 @@
 
 namespace App\Event;
 
-
 use App\Entity\Assignment;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -26,5 +25,4 @@ class AssignmentEvent extends Event
     {
         return $this->assignment;
     }
-
 }

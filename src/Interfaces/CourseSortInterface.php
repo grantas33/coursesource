@@ -8,7 +8,6 @@
 
 namespace App\Interfaces;
 
-
 interface CourseSortInterface
 {
     public const PARAMETERS = ['creationDate', 'assignmentCount', 'lectureCount', 'teacherCount'];

@@ -69,8 +69,8 @@ class UserController extends Controller
         EventDispatcherInterface $dispatcher,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
-        JWTEncoderInterface $jwtEncoder)
-    {
+        JWTEncoderInterface $jwtEncoder
+    ) {
         $this->userManager = $userManager;
         $this->dispatcher = $dispatcher;
         $this->authorizationChecker = $authorizationChecker;
@@ -99,20 +99,21 @@ class UserController extends Controller
         $form->setData($user);
         $form->submit($data);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $event = new FormEvent($form, $request);
             $this->dispatcher->dispatch(
-                FOSUserEvents::REGISTRATION_SUCCESS, $event
+                FOSUserEvents::REGISTRATION_SUCCESS,
+                $event
             );
             $user->setEnabled(true);
-        }
-        else{
+        } else {
             $errors = array();
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error)
+                    foreach ($child->getErrors() as $error) {
                         $errors[$child->getName()] = $error->getMessage();
+                    }
                 }
             }
             return new JsonResponse([
@@ -122,8 +123,7 @@ class UserController extends Controller
 
         try {
             $this->userManager->updateUser($user);
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             return new JsonResponse([
                 'error_message' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -131,7 +131,6 @@ class UserController extends Controller
         return new JsonResponse([
             'success_message' => 'Successfully registered new user'
         ], Response::HTTP_CREATED);
-
     }
 
     /**
@@ -172,9 +171,9 @@ class UserController extends Controller
     /**
      * @Route("api/user/current", name="api_user_get_current", methods="GET")
      */
-    public function getCurrentUser(){
-        if( $this->authorizationChecker->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
-        {
+    public function getCurrentUser()
+    {
+        if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
             $user = $this->tokenStorage->getToken()->getUser();
             return new JsonResponse(
                 $user
@@ -188,9 +187,10 @@ class UserController extends Controller
     /**
      * @Route("api/user/{id}", name="api_user_get", methods="GET")
      */
-    public function getUserById($id){
+    public function getUserById($id)
+    {
         $user = $this->userManager->findUserBy(array('id'=>$id));
-        if(!$user){
+        if (!$user) {
             return new JsonResponse([
                 'error_message' => 'No user for id '.$id
             ], Response::HTTP_BAD_REQUEST);
@@ -211,7 +211,7 @@ class UserController extends Controller
         $users = $this->getDoctrine()->getRepository(User::class)
             ->filter($query);
 
-        if(count($users) >= 21) {
+        if (count($users) >= 21) {
             return new JsonResponse([
                 'error_message' => 'Search query too broad. '
             ], Response::HTTP_BAD_REQUEST);
@@ -225,7 +225,8 @@ class UserController extends Controller
     /**
      * @Route("api/user/course/{courseId}", name="api_user_getAllFromCourse", methods="GET")
      */
-    public function getAllUsersFromCourse(int $courseId){
+    public function getAllUsersFromCourse(int $courseId)
+    {
         $courseUsers = $this->getDoctrine()->getRepository(CourseUser::class)
             ->findBy([
                 'course' => $courseId,
@@ -263,5 +264,4 @@ class UserController extends Controller
         }
         return $now->format('U');
     }
-
 }

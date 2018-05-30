@@ -13,7 +13,6 @@ use App\Entity\EntryTaskSubmission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-
 /**
  * @method EntryTaskSubmission|null find($id, $lockMode = null, $lockVersion = null)
  * @method EntryTaskSubmission|null findOneBy(array $criteria, array $orderBy = null)
@@ -31,10 +30,15 @@ class EntryTaskSubmissionRepository extends ServiceEntityRepository
     {
         $qb =  $this->createQueryBuilder('s');
 
-        $qb->leftJoin(EntryTaskGrade::class, 'g', 'WITH',
+        $qb->leftJoin(
+            EntryTaskGrade::class,
+            'g',
+            'WITH',
             $qb->expr()->andX(
                 $qb->expr()->eq('s.student', 'g.student'),
-                $qb->expr()->eq('s.course', 'g.course')))
+                $qb->expr()->eq('s.course', 'g.course')
+            )
+        )
             ->select(['s as submission', 'g.score', 'g.gradingDate'])
             ->andWhere('s.course = :courseId')
             ->setParameters([
@@ -43,5 +47,4 @@ class EntryTaskSubmissionRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-
 }

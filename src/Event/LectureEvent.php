@@ -8,7 +8,6 @@
 
 namespace App\Event;
 
-
 use App\Entity\Lecture;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -26,5 +25,4 @@ class LectureEvent extends Event
     {
         return $this->lecture;
     }
-
 }

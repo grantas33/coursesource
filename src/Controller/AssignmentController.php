@@ -8,7 +8,6 @@
 
 namespace App\Controller;
 
-
 use App\Entity\Assignment;
 use App\Entity\AssignmentSubmission;
 use App\Entity\Course;
@@ -65,7 +64,7 @@ class AssignmentController extends Controller
                 'status' => StatusInterface::ACTIVE
             ]);
 
-        if(!$teacher){
+        if (!$teacher) {
             return new JsonResponse([
                 'error_message' => 'You do not have permissions to create this assignment'
             ], Response::HTTP_UNAUTHORIZED);
@@ -73,17 +72,17 @@ class AssignmentController extends Controller
 
         $form->submit($data, false);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $assignment->setTeacher($this->getUser());
             $assignment->setCreationDate();
-        }
-        else{
+        } else {
             $errors = array();
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error)
+                    foreach ($child->getErrors() as $error) {
                         $errors[$child->getName()] = $error->getMessage();
+                    }
                 }
             }
             return new JsonResponse([
@@ -96,8 +95,7 @@ class AssignmentController extends Controller
             $em->persist($assignment);
             $em->flush();
             $this->dispatcher->dispatch('assignment.create', new AssignmentEvent($assignment));
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse([
                 'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -105,7 +103,6 @@ class AssignmentController extends Controller
         return new JsonResponse([
             'success_message' => 'Successfully created new assignment'
         ], Response::HTTP_CREATED);
-
     }
 
     /**
@@ -129,7 +126,7 @@ class AssignmentController extends Controller
                 'course' => $assignment->getCourse(),
             ]);
 
-        if(!$user){
+        if (!$user) {
             return new JsonResponse([
                 'error_message' => 'You do not have permissions to view this assignment'
             ], Response::HTTP_UNAUTHORIZED);
@@ -143,7 +140,8 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/{id}", name="api_assignment_update", methods="PUT")
      */
-    public function editAssignment(int $id, Request $request){
+    public function editAssignment(int $id, Request $request)
+    {
 
         $em = $this->getDoctrine()->getManager();
         $assignment = $em->getRepository(Assignment::class)
@@ -167,7 +165,7 @@ class AssignmentController extends Controller
                 'status' => StatusInterface::ACTIVE
             ]);
 
-        if(!$teacher || $data['course'] != $currentCourse->getId()){
+        if (!$teacher || $data['course'] != $currentCourse->getId()) {
             return new JsonResponse([
                 'error_message' => 'You do not have permissions to edit this'
             ], Response::HTTP_UNAUTHORIZED);
@@ -175,13 +173,14 @@ class AssignmentController extends Controller
 
         $form->submit($data, false);
 
-        if(!($form->isSubmitted() && $form->isValid())){
+        if (!($form->isSubmitted() && $form->isValid())) {
             $errors = array();
 
             foreach ($form as $child) {
                 if (!$child->isValid()) {
-                    foreach($child->getErrors() as $error)
+                    foreach ($child->getErrors() as $error) {
                         $errors[$child->getName()] = $error->getMessage();
+                    }
                 }
             }
 
@@ -194,8 +193,7 @@ class AssignmentController extends Controller
             $em->persist($assignment);
             $em->flush();
             $this->dispatcher->dispatch('assignment.edit', new AssignmentEvent($assignment));
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse([
                 'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -208,7 +206,8 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments", name="api_assignment_filter", methods="GET")
      */
-    public function filterAssignments(Request $request){
+    public function filterAssignments(Request $request)
+    {
 
         $repository = $this->getDoctrine()->getRepository(Assignment::class);
         $course = $request->query->get('course');
@@ -221,7 +220,7 @@ class AssignmentController extends Controller
                 'course' => $course,
             ]);
 
-        if(!$user){
+        if (!$user) {
             return new JsonResponse([
                 'error_message' => 'You do not have permissions to view the assignments'
             ], Response::HTTP_UNAUTHORIZED);
@@ -237,7 +236,8 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/{id}", name="api_assignment_delete", methods="DELETE")
      */
-    public function deleteAssignment(int $id){
+    public function deleteAssignment(int $id)
+    {
 
         $assignment = $this->getDoctrine()
             ->getRepository(Assignment::class)
@@ -258,7 +258,7 @@ class AssignmentController extends Controller
                 'status' => StatusInterface::ACTIVE
             ]);
 
-        if(!$teacher){
+        if (!$teacher) {
             return new JsonResponse([
                 'error_message' => 'You do not have permissions to delete this'
             ], Response::HTTP_UNAUTHORIZED);
@@ -268,8 +268,7 @@ class AssignmentController extends Controller
         try {
             $em->remove($assignment);
             $em->flush();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse([
                 'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -283,45 +282,45 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/get/last", name="api_assignment_getLast", methods="GET")
      */
-    public function getLastAssignments(){
+    public function getLastAssignments()
+    {
 
         $userAssignments = $this->getDoctrine()
             ->getRepository(CourseUser::class)
             ->findUserAssignments($this->getUser());
 
-        usort($userAssignments, function($a, $b)
-        {
+        usort($userAssignments, function ($a, $b) {
             return $a['assignment']->getDeadlineDate() >  $b['assignment']->getDeadlineDate();
         });
 
         return new JsonResponse(
             array_slice($userAssignments, 0, 3)
         );
-
     }
 
     /**
      * @Route("api/assignments/{id}/submission", name="api_assignment_setSubmission", methods="PUT")
      */
-    public function setAssignmentSubmission(int $id, Request $request){
+    public function setAssignmentSubmission(int $id, Request $request)
+    {
 
         $assignment = $this->getDoctrine()
             ->getRepository(Assignment::class)
             ->find($id);
 
-        if(!$assignment){
+        if (!$assignment) {
             return new JsonResponse([
                 'error_message' => 'Assignment not found',
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if(!$assignment->getCourse()->isStudent($this->getUser())){
+        if (!$assignment->getCourse()->isStudent($this->getUser())) {
             return new JsonResponse([
                 'error_message' => 'You do not have the permissions to submit to this assignment',
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        if($assignment->getDeadlineDate() < new \DateTime('now')){
+        if ($assignment->getDeadlineDate() < new \DateTime('now')) {
             return new JsonResponse([
                 'error_message' => 'Submissions to this assignment are closed',
             ], Response::HTTP_BAD_REQUEST);
@@ -336,7 +335,7 @@ class AssignmentController extends Controller
 
         $data = json_decode($request->getContent(), true);
 
-        if(!$submission){
+        if (!$submission) {
             $submission = new AssignmentSubmission();
             $submission->setStudent($this->getUser());
             $submission->setAssignment($assignment);
@@ -357,8 +356,7 @@ class AssignmentController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($submission);
             $em->flush();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse([
                 'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -366,13 +364,13 @@ class AssignmentController extends Controller
         return new JsonResponse([
             'success_message' => 'Successfully posted a submission to an assignment '.$id
         ]);
-
     }
 
     /**
      * @Route("api/assignments/{id}/submission", name="api_assignment_getSubmission", methods="GET")
      */
-    public function getAssignmentSubmission(int $id){
+    public function getAssignmentSubmission(int $id)
+    {
 
         $submission = $this->getDoctrine()
             ->getRepository(AssignmentSubmission::class)
@@ -389,19 +387,20 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/{id}/submissions", name="api_assignment_getSubmissions", methods="GET")
      */
-    public function getAssignmentSubmissions(int $id){
+    public function getAssignmentSubmissions(int $id)
+    {
 
         $assignment = $this->getDoctrine()
             ->getRepository(Assignment::class)
             ->find($id);
 
-        if(!$assignment){
+        if (!$assignment) {
             return new JsonResponse([
                 'error_message' => 'Assignment not found',
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if(!$assignment->getCourse()->isTeacher($this->getUser())){
+        if (!$assignment->getCourse()->isTeacher($this->getUser())) {
             return new JsonResponse([
                 'error_message' => 'You do not have the permissions to get the submissions for this assignment',
             ], Response::HTTP_UNAUTHORIZED);
@@ -421,19 +420,20 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/{submissionId}/grade", name="api_assignment_gradeSubmission", methods="PUT")
      */
-    public function setAssignmentSubmissionGrade(int $submissionId, Request $request){
+    public function setAssignmentSubmissionGrade(int $submissionId, Request $request)
+    {
 
         $submission = $this->getDoctrine()
             ->getRepository(AssignmentSubmission::class)
             ->find($submissionId);
 
-        if(!$submission){
+        if (!$submission) {
             return new JsonResponse([
                 'error_message' => 'Assignment submission not found',
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if(!$submission->getAssignment()->getCourse()->isTeacher($this->getUser())){
+        if (!$submission->getAssignment()->getCourse()->isTeacher($this->getUser())) {
             return new JsonResponse([
                 'error_message' => 'You do not have the permissions to grade the submission'
             ], Response::HTTP_UNAUTHORIZED);
@@ -447,7 +447,6 @@ class AssignmentController extends Controller
         $errors = $this->validator->validate($submission);
 
         if (count($errors) > 0) {
-
             return new JsonResponse([
                 'error_message' => $errors->get(0)->getMessage(),
             ], Response::HTTP_BAD_REQUEST);
@@ -458,8 +457,7 @@ class AssignmentController extends Controller
             $em->persist($submission);
             $em->flush();
             $this->dispatcher->dispatch('assignment.grade', new GradeEvent($submission));
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse([
                 'error_message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -472,13 +470,14 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/{courseId}/submissions/student", name="api_assignment_studentSub", methods="GET")
      */
-    public function getAssignmentSubmissionsForStudent(int $courseId){
+    public function getAssignmentSubmissionsForStudent(int $courseId)
+    {
 
         $course = $this->getDoctrine()
             ->getRepository(Course::class)
             ->find($courseId);
 
-        if(!$course){
+        if (!$course) {
             return new JsonResponse([
                 'error_message' => 'Course not found',
             ], Response::HTTP_BAD_REQUEST);
@@ -496,13 +495,14 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/{courseId}/submissions/teacher", name="api_assignment_teacherSub", methods="GET")
      */
-    public function getAssignmentSubmissionsForTeacher(int $courseId){
+    public function getAssignmentSubmissionsForTeacher(int $courseId)
+    {
 
         $course = $this->getDoctrine()
             ->getRepository(Course::class)
             ->find($courseId);
 
-        if(!$course){
+        if (!$course) {
             return new JsonResponse([
                 'error_message' => 'Course not found',
             ], Response::HTTP_BAD_REQUEST);
@@ -520,19 +520,20 @@ class AssignmentController extends Controller
     /**
      * @Route("api/assignments/{courseId}/diary", name="api_assignment_diary", methods="GET")
      */
-    public function getAssignmentSubmissionDiary(int $courseId){
+    public function getAssignmentSubmissionDiary(int $courseId)
+    {
 
         $course = $this->getDoctrine()
             ->getRepository(Course::class)
             ->find($courseId);
 
-        if(!$course){
+        if (!$course) {
             return new JsonResponse([
                 'error_message' => 'Course not found',
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if(!$course->isTeacher($this->getUser())){
+        if (!$course->isTeacher($this->getUser())) {
             return new JsonResponse([
                 'error_message' => 'You do not have the permissions to view this diary'
             ], Response::HTTP_UNAUTHORIZED);
@@ -545,6 +546,5 @@ class AssignmentController extends Controller
         return new JsonResponse(
             $diary
         );
-
     }
 }

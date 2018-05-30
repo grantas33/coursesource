@@ -8,7 +8,6 @@
 
 namespace App\Event;
 
-
 use App\Entity\Course;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\Event;
@@ -47,6 +46,4 @@ class CourseEvent extends Event
     {
         $this->role = $role;
     }
-
-
 }

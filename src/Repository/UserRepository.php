@@ -24,10 +24,14 @@ class UserRepository extends ServiceEntityRepository
 
         $qb = $this->createQueryBuilder('u');
            $qb = $qb->where(
-                 $qb->expr()->like(
-                     $qb->expr()->concat(
-                         $qb->expr()->concat('u.name', ':space'), 'u.surname'),
-                            ':query'))
+               $qb->expr()->like(
+                   $qb->expr()->concat(
+                       $qb->expr()->concat('u.name', ':space'),
+                       'u.surname'
+                   ),
+                   ':query'
+               )
+           )
             ->setParameter('query', '%'.$query.'%')
             ->setParameter('space', ' ')
             ->setMaxResults(21)
@@ -35,5 +39,4 @@ class UserRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-
 }

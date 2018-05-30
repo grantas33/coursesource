@@ -107,7 +107,8 @@ class Course implements JsonSerializable
         return $this->id;
     }
 
-    public function setId(int $id){
+    public function setId(int $id)
+    {
         $this->id = $id;
     }
 
@@ -119,7 +120,6 @@ class Course implements JsonSerializable
     public function setTitle($title): void
     {
         $this->title = $title;
-
     }
 
     public function getDescription(): ?string
@@ -130,7 +130,6 @@ class Course implements JsonSerializable
     public function setDescription($description): void
     {
         $this->description = $description;
-
     }
 
     public function getSlogan(): ?string
@@ -158,13 +157,11 @@ class Course implements JsonSerializable
     public function setCreationDateManually(string $date): void
     {
         $this->creation_date = \DateTime::createFromFormat("Y-m-d", $date);
-
     }
 
     public function setCreationDateByDatetime(\DateTimeInterface $date): void
     {
         $this->creation_date = $date;
-
     }
 
     public function getIsPublic(): ?bool
@@ -179,12 +176,14 @@ class Course implements JsonSerializable
         return $this;
     }
 
-    public function getLectureCount(){
+    public function getLectureCount()
+    {
 
         return $this->lectures->count();
     }
 
-    public function getAssignmentCount(){
+    public function getAssignmentCount()
+    {
 
         return $this->assignments->count();
     }
@@ -238,9 +237,9 @@ class Course implements JsonSerializable
     public function getTeachers()
     {
         $teachers = [];
-        foreach($this->courseUsers as $user){
-            if(($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
-                $user->getStatus() == StatusInterface::ACTIVE){
+        foreach ($this->courseUsers as $user) {
+            if (($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 $teachers[] = [
                     'name' => $user->getUser()->getName(),
                     'surname' => $user->getUser()->getSurname(),
@@ -256,9 +255,9 @@ class Course implements JsonSerializable
     {
         $teacherCount = 0;
 
-        foreach($this->courseUsers as $user){
-            if(($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
-                $user->getStatus() == StatusInterface::ACTIVE){
+        foreach ($this->courseUsers as $user) {
+            if (($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 $teacherCount++;
             }
         }
@@ -269,10 +268,10 @@ class Course implements JsonSerializable
     public function isAdmin(User $currentUser)
     {
 
-        foreach($this->courseUsers as $user){
-            if($user->getUser() == $currentUser &&
+        foreach ($this->courseUsers as $user) {
+            if ($user->getUser() == $currentUser &&
                 $user->getRole() == RoleInterface::ADMIN &&
-                $user->getStatus() == StatusInterface::ACTIVE){
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 return true;
             }
         }
@@ -283,10 +282,10 @@ class Course implements JsonSerializable
     public function isTeacher(User $currentUser)
     {
 
-        foreach($this->courseUsers as $user){
-            if($user->getUser() == $currentUser &&
+        foreach ($this->courseUsers as $user) {
+            if ($user->getUser() == $currentUser &&
                 ($user->getRole() == RoleInterface::TEACHER ||  $user->getRole() == RoleInterface::ADMIN) &&
-                $user->getStatus() == StatusInterface::ACTIVE){
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 return true;
             }
         }
@@ -297,10 +296,10 @@ class Course implements JsonSerializable
     public function isStudent(User $currentUser)
     {
 
-        foreach($this->courseUsers as $user){
-            if($user->getUser() == $currentUser &&
+        foreach ($this->courseUsers as $user) {
+            if ($user->getUser() == $currentUser &&
                 $user->getRole() == RoleInterface::STUDENT &&
-                $user->getStatus() == StatusInterface::ACTIVE){
+                $user->getStatus() == StatusInterface::ACTIVE) {
                 return true;
             }
         }

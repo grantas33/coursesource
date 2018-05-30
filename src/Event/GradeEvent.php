@@ -8,7 +8,6 @@
 
 namespace App\Event;
 
-
 use App\Entity\AssignmentSubmission;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -25,5 +24,4 @@ class GradeEvent extends Event
     {
         return $this->assignmentSubmission;
     }
-
 }
