@@ -251,12 +251,11 @@ class CourseController extends Controller
 
         $search = $request->query->get('query');
         $offset = $request->query->get('offset');
-        $limit = $request->query->get('limit');
         $sort = $request->query->get('sortBy');
 
         $courses = $this->getDoctrine()
             ->getRepository(Course::class)
-            ->findPublicCourses($search, $offset, $limit);
+            ->findPublicCourses($search, $offset);
 
         $courses = $this->courseService->sortCourses($sort, $courses);
 
@@ -277,12 +276,11 @@ class CourseController extends Controller
 
         $search = $request->query->get('query');
         $offset = $request->query->get('offset');
-        $limit = $request->query->get('limit');
         $sort = $request->query->get('sortBy');
 
         $browseCourses = $this->getDoctrine()->
             getRepository(Course::class)
-            ->findBrowseCourses($courses, $search, $offset, $limit);
+            ->findBrowseCourses($courses, $search, $offset);
 
         $browseCourses = $this->sortCourses($sort, $browseCourses);
 

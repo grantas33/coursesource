@@ -23,7 +23,7 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-    public function findBrowseCourses($courses, $search, $offset, $limit)
+    public function findBrowseCourses($courses, $search, $offset)
     {
 
         $query = $this->createQueryBuilder('c');
@@ -40,11 +40,11 @@ class CourseRepository extends ServiceEntityRepository
         }
 
         $query = $query->orderBy('c.creation_date', 'DESC')->
-        setMaxResults($limit)->setFirstResult($offset)->getQuery();
+        setMaxResults(10)->setFirstResult($offset)->getQuery();
         return $query->getResult();
     }
 
-    public function findPublicCourses($search, $offset, $limit)
+    public function findPublicCourses($search, $offset)
     {
 
         $query = $this->createQueryBuilder('c');
@@ -57,7 +57,7 @@ class CourseRepository extends ServiceEntityRepository
         }
 
         $query = $query->orderBy('c.creation_date', 'DESC')->
-        setMaxResults($limit)->setFirstResult($offset)->getQuery();
+        setMaxResults(10)->setFirstResult($offset)->getQuery();
         return $query->getResult();
     }
 
