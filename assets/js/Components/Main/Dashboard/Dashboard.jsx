@@ -14,14 +14,26 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    if (this.props.dashboard.loading === true) {
-      return <h3>Loading...</h3>;
-    } else if (
-      this.props.dashboard.loading === false &&
-      this.props.dashboard.error === true
-    ) {
-      return <h3>Error</h3>;
-    }
+    let events = [
+      ...this.props.dashboard.lectures.map(lecture => ({
+        title: 'Lecture: ' + lecture.title,
+        start: new Date(lecture.start_date),
+        end:
+          new Date(lecture.end_date) ||
+          moment(lecture.start_date)
+            .add(2, 'hours')
+            .toDate(),
+        hexColor: "0000FF",
+      })),
+      ...this.props.dashboard.assignments.map(assignement => ({
+        title: 'Deadline for ' + assignement.title,
+        end: new Date(assignement.deadline_date),
+        start: moment(assignement.deadline_date)
+          .add(-1, 'hours')
+          .toDate(),
+        hexColor: "FF0000",          
+      })),
+    ]
     return (
       <div>
         <PageHeader
@@ -38,7 +50,7 @@ class Dashboard extends React.Component {
             <div className="col-sm-9">
               <h3>Upcoming events</h3>
               <Calendar
-                events={[]}
+                events={events}
                 view={"week"}
                 views={["month", "week", "day", "agenda"]}
                 toolbar={false}

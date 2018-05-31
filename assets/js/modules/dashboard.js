@@ -1,15 +1,16 @@
 import axios from "axios";
 import tokenObject from "../tokenObject";
 
-export const FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED = "DASHBOARD/FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED";
-export const FETCH_DASHBOARD_LECTURES_RECEIVED = "DASHBOARD/FETCH_DASHBOARD_LECTURES_RECEIVED";
+export const FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED =
+  "DASHBOARD/FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED";
+export const FETCH_DASHBOARD_LECTURES_RECEIVED =
+  "DASHBOARD/FETCH_DASHBOARD_LECTURES_RECEIVED";
 
 axios.defaults.baseURL = "/";
 
 const initialState = {
-  items: [],
-  loading: true,
-  error: false,
+  lectures: [],
+  assignments: []
 };
 
 export default (state = initialState, action) => {
@@ -17,8 +18,12 @@ export default (state = initialState, action) => {
     case FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED:
       return {
         ...state,
-        loading: false,
-        assignments: action.payload,
+        assignments: payload.data
+      };
+    case FETCH_DASHBOARD_LECTURES_RECEIVED:
+      return {
+        ...state,
+        lectures: payload.data
       };
     default:
       return state;
@@ -35,7 +40,7 @@ export const fetchDashboard = () => dispatch => {
       });
     })
     .catch(err => {
-      if (err.response.data.message === "Invalid Token") {
+      if (err.reponse && err.response.data.message === "Invalid Token") {
         dispatch(push("/login"));
         window.localStorage.removeItem("userToken");
       }
@@ -49,7 +54,7 @@ export const fetchDashboard = () => dispatch => {
       });
     })
     .catch(err => {
-      if (err.response.data.message === "Invalid Token") {
+      if (err.reponse && err.response.data.message === "Invalid Token") {
         dispatch(push("/login"));
         window.localStorage.removeItem("userToken");
       }
