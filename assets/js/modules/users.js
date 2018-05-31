@@ -25,6 +25,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         allUsers: {
+          ...state.allUsers,
           loading: true,
           error: null
         }
@@ -33,6 +34,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         allUsers: {
+          ...state.allUsers,
           loading: false,
           error: action.payload
         }

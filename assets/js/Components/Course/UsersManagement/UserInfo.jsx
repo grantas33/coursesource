@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
-import { fetchCourse } from "../../../modules/courses";
+import { fetchUsers } from "../../../modules/users";
 
 class UserInfo extends React.Component {
   constructor(props) {
@@ -15,14 +15,20 @@ class UserInfo extends React.Component {
   }
 
   componentWillMount() {
-    this.props.fetchCourse(this.props.match.params.course);
+    this.props.fetchUsers(this.props.match.params.course);
   }
 
   render() {
+    let user = this.props.users.items.find(
+      u => u.id == this.props.match.params.user
+    );
+    if (!user) {
+      return "Loading";
+    }
     return (
       <div>
         <PageHeader
-          title="Vardas pavarde"
+          title={user.user.name + " " + user.user.surname}
           links={[
             {
               name: "Home",
@@ -41,27 +47,13 @@ class UserInfo extends React.Component {
                 <div className="box-body box-profile">
                   <img
                     className="profile-user-img img-responsive img-circle"
-                    src="../../dist/img/user4-128x128.jpg"
+                    src={user.user.avatar}
                     alt="User profile picture"
                   />
                   <h3 className="profile-username text-center">
-                    Nina Mcintire
+                    {user.user.name + " " + user.user.surname}
                   </h3>
-                  <p className="text-muted text-center">Software Engineer</p>
-                  <ul className="list-group list-group-unbordered">
-                    <li className="list-group-item">
-                      <b>Followers</b> <a className="pull-right">1,322</a>
-                    </li>
-                    <li className="list-group-item">
-                      <b>Following</b> <a className="pull-right">543</a>
-                    </li>
-                    <li className="list-group-item">
-                      <b>Friends</b> <a className="pull-right">13,287</a>
-                    </li>
-                  </ul>
-                  <a href="#" className="btn btn-primary btn-block">
-                    <b>Follow</b>
-                  </a>
+                  <p className="text-muted text-center">{user.course.tag}</p>
                 </div>
               </div>
             </div>
@@ -73,13 +65,13 @@ class UserInfo extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  course: state.courses.course
+  users: state.users.allUsers
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchCourse
+      fetchUsers
     },
     dispatch
   );

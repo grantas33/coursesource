@@ -9,7 +9,7 @@ import axios from "axios";
 import "react-select/dist/react-select.css";
 import fetch from "isomorphic-fetch";
 import tokenObject from "../../../tokenObject";
-import swal from 'sweetalert2';
+import swal from "sweetalert2";
 
 class UsersManagement extends React.Component {
   constructor(props) {
@@ -64,27 +64,23 @@ class UsersManagement extends React.Component {
                       {this.props.users.items.map(user => {
                         return (
                           <tr key={user.user.id}>
-                            <td>{user.user.avatar}</td>
-                            <td>{user.user.name + " " + user.user.surname}</td>
+                            <td>
+                              <img src={user.user.avatar} />
+                            </td>
+                            <td>
+                              <Link
+                                to={`/course/${
+                                  this.props.match.params.course
+                                }/users-management/${user.id}`}
+                              >
+                                {user.user.name + " " + user.user.surname}
+                              </Link>
+                            </td>
                             <td>{user.user.email}</td>
                             <td>
                               <span className="label label-success">
                                 {user.role}
                               </span>
-                            </td>
-                            <td>
-                              <button
-                                onClick={() =>
-                                  this.props.history.push(
-                                    `/course/${
-                                      this.props.match.params.course
-                                    }/users-management/${user.user.id}`
-                                  )
-                                }
-                                className="btn-info"
-                              >
-                                <span className="fa fas fa-info" />
-                              </button>
                             </td>
                           </tr>
                         );
