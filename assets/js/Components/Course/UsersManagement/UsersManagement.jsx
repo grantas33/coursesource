@@ -58,8 +58,7 @@ class UsersManagement extends React.Component {
                         <th>User name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th />
-                        <th />
+                        <th>Status</th>
                       </tr>
                       {this.props.users.items.map(user => {
                         return (
@@ -80,6 +79,11 @@ class UsersManagement extends React.Component {
                             <td>
                               <span className="label label-success">
                                 {user.role}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="label label-success">
+                                {user.status}
                               </span>
                             </td>
                           </tr>
