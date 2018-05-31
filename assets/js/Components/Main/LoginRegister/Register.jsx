@@ -166,7 +166,7 @@ class Register extends React.Component {
                   <span className="glyphicon glyphicon-log-in form-control-feedback" />
                 </div>
                 <div className="row">
-                  <div className="col-xs-offset-8 col-xs-4">
+                  <div className="col-xs-offset-7 col-xs-5">
                     <button
                       type="submit"
                       className="btn btn-primary btn-block btn-flat"
