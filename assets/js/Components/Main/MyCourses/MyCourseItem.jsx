@@ -43,11 +43,11 @@ const MyCourseItem = props => (
             </a>
           </li>
           <li>
-            {props.courseInfo.status === "PENDING" ? (
-              <div>
+            {props.courseInfo.status === "INVITED" ? (
+              <a>
                 <button className="btn btn-success">Accept invitation</button>
                 <button className="btn btn-danger">Decline invitation</button>
-              </div>
+              </a>
             ) : (
               <Link to={`/course/${props.courseInfo.course.id}`}>
                 <button className="btn btn-info">Open course</button>
