@@ -1,4 +1,5 @@
 import axios from "axios";
+import tokenObject from "../tokenObject";
 
 export const FETCH_LECTURES_STARTED = "lectures/FETCH_LECTURES_STARTED";
 export const FETCH_LECTURES_ERROR = "lectures/FETCH_LECTURES_ERROR";
@@ -73,11 +74,7 @@ export const fetchLectures = (courseId, teacherId) => dispatch => {
       "api/lectures?course=" +
         courseId +
         (teacherId ? "&teacher=" + teacherId : ""),
-      {
-        headers: {
-          Authorization: "Bearer " + window.localStorage.getItem("userToken")
-        }
-      }
+      tokenObject
     )
     .then(res => {
       dispatch({
@@ -87,8 +84,8 @@ export const fetchLectures = (courseId, teacherId) => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: FETCH_LECTURES_ERROR
@@ -102,11 +99,7 @@ export const createLecture = newLecture => {
       type: CREATE_LECTURE_STARTED
     });
     axios
-      .post("api/lectures", newLecture, {
-        headers: {
-          Authorization: "Bearer " + window.localStorage.getItem("userToken")
-        }
-      })
+      .post("api/lectures", newLecture, tokenObject())
       .then(res => {
         dispatch({
           type: CREATE_LECTURE_RECEIVED,
@@ -115,8 +108,8 @@ export const createLecture = newLecture => {
       })
       .catch(err => {
         if (err.response.data.message === "Invalid Token") {
-          window.localStorage.removeItem("userToken");
           dispatch(push("/login"));
+          window.localStorage.removeItem("userToken");
         }
         dispatch({
           type: CREATE_LECTURE_ERROR,

@@ -77,9 +77,8 @@ class MainTopNavigation extends React.Component {
                     </a>
                     <ul className="dropdown-menu">
                       <li className="header">
-                        You have {" "}
-                        {this.props.notifications.items.length}
-                        {" "} notifications
+                        You have {this.props.notifications.items.length}{" "}
+                        notifications
                       </li>
                       <li>
                         <ul className="menu">

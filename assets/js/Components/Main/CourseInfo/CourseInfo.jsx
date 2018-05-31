@@ -6,6 +6,7 @@ import PageHeader from "../../common/PageHeader";
 import { fetchCourse, applyToCourse } from "../../../modules/courses";
 import user2img from "../../../../Resources/img/user2-160x160.jpg";
 import swal from "sweetalert2";
+import { addRedirect } from '../../../modules/user';
 
 class CourseInfo extends React.Component {
   constructor(props) {
@@ -73,7 +74,8 @@ class CourseInfo extends React.Component {
                       className="btn btn-primary"
                       onClick={() => {
                         if (!window.localStorage.getItem("userToken")) {
-                          this.props.history.push(`/register`);
+                            this.props.addRedirect(this.props.match.params.course);
+                            this.props.history.push(`/register`);
                         } else {
                           swal({
                             title: "Are you sure?",
@@ -112,6 +114,7 @@ class CourseInfo extends React.Component {
                             className="btn btn-primary"
                             onClick={() => {
                               if (!window.localStorage.getItem("userToken")) {
+                                this.props.addRedirect(this.props.match.params.course);
                                 this.props.history.push(`/register`);
                               } else {
                                 swal({
@@ -281,7 +284,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       applyToCourse,
-      fetchCourse
+      fetchCourse,
+      addRedirect
     },
     dispatch
   );

@@ -1,5 +1,6 @@
 import axios from "axios";
 import history from "../store";
+import tokenObject from "../tokenObject";
 
 export const FETCH_MYCOURSES_STARTED = "courses/FETCH_MYCOURSES_STARTED";
 export const FETCH_MYCOURSES_ERROR = "courses/FETCH_MYCOURSES_ERROR";
@@ -185,12 +186,7 @@ export const fetchCourse = courseId => dispatch => {
     .get(
       `api/courses/public/get/${courseId}`,
       window.localStorage.getItem("userToken")
-        ? {
-            headers: {
-              Authorization:
-                "Bearer " + window.localStorage.getItem("userToken")
-            }
-          }
+        ? tokenObject
         : {}
     )
     .then(res => {
@@ -201,19 +197,15 @@ export const fetchCourse = courseId => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: FETCH_COURSE_ERROR
       });
     });
   axios
-    .get(`api/entrytasks/${courseId}`, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .get(`api/entrytasks/${courseId}`, tokenObject())
     .then(res => {
       if (
         res.data.error_message === "This course does not have an entry task"
@@ -234,11 +226,7 @@ export const applyToCourse = (courseId, object) => dispatch => {
     type: APPLY_TO_COURSE_STARTED
   });
   axios
-    .post(`api/courses/${courseId}/apply`, object, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .post(`api/courses/${courseId}/apply`, object, tokenObject())
     .then(res => {
       dispatch({
         type: APPLY_TO_COURSE_RECEIVED,
@@ -247,8 +235,8 @@ export const applyToCourse = (courseId, object) => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: APPLY_TO_COURSE_ERROR,
@@ -262,11 +250,7 @@ export const fetchMyCourses = () => dispatch => {
     type: FETCH_MYCOURSES_STARTED
   });
   axios
-    .get(`api/courses/my`, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .get(`api/courses/my`, tokenObject())
     .then(res => {
       dispatch({
         type: FETCH_MYCOURSES_RECEIVED,
@@ -275,8 +259,8 @@ export const fetchMyCourses = () => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: FETCH_MYCOURSES_ERROR
@@ -296,12 +280,7 @@ export const fetchBrowseCourses = (sortBy, searchQuery) => dispatch => {
         `?sortby=${sortBy}` +
         (searchQuery && searchQuery !== "" ? `&query=${searchQuery}` : ""),
       loggedIn
-        ? {
-            headers: {
-              Authorization:
-                "Bearer " + window.localStorage.getItem("userToken")
-            }
-          }
+        ? tokenObject()
         : {}
     )
     .then(res => {
@@ -312,8 +291,8 @@ export const fetchBrowseCourses = (sortBy, searchQuery) => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: FETCH_BROWSECOURSES_ERROR
@@ -326,11 +305,7 @@ export const createCourse = newCourse => dispatch => {
     type: CREATE_COURSE_STARTED
   });
   axios
-    .post("api/courses", newCourse, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .post("api/courses", newCourse, tokenObject())
     .then(res => {
       dispatch({
         type: CREATE_COURSE_RECEIVED,
@@ -339,8 +314,8 @@ export const createCourse = newCourse => dispatch => {
     })
     .catch(err => {
       if (err.response && err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       console.dir(err);
       dispatch({
