@@ -84,6 +84,15 @@ class User extends BaseUser implements JsonSerializable
     protected $avatar;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Assert\Length(
+     *     max=1000,
+     *     maxMessage="Resume must be no longer than 1000 characters"
+     * )
+     */
+    protected $resume;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\CourseUser", mappedBy="user", cascade={"remove"})
      */
     protected $courseUsers;
@@ -144,6 +153,16 @@ class User extends BaseUser implements JsonSerializable
         return $this;
     }
 
+    public function getResume()
+    {
+        return $this->resume;
+    }
+
+    public function setResume($resume): void
+    {
+        $this->resume = $resume;
+    }
+
     public function getCourseUsers()
     {
 
@@ -158,6 +177,7 @@ class User extends BaseUser implements JsonSerializable
             'surname' => $this->surname,
             'email' => $this->email,
             'avatar' => $this->avatar,
+            'resume' => $this->resume
         ];
     }
 }
