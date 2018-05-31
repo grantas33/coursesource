@@ -1,8 +1,13 @@
 import axios from "axios";
+import tokenObject from "../tokenObject";
 
 export const FETCH_USERS_STARTED = "user/FETCH_USERS_STARTED";
 export const FETCH_USERS_RECEIVED = "user/FETCH_USERS_RECEIVED";
 export const FETCH_USERS_ERROR = "user/FETCH_USERS_ERROR";
+
+export const INVITE_USER_STARTED = "user/INVITE_USER_STARTED";
+export const INVITE_USER_RECEIVED = "user/INVITE_USER_RECEIVED";
+export const INVITE_USER_ERROR = "user/INVITE_USER_ERROR";
 
 axios.defaults.baseURL = "/";
 
@@ -51,11 +56,7 @@ export const fetchUsers = courseId => dispatch => {
     type: FETCH_USERS_STARTED
   });
   axios
-    .get("api/user/course/" + courseId, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .get("api/user/course/" + courseId, tokenObject())
     .then(res => {
       dispatch({
         type: FETCH_USERS_RECEIVED,
@@ -64,12 +65,25 @@ export const fetchUsers = courseId => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: FETCH_USERS_ERROR,
         payload: err.response.data.error_message
       });
     });
+};
+
+export const inviteUser = (courseId, object) => dispatch => {
+  dispatch({
+    type: INVITE_USER_STARTED
+  });
+  axios.post(`api/courses/${courseId}/invite`, object, tokenObject()).then(res => {
+    dispatch({
+      type: INVITE_USER_RECEIVED,
+      payload: res.data
+    });
+    dispatch(fetchUsers(courseId))
+  });
 };

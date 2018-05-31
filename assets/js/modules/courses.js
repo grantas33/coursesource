@@ -317,7 +317,6 @@ export const createCourse = newCourse => dispatch => {
         dispatch(push("/login"));
         window.localStorage.removeItem("userToken");
       }
-      console.dir(err);
       dispatch({
         type: CREATE_COURSE_ERROR,
         payload: err.response
