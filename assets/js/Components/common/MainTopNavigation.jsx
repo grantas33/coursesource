@@ -83,17 +83,14 @@ class MainTopNavigation extends React.Component {
                       <li>
                         <ul className="menu">
                           {this.props.notifications.items.map(notification => (
-                            <li>
-                              <a href="#">
-                                <i className="fa fa-users text-aqua" /> 5 new
-                                members joined today
+                            <li key={notification.id}>
+                              <a>
+                                <i className="fa fa-users text-aqua" />
+                                {notification.message}
                               </a>
                             </li>
                           ))}
                         </ul>
-                      </li>
-                      <li className="footer">
-                        <a href="#">View all</a>
                       </li>
                     </ul>
                   </li>
