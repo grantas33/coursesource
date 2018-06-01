@@ -10,3 +10,10 @@
     margin-top: 5px;
     margin-bottom: 3px;
 }
+
+.course-image {
+    max-height:500px;
+    max-width:500px;
+    height:auto;
+    width:auto;
+}

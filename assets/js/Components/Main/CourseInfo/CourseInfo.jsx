@@ -222,7 +222,7 @@ class CourseInfo extends React.Component {
                                                 {this.props.course.item.avatar && (
                                                     <div className="col-sm-6 col-xs-12">
                                                         <img
-                                                            className="img-responsive"
+                                                            className="img-responsive course-image"
                                                             src={this.props.course.item.avatar}
                                                             alt="Course avatar picture"
                                                         />
