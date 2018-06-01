@@ -7,7 +7,7 @@ import { fetchCourse, applyToCourse } from "../../../modules/courses";
 import user2img from "../../../../Resources/img/user2-160x160.jpg";
 import swal from "sweetalert2";
 import { addRedirect } from '../../../modules/user';
-import './modal.css'
+import './CourseInfo.css'
 
 class CourseInfo extends React.Component {
   constructor(props) {
@@ -222,7 +222,7 @@ class CourseInfo extends React.Component {
                                                 {this.props.course.item.avatar && (
                                                     <div className="col-sm-6 col-xs-12">
                                                         <img
-                                                            className="img-responsive course-image"
+                                                            className="img-responsive course-info-image"
                                                             src={this.props.course.item.avatar}
                                                             alt="Course avatar picture"
                                                         />

@@ -5,11 +5,15 @@
 .course-image {
   float: left;
   margin-right: 10px;
+  max-width: 120px;
+  max-height: 90px;
+  width: auto;
+  height: auto;
   clear:both;
 }
 
 .course-text {
-  margin-left: 0px;
+  margin-left: 130px;
   overflow:auto;
   display:block;
 }
