@@ -1,0 +1,12 @@
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+
+#swal2-content {
+    text-align: left !important;
+}
+
+.button-margin {
+    margin-top: 5px;
+    margin-bottom: 3px;
+}

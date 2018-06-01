@@ -380,7 +380,7 @@ class Course implements JsonSerializable
             'is_submittable' => $this->is_submittable,
             'avatar' => $this->avatar,
             'location' => $this->location,
-            'start_date' => $this->start_date,
+            'start_date' => $this->start_date ? $this->start_date->format("Y-m-d") : null,
             'schedule_overview' => $this->scheduleOverview
         ];
     }

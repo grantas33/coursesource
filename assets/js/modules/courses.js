@@ -8,6 +8,13 @@ export const FETCH_MYCOURSES_RECEIVED = "courses/FETCH_MYCOURSES_RECEIVED";
 
 export const FETCH_COURSEENTRYTASK_RECEIVED =
   "courses/FETCH_COURSEENTRYTASK_RECEIVED";
+export const FETCH_COURSEENTRYTASK_ERROR =
+    "courses/FETCH_COURSEENTRYTASK_ERROR";
+
+export const FETCH_USERENTRYTASK_RECEIVED =
+    "courses/FETCH_USERENTRYTASK_RECEIVED";
+export const FETCH_USERENTRYTASK_ERROR =
+    "courses/FETCH_USERENTRYTASK_ERROR";
 
 export const FETCH_BROWSECOURSES_STARTED =
   "courses/FETCH_BROWSECOURSES_STARTED";
@@ -36,8 +43,11 @@ axios.defaults.baseURL = "/";
 const initialState = {
   course: {
     item: {},
-    loading: true,
-    error: false
+    courseLoading: true,
+    error: false,
+    entryTaskLoading: true,
+    userSubmittedLoading: true,
+    userSubmitted: false
   },
   allMyCourses: {
     items: [],
@@ -110,28 +120,39 @@ export default (state = initialState, action) => {
         }
       };
 
-    case FETCH_COURSE_STARTED:
+      case FETCH_COURSE_STARTED:
       return {
         ...state,
         course: {
-          loading: true
+          ...state.course,
+          courseLoading: true,
+          entryTaskLoading: true,
+          userSubmittedLoading: true,
+          userSubmitted: false
         }
       };
-    case FETCH_COURSE_ERROR:
+      case FETCH_COURSE_ERROR:
       return {
         ...state,
         course: {
-          loading: false,
-          error: true
+          ...state.course,
+          courseLoading: false,
+          error: true,
+          entryTaskLoading: false,
+          userSubmittedLoading: false
         }
       };
-    case FETCH_COURSE_RECEIVED:
+      case FETCH_COURSE_RECEIVED:
       return {
         ...state,
         course: {
-          loading: false,
+          ...state.course,
+          courseLoading: false,
           error: false,
-          item: action.payload
+          item: {
+            ...state.course.item,
+            ...action.payload
+          }
         }
       };
     case CREATE_COURSE_STARTED:
@@ -168,14 +189,46 @@ export default (state = initialState, action) => {
       };
     }
     case FETCH_COURSEENTRYTASK_RECEIVED: {
-      return {
-        ...state,
-        newCourse: {
-          ...this.state.newCourse,
-          ...action.payload
-        }
-      };
+        return {
+            ...state,
+            course: {
+                ...state.course,
+                entryTaskLoading: false,
+                item: {
+                    ...state.course.item,
+                    entryTask: action.payload
+                },
+            }
+        };
     }
+    case FETCH_COURSEENTRYTASK_ERROR: {
+        return {
+            ...state,
+            course: {
+                ...state.course,
+                entryTaskLoading: false,
+            }
+        };
+    }
+    case FETCH_USERENTRYTASK_RECEIVED: {
+          return {
+              ...state,
+              course: {
+                  ...state.course,
+                  userSubmittedLoading: false,
+                  userSubmitted: true
+              }
+          };
+      }
+    case FETCH_USERENTRYTASK_ERROR: {
+          return {
+              ...state,
+              course: {
+                  ...state.course,
+                  userSubmittedLoading: false
+              }
+          };
+      }
     default:
       return state;
   }
@@ -233,18 +286,37 @@ export const fetchCourse = courseId => dispatch => {
   axios
     .get(`api/entrytasks/${courseId}`, tokenObject())
     .then(res => {
-      if (
-        res.data.error_message === "This course does not have an entry task"
-      ) {
         dispatch({
           type: FETCH_COURSEENTRYTASK_RECEIVED,
           payload:
-            res.data.error_message === "This course does not have an entry task"
+            res.data.error_message
               ? null
               : res.data
         });
-      }
+
+    })
+    .catch(() => {
+        dispatch({
+            type: FETCH_COURSEENTRYTASK_ERROR
+        });
     });
+  axios
+      .get(`api/entrytasks/submission/user/${courseId}`, tokenObject())
+      .then(res => {
+          dispatch({
+              type: FETCH_USERENTRYTASK_RECEIVED,
+              payload:
+                  res.data.error_message
+                      ? null
+                      : res.data
+          });
+
+      })
+      .catch(() => {
+          dispatch({
+              type: FETCH_USERENTRYTASK_ERROR
+          });
+      });
 };
 
 export const applyToCourse = (courseId, object) => dispatch => {
