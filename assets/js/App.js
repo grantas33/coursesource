@@ -25,6 +25,7 @@ import UsersManagement from './Components/Course/UsersManagement/UsersManagement
 import UserInfo from './Components/Course/UsersManagement/UserInfo';
 import CourseSettings from './Components/Course/CourseSettings/CourseSettings';
 import Dashboard from './Components/Main/Dashboard/Dashboard';
+import Submissions from './Components/Course/Submissions/Submissions';
 
 class App extends React.Component {
   render() {
@@ -51,6 +52,7 @@ class App extends React.Component {
             <PrivateRoute path="/course/:course/assignments-grading/:assignment" component={AssignmentGrading} />
             <PrivateRoute exact path="/course/:course/users-management" component={UsersManagement} />
             <PrivateRoute path="/course/:course/users-management/:user" component={UserInfo} />
+            <PrivateRoute path="/course/:course/submissions" component={Submissions} />
             <PrivateRoute path="/course/:course/notifications" component={Notifications} />
             <PrivateRoute path="/course/:course/schedule" component={Schedule} />
             <PrivateRoute path="/course/:course/lectures" component={Lectures} />
