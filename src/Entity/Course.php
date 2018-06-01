@@ -68,12 +68,12 @@ class Course implements JsonSerializable
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_public = false;
+    private $is_public = true;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_submittable;
+    private $is_submittable = false;
 
     /**
      * @ORM\Column(type="text", nullable=true)
