@@ -7,6 +7,7 @@ import user from './user'
 import users from './users'
 import dashboard from './dashboard'
 import notifications from './notifications'
+import submissions from './submissions'
 
 
 export default combineReducers({
@@ -17,5 +18,6 @@ export default combineReducers({
   user,
   users,
   dashboard,
-  notifications
+  notifications,
+  submissions
 })

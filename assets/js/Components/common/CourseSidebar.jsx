@@ -6,11 +6,13 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getCurrent, fetchCourseRole } from "../../modules/user";
 import { ROLES } from "../../consts/userRoles";
+import { fetchCourse } from "../../modules/courses";
 
 class CourseSidebar extends React.Component {
   componentDidMount = () => {
     this.props.getCurrent();
     this.props.fetchCourseRole(this.props.match.params.course);
+    this.props.fetchCourse(this.props.match.params.course);
   };
 
   render() {
@@ -140,6 +142,24 @@ class CourseSidebar extends React.Component {
 
               {!this.props.user.courseRole.loading &&
                 !this.props.user.courseRole.error &&
+                this.props.user.courseRole.item.role === ROLES.ADMIN &&
+                !this.props.course.loading &&
+                this.props.course.is_submittable && (
+                  <li>
+                    <Link
+                      to={`/course/${
+                        this.props.match.params.course
+                      }/users-management`}
+                      className="navigation-item"
+                    >
+                      <i className="fas fa-users fa-fw" />{" "}
+                      <span>Submissions</span>
+                    </Link>
+                  </li>
+                )}
+
+              {!this.props.user.courseRole.loading &&
+                !this.props.user.courseRole.error &&
                 this.props.user.courseRole.item.role === ROLES.ADMIN && (
                   <li>
                     <Link
@@ -162,14 +182,16 @@ class CourseSidebar extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  course: state.courses.course
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       getCurrent,
-      fetchCourseRole
+      fetchCourseRole,
+      fetchCourse
     },
     dispatch
   );
