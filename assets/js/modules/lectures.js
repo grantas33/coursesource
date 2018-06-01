@@ -74,7 +74,7 @@ export const fetchLectures = (courseId, teacherId) => dispatch => {
       "api/lectures?course=" +
         courseId +
         (teacherId ? "&teacher=" + teacherId : ""),
-      tokenObject
+      tokenObject()
     )
     .then(res => {
       dispatch({

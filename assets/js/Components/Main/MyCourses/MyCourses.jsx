@@ -2,7 +2,7 @@ import React from "react";
 import MyCourseItem from "./MyCourseItem";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchMyCourses } from "../../../modules/courses";
+import { fetchMyCourses, acceptInvitation, declineInvitation } from "../../../modules/courses";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 
@@ -36,7 +36,11 @@ class MyCourses extends React.Component {
             {this.props.courses.items.map((courseInfo) => {
               return (
                 <div className="col-md-6" key={courseInfo.course.id}>
-                  <MyCourseItem courseInfo={courseInfo} />
+                  <MyCourseItem 
+                    courseInfo={courseInfo} 
+                    accept={() => this.props.acceptInvitation(courseInfo.course.id)}
+                    decline={() => this.props.declineInvitation(courseInfo.course.id)}
+                    />
                 </div>
               );
             })
@@ -63,7 +67,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchMyCourses
+      fetchMyCourses,
+      acceptInvitation,
+      declineInvitation
     },
     dispatch
   );

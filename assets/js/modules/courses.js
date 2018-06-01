@@ -28,6 +28,9 @@ export const CREATE_COURSE_ERROR = "courses/CREATE_COURSE_ERROR";
 export const CREATE_COURSE_RECEIVED = "courses/CREATE_COURSE_RECEIVED";
 export const CLEAR_CREATE_COURSE = "courses/CLEAR_CREATE_COURSE";
 
+export const ACCEPT_RECEIVED = "courses/ACCEPT_RECEIVED";
+export const DECLINE_RECEIVED = "courses/DECLINE_RECEIVED";
+
 axios.defaults.baseURL = "/";
 
 const initialState = {
@@ -178,6 +181,29 @@ export default (state = initialState, action) => {
   }
 };
 
+export const fetchMyCourses = () => dispatch => {
+  dispatch({
+    type: FETCH_MYCOURSES_STARTED
+  });
+  axios
+    .get(`api/courses/my`, tokenObject())
+    .then(res => {
+      dispatch({
+        type: FETCH_MYCOURSES_RECEIVED,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
+      }
+      dispatch({
+        type: FETCH_MYCOURSES_ERROR
+      });
+    });
+};
+
 export const fetchCourse = courseId => dispatch => {
   dispatch({
     type: FETCH_COURSE_STARTED
@@ -245,27 +271,41 @@ export const applyToCourse = (courseId, object) => dispatch => {
     });
 };
 
-export const fetchMyCourses = () => dispatch => {
-  dispatch({
-    type: FETCH_MYCOURSES_STARTED
-  });
+export const acceptInvitation = (courseId) => dispatch => {
   axios
-    .get(`api/courses/my`, tokenObject())
+    .put(`api/courses/${courseId}/acceptinvitation`,{}, tokenObject())
     .then(res => {
       dispatch({
-        type: FETCH_MYCOURSES_RECEIVED,
+        type: ACCEPT_RECEIVED,
         payload: res.data
       });
+      dispatch(fetchMyCourses())
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
         dispatch(push("/login"));
         window.localStorage.removeItem("userToken");
       }
-      dispatch({
-        type: FETCH_MYCOURSES_ERROR
-      });
     });
+};
+
+export const declineInvitation = (courseId) => dispatch => {
+  axios
+    .delete(`api/courses/${courseId}/declineinvitation`, tokenObject())
+    .then(res => {
+      dispatch({
+        type: DECLINE_RECEIVED,
+        payload: res.data
+      });
+      dispatch(fetchMyCourses())      
+    })
+    .catch(err => {
+      console.dir(err);
+      if (err.response.data.message === "Invalid Token") {
+        dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
+      }
+    });  
 };
 
 export const fetchBrowseCourses = (sortBy, searchQuery) => dispatch => {

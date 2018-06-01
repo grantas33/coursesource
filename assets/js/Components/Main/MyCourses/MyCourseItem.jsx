@@ -5,7 +5,6 @@ import "./MyCourseItem.css";
 const MyCourseItem = props => (
   <div className="box box-widget widget-user">
     <div className="box box-widget widget-user-2">
-      {/* Add the bg color to the header using any of the bg-* classes */}
       <div className="widget-user-header bg-yellow">
         <img
           className="course-image"
@@ -45,8 +44,8 @@ const MyCourseItem = props => (
           <li>
             {props.courseInfo.status === "INVITED" ? (
               <a>
-                <button className="btn btn-success">Accept invitation</button>
-                <button className="btn btn-danger">Decline invitation</button>
+                <button onClick={props.accept} className="btn btn-success">Accept invitation</button>
+                <button onClick={props.decline} className="btn btn-danger">Decline invitation</button>
               </a>
             ) : (
               <Link to={`/course/${props.courseInfo.course.id}`}>
