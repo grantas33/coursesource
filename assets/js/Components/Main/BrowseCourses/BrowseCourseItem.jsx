@@ -20,7 +20,7 @@ const CourseItem = props => (
       <div className="col-sm-4 border-right">
         <div className="description-block">
           <h5 className="description-header">{props.course.teacherCount}</h5>
-          <span className="description-text">MENTORS</span>
+          <span className="description-text">TEACHERS</span>
         </div>
         {/* /.description-block */}
       </div>
