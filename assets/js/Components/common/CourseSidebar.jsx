@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
 import CourseSidebarHeader from "./CourseSidebarHeader";
-import user2img from "../../../Resources/img/user2-160x160.jpg";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getCurrent, fetchCourseRole } from "../../modules/user";
@@ -23,7 +22,7 @@ class CourseSidebar extends React.Component {
           <section className="sidebar">
             <div className="user-panel">
               <div className="pull-left image">
-                <img src={user2img} className="img-circle" alt="User Image" />
+                <img src={this.props.user.current.avatar} className="img-circle" alt="User Image" />
               </div>
               <div className="pull-left info">
                 <p>

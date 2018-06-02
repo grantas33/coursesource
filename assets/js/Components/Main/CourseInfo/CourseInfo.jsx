@@ -4,7 +4,6 @@ import { bindActionCreators } from "redux";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 import { fetchCourse, applyToCourse } from "../../../modules/courses";
-import user2img from "../../../../Resources/img/user2-160x160.jpg";
 import swal from "sweetalert2";
 import { addRedirect } from '../../../modules/user';
 import './CourseInfo.css'
@@ -284,7 +283,7 @@ class CourseInfo extends React.Component {
                                                         <div className="box-body box-profile">
                                                             <img
                                                                 className="profile-user-img img-responsive img-circle"
-                                                                src={teacher.avatar ? teacher.avatar : user2img}
+                                                                src={teacher.avatar}
                                                                 alt="User profile picture"
                                                             />
                                                             <h3 className="profile-username text-center">
