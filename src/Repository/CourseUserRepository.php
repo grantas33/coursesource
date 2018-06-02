@@ -8,6 +8,7 @@ use App\Entity\CourseUser;
 use App\Entity\Lecture;
 use App\Interfaces\RoleInterface;
 use App\Interfaces\StatusInterface;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -27,6 +28,11 @@ class CourseUserRepository extends ServiceEntityRepository
     public function findUserLectures($user)
     {
 
+        $dt_min = new DateTime("last saturday");
+        $dt_min->modify('+2 day');
+        $dt_max = clone($dt_min);
+        $dt_max->modify('+7 days');
+
         $qbTeacher = $this->createQueryBuilder('cu');
             $qbTeacher = $qbTeacher->select('l as lecture, cu.role')
             ->innerJoin(Course::class, 'c', 'WITH', 'cu.course = c.id')
@@ -37,12 +43,14 @@ class CourseUserRepository extends ServiceEntityRepository
             ->andWhere('cu.user = :user')
             ->andWhere('cu.status = :activeStatus')
             ->andWhere('cu.role IN (:roles)')
-            ->andWhere('l.start_date > :date')
+            ->andWhere('l.start_date > :minDate')
+            ->andWhere('l.start_date < :maxDate')
             ->setParameters([
                 'user' => $user,
                 'activeStatus' => StatusInterface::ACTIVE,
                 'roles' => [RoleInterface::TEACHER, RoleInterface::ADMIN],
-                'date' => new \DateTime('now')
+                'minDate' => $dt_min,
+                'maxDate' => $dt_max
             ]);
 
         $qbStudent = $this->createQueryBuilder('cu');
@@ -52,12 +60,14 @@ class CourseUserRepository extends ServiceEntityRepository
             ->andWhere('cu.user = :user')
             ->andWhere('cu.status = :activeStatus')
             ->andWhere('cu.role IN (:roles)')
-            ->andWhere('l.start_date > :date')
+            ->andWhere('l.start_date > :minDate')
+            ->andWhere('l.start_date < :maxDate')
             ->setParameters([
                 'user' => $user,
                 'activeStatus' => StatusInterface::ACTIVE,
                 'roles' => RoleInterface::STUDENT,
-                'date' => new \DateTime('now')
+                'minDate' => $dt_min,
+                'maxDate' => $dt_max
             ]);
 
             return array_merge($qbStudent->getQuery()->getResult(), $qbTeacher->getQuery()->getResult());
@@ -65,6 +75,10 @@ class CourseUserRepository extends ServiceEntityRepository
 
     public function findUserAssignments($user)
     {
+        $dt_min = new DateTime("last saturday");
+        $dt_min->modify('+2 day');
+        $dt_max = clone($dt_min);
+        $dt_max->modify('+7 days');
 
         $qbTeacher = $this->createQueryBuilder('cu');
         $qbTeacher = $qbTeacher->select('a as assignment, cu.role')
@@ -76,12 +90,14 @@ class CourseUserRepository extends ServiceEntityRepository
             ->andWhere('cu.user = :user')
             ->andWhere('cu.status = :activeStatus')
             ->andWhere('cu.role IN (:roles)')
-            ->andWhere('a.deadline_date > :date')
+            ->andWhere('a.deadline_date > :minDate')
+            ->andWhere('a.deadline_date < :maxDate')
             ->setParameters([
                 'user' => $user,
                 'activeStatus' => StatusInterface::ACTIVE,
                 'roles' => [RoleInterface::TEACHER, RoleInterface::ADMIN],
-                'date' => new \DateTime('now')
+                'minDate' => $dt_min,
+                'maxDate' => $dt_max
             ]);
 
         $qbStudent = $this->createQueryBuilder('cu');
@@ -91,12 +107,14 @@ class CourseUserRepository extends ServiceEntityRepository
             ->andWhere('cu.user = :user')
             ->andWhere('cu.status = :activeStatus')
             ->andWhere('cu.role IN (:roles)')
-            ->andWhere('a.deadline_date > :date')
+            ->andWhere('a.deadline_date > :minDate')
+            ->andWhere('a.deadline_date < :maxDate')
             ->setParameters([
                 'user' => $user,
                 'activeStatus' => StatusInterface::ACTIVE,
                 'roles' => RoleInterface::STUDENT,
-                'date' => new \DateTime('now')
+                'minDate' => $dt_min,
+                'maxDate' => $dt_max
             ]);
 
         return array_merge($qbStudent->getQuery()->getResult(), $qbTeacher->getQuery()->getResult());

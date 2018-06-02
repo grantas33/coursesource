@@ -289,12 +289,9 @@ class AssignmentController extends Controller
             ->getRepository(CourseUser::class)
             ->findUserAssignments($this->getUser());
 
-        usort($userAssignments, function ($a, $b) {
-            return $a['assignment']->getDeadlineDate() >  $b['assignment']->getDeadlineDate();
-        });
 
         return new JsonResponse(
-            array_slice($userAssignments, 0, 3)
+            $userAssignments
         );
     }
 

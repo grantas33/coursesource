@@ -279,12 +279,9 @@ class LectureController extends Controller
             ->getRepository(CourseUser::class)
             ->findUserLectures($this->getUser());
 
-        usort($userLectures, function ($a, $b) {
-            return $a['lecture']->getStartDate() >  $b['lecture']->getStartDate();
-        });
 
         return new JsonResponse(
-            array_slice($userLectures, 0, 3)
+            $userLectures
         );
     }
 }
