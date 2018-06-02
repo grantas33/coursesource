@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import user2img from "../../../Resources/img/user2-160x160.jpg";
 import { getCurrent, signout, updateProfile } from "../../modules/user";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -118,7 +117,7 @@ class MainTopNavigation extends React.Component {
                       >
                         {/* The user image in the navbar*/}
                         <img
-                          src={user2img}
+                          src={this.props.user.current.avatar}
                           className="user-image"
                           alt="User Image"
                         />
@@ -133,7 +132,7 @@ class MainTopNavigation extends React.Component {
                         {/* The user image in the menu */}
                         <li className="user-header">
                           <img
-                            src={user2img}
+                            src={this.props.user.current.avatar}
                             className="img-circle"
                             alt="User Image"
                           />
