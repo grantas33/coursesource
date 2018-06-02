@@ -2,9 +2,9 @@ import axios from "axios";
 import tokenObject from "../tokenObject";
 
 export const FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED =
-  "DASHBOARD/FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED";
+  "dashboard/FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED";
 export const FETCH_DASHBOARD_LECTURES_RECEIVED =
-  "DASHBOARD/FETCH_DASHBOARD_LECTURES_RECEIVED";
+  "dashboard/FETCH_DASHBOARD_LECTURES_RECEIVED";
 
 axios.defaults.baseURL = "/";
 
@@ -18,12 +18,12 @@ export default (state = initialState, action) => {
     case FETCH_DASHBOARD_ASSIGNMENTS_RECEIVED:
       return {
         ...state,
-        assignments: payload.data
+        assignments: action.payload
       };
     case FETCH_DASHBOARD_LECTURES_RECEIVED:
       return {
         ...state,
-        lectures: payload.data
+        lectures: action.payload
       };
     default:
       return state;

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 import Calendar from "../../Course/Schedule/Calendar/Calendar";
 import { fetchMyCourses } from "../../../modules/courses";
+import moment from "moment";
 
 class Dashboard extends React.Component {
   componentWillMount() {
@@ -16,19 +17,19 @@ class Dashboard extends React.Component {
   render() {
     let events = [
       ...this.props.dashboard.lectures.map(lecture => ({
-        title: 'Lecture: ' + lecture.title,
-        start: new Date(lecture.start_date),
+        title: 'Lecture: ' + lecture.lecture.title,
+        start: new Date(lecture.lecture.start_date),
         end:
-          new Date(lecture.end_date) ||
-          moment(lecture.start_date)
+          new Date(lecture.lecture.end_date) ||
+          moment(lecture.lecture.start_date)
             .add(2, 'hours')
             .toDate(),
         hexColor: "0000FF",
       })),
-      ...this.props.dashboard.assignments.map(assignement => ({
-        title: 'Deadline for ' + assignement.title,
-        end: new Date(assignement.deadline_date),
-        start: moment(assignement.deadline_date)
+      ...this.props.dashboard.assignments.map(assignment => ({
+        title: 'Deadline for ' + assignment.assignment.title,
+        end: new Date(assignment.assignment.deadline_date),
+        start: moment(assignment.assignment.deadline_date)
           .add(-1, 'hours')
           .toDate(),
         hexColor: "FF0000",          
