@@ -5,9 +5,6 @@
  .rdt {
   position: relative;
 }
-.hide-overflow {
-  overflow: hidden;
-}
 .rdtPicker {
   display: none;
   position: absolute;
