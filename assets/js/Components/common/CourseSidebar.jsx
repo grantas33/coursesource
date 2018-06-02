@@ -22,7 +22,7 @@ class CourseSidebar extends React.Component {
           <section className="sidebar">
             <div className="user-panel">
               <div className="pull-left image">
-                <img src={this.props.user.current.avatar} className="img-circle" alt="User Image" />
+                <img src={this.props.user.current.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"} className="img-circle" alt="User Image" />
               </div>
               <div className="pull-left info">
                 <p>

@@ -117,7 +117,7 @@ class MainTopNavigation extends React.Component {
                       >
                         {/* The user image in the navbar*/}
                         <img
-                          src={this.props.user.current.avatar}
+                          src={this.props.user.current.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"}
                           className="user-image"
                           alt="User Image"
                         />
@@ -132,7 +132,7 @@ class MainTopNavigation extends React.Component {
                         {/* The user image in the menu */}
                         <li className="user-header">
                           <img
-                            src={this.props.user.current.avatar}
+                            src={this.props.user.current.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"}
                             className="img-circle"
                             alt="User Image"
                           />
@@ -309,7 +309,7 @@ class MainTopNavigation extends React.Component {
                 <div className="modal-body">
                   <center>
                     <img
-                      src={this.props.user.current.avatar}
+                      src={this.props.user.current.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"}
                       name="aboutme"
                       width={140}
                       height={140}
