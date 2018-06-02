@@ -15,7 +15,6 @@ class CreateNewLecture extends React.Component {
       newLecture: {
         title: '',
         description: '',
-        teacher: '1',
         start_date: '',
         duration: '',
         course: this.props.match.params.course,
@@ -34,7 +33,6 @@ class CreateNewLecture extends React.Component {
         newLecture: {
           title: '',
           description: '',
-          teacher: '1',
           start_date: '',
           duration: '',
           course: nextProps.match.params.course,
@@ -180,13 +178,6 @@ class CreateNewLecture extends React.Component {
                     this.state.validations.description && (
                       <span className="help-block">{this.state.validations.description}</span>
                     )}
-                </div>
-
-                <div className="form-group">
-                  <label>Teacher</label>
-                  <select className="form-control" disabled>
-                    <option>Lector 1</option>
-                  </select>
                 </div>
 
                 <div

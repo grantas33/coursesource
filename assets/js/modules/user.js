@@ -246,3 +246,11 @@ export const signout = object => dispatch => {
   dispatch(push("/"));
   window.localStorage.removeItem("userToken");
 };
+
+export const updateProfile = newUserObject => dispatch => {
+  axios
+    .put(`api/user/edit`,newUserObject, tokenObject())
+    .then(res => {
+      dispatch(getCurrent())
+    })
+};

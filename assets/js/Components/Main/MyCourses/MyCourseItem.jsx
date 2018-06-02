@@ -8,7 +8,7 @@ const MyCourseItem = props => (
       <div className="widget-user-header bg-yellow">
         <img
           className="course-image"
-          src={props.courseInfo.course.avatar}
+          src={props.courseInfo.course.avatar || "https://www.crimsonsummer.harvard.edu/images/gradhat_600x400.png"}
         />
         <div className="course-text">
           <h3 id="course-title" className="widget-user-username">
