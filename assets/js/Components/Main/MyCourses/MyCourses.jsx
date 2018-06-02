@@ -32,6 +32,9 @@ class MyCourses extends React.Component {
           ]}
         />
         <div className="content">
+            {this.props.courses.items.length === 0 ? (
+                <h3 id='empty_page'>You are not participating in any courses yet!</h3>
+                ) : (
           <div className="row">
             {this.props.courses.items.map((courseInfo) => {
               return (
@@ -45,7 +48,7 @@ class MyCourses extends React.Component {
               );
             })
           }
-          </div>
+          </div> )}
         </div>
       </div>
     );
