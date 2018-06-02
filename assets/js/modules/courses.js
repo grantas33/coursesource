@@ -389,7 +389,7 @@ export const fetchBrowseCourses = (sortBy, searchQuery) => dispatch => {
     .get(
       "api/courses/" +
         (loggedIn ? "browse" : "public") +
-        `?sortby=${sortBy}` +
+        `?sortBy=${sortBy}` +
         (searchQuery && searchQuery !== "" ? `&query=${searchQuery}` : ""),
       loggedIn
         ? tokenObject()
