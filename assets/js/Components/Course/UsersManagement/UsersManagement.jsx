@@ -65,7 +65,7 @@ class UsersManagement extends React.Component {
                         return (
                           <tr key={user.user.id}>
                             <td className='td-user-image'>
-                              <img className='user-image' src={user.user.avatar} />
+                              <img className='user-image' src={user.user.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"} alt="User Image" />
                             </td>
                             <td>
                               <Link
