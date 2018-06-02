@@ -49,10 +49,14 @@ const MyCourseItem = props => (
                 <button onClick={props.accept} className="btn btn-success">Accept invitation</button>
                 <button onClick={props.decline} className="btn btn-danger">Decline invitation</button>
               </a>
+            ) : props.courseInfo.status === "PENDING" ? (
+                <a>
+                  <button className="btn btn-info disabled">Open course</button>
+                </a>
             ) : (
-              <Link to={`/course/${props.courseInfo.course.id}`}>
-                <button className="btn btn-info">Open course</button>
-              </Link>
+                <Link to={`/course/${props.courseInfo.course.id}`}>
+                  <button className="btn btn-info">Open course</button>
+                </Link>
             )}
           </li>
         </ul>

@@ -123,7 +123,8 @@ class CourseController extends Controller
                 ->getRepository(CourseUser::class)
                 ->findOneBy(array(
                     'user'=>$this->getUser(),
-                    'course'=>$course));
+                    'course'=>$course,
+                    'status'=>StatusInterface::ACTIVE));
 
             if (!$isCourseVisible) {
                 return new JsonResponse([
