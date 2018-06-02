@@ -6,6 +6,7 @@ import { fetchBrowseCourses } from "../../../modules/courses";
 import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 import debounce from "debounce";
+import InfiniteScroll from "react-infinite-scroller";
 
 class BrowseCourses extends React.Component {
   constructor(props) {
@@ -13,29 +14,37 @@ class BrowseCourses extends React.Component {
 
     this.state = {
       sortBy: "creationDate",
-      searchQuery: ""
+      searchQuery: "",
+      page: 1
     };
-    this.fetchBrowseCourses = debounce(() => this.props.fetchBrowseCourses(this.state.sortBy, this.state.searchQuery), 500);
+    this.fetchBrowseCourses = debounce(
+      () =>
+        this.props.fetchBrowseCourses(
+          this.state.sortBy,
+          this.state.searchQuery,
+          0,
+          10
+        ),
+      500
+    );
   }
   componentWillMount() {
-    this.props.fetchBrowseCourses("creationDate");
+    this.props.fetchBrowseCourses("creationDate",null,0,10);
   }
 
   render() {
     let content;
-    if (this.props.courses.loading === true) {
-      content = <h3>Loading...</h3>;
-    } else if (
+    if (
       this.props.courses.loading === false &&
       this.props.courses.error === true
     ) {
       content = <h3>Error</h3>;
     } else {
-      content = this.props.courses.items.map((course, i) => (
-        <div className="col-md-6" key={i}>
-          <BrowseCourseItem key={course.id} course={course} />
+      content = this.props.courses.items.map(course => (
+        <div className="col-md-6" key={course.id}>
+          <BrowseCourseItem course={course} />
         </div>
-      ))
+      ));
     }
     return (
       <div>
@@ -53,7 +62,7 @@ class BrowseCourses extends React.Component {
             <select
               onClick={e =>
                 this.setState(
-                  { ...this.state, sortBy: e.target.value },
+                  { ...this.state, sortBy: e.target.value, page: 1 },
                   this.fetchBrowseCourses
                 )
               }
@@ -73,7 +82,7 @@ class BrowseCourses extends React.Component {
                 <input
                   onChange={e =>
                     this.setState(
-                      { ...this.state, searchQuery: e.target.value },
+                      { ...this.state, searchQuery: e.target.value, page: 1 },
                       this.fetchBrowseCourses
                     )
                   }
@@ -87,7 +96,23 @@ class BrowseCourses extends React.Component {
           </div>
 
           <div className="row">
-            {content}
+            <InfiniteScroll
+              pageStart={1}
+              loadMore={() => {
+                let page = this.state.page+1;
+                this.setState({...this.state, page})
+                this.props.fetchBrowseCourses(this.state.sortBy, this.state.searchQuery, page*5, 5)}}
+              hasMore={this.props.courses.hasMore}
+              threshold={100}
+              initialLoad={false}
+              loader={
+                <div className="loader" key={0}>
+                  Loading ...
+                </div>
+              }
+            >
+              {content}
+            </InfiniteScroll>
           </div>
         </div>
       </div>

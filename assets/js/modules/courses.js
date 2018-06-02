@@ -9,12 +9,11 @@ export const FETCH_MYCOURSES_RECEIVED = "courses/FETCH_MYCOURSES_RECEIVED";
 export const FETCH_COURSEENTRYTASK_RECEIVED =
   "courses/FETCH_COURSEENTRYTASK_RECEIVED";
 export const FETCH_COURSEENTRYTASK_ERROR =
-    "courses/FETCH_COURSEENTRYTASK_ERROR";
+  "courses/FETCH_COURSEENTRYTASK_ERROR";
 
 export const FETCH_USERENTRYTASK_RECEIVED =
-    "courses/FETCH_USERENTRYTASK_RECEIVED";
-export const FETCH_USERENTRYTASK_ERROR =
-    "courses/FETCH_USERENTRYTASK_ERROR";
+  "courses/FETCH_USERENTRYTASK_RECEIVED";
+export const FETCH_USERENTRYTASK_ERROR = "courses/FETCH_USERENTRYTASK_ERROR";
 
 export const FETCH_BROWSECOURSES_STARTED =
   "courses/FETCH_BROWSECOURSES_STARTED";
@@ -57,7 +56,8 @@ const initialState = {
   allBrowseCourses: {
     items: [],
     loading: true,
-    error: false
+    error: false,
+    hasMore: true
   },
   newCourse: {
     response: "",
@@ -99,7 +99,9 @@ export default (state = initialState, action) => {
       return {
         ...state,
         allBrowseCourses: {
-          loading: true
+          ...state.allBrowseCourses,
+          loading: true,
+          hasMore: false
         }
       };
     case FETCH_BROWSECOURSES_ERROR:
@@ -111,16 +113,21 @@ export default (state = initialState, action) => {
         }
       };
     case FETCH_BROWSECOURSES_RECEIVED:
+    {
+      console.log(state.allBrowseCourses.items.length + action.payload.length) 
       return {
         ...state,
         allBrowseCourses: {
           loading: false,
           error: false,
-          items: action.payload
+          items: action.delete
+            ? action.payload
+            : [...state.allBrowseCourses.items, ...action.payload],
+          hasMore: action.payload.length > 0
         }
       };
-
-      case FETCH_COURSE_STARTED:
+    }
+    case FETCH_COURSE_STARTED:
       return {
         ...state,
         course: {
@@ -131,7 +138,7 @@ export default (state = initialState, action) => {
           userSubmitted: false
         }
       };
-      case FETCH_COURSE_ERROR:
+    case FETCH_COURSE_ERROR:
       return {
         ...state,
         course: {
@@ -142,7 +149,7 @@ export default (state = initialState, action) => {
           userSubmittedLoading: false
         }
       };
-      case FETCH_COURSE_RECEIVED:
+    case FETCH_COURSE_RECEIVED:
       return {
         ...state,
         course: {
@@ -189,46 +196,46 @@ export default (state = initialState, action) => {
       };
     }
     case FETCH_COURSEENTRYTASK_RECEIVED: {
-        return {
-            ...state,
-            course: {
-                ...state.course,
-                entryTaskLoading: false,
-                item: {
-                    ...state.course.item,
-                    entryTask: action.payload
-                },
-            }
-        };
+      return {
+        ...state,
+        course: {
+          ...state.course,
+          entryTaskLoading: false,
+          item: {
+            ...state.course.item,
+            entryTask: action.payload
+          }
+        }
+      };
     }
     case FETCH_COURSEENTRYTASK_ERROR: {
-        return {
-            ...state,
-            course: {
-                ...state.course,
-                entryTaskLoading: false,
-            }
-        };
+      return {
+        ...state,
+        course: {
+          ...state.course,
+          entryTaskLoading: false
+        }
+      };
     }
     case FETCH_USERENTRYTASK_RECEIVED: {
-          return {
-              ...state,
-              course: {
-                  ...state.course,
-                  userSubmittedLoading: false,
-                  userSubmitted: true
-              }
-          };
-      }
+      return {
+        ...state,
+        course: {
+          ...state.course,
+          userSubmittedLoading: false,
+          userSubmitted: true
+        }
+      };
+    }
     case FETCH_USERENTRYTASK_ERROR: {
-          return {
-              ...state,
-              course: {
-                  ...state.course,
-                  userSubmittedLoading: false
-              }
-          };
-      }
+      return {
+        ...state,
+        course: {
+          ...state.course,
+          userSubmittedLoading: false
+        }
+      };
+    }
     default:
       return state;
   }
@@ -264,9 +271,7 @@ export const fetchCourse = courseId => dispatch => {
   axios
     .get(
       `api/courses/public/get/${courseId}`,
-      window.localStorage.getItem("userToken")
-        ? tokenObject
-        : {}
+      window.localStorage.getItem("userToken") ? tokenObject : {}
     )
     .then(res => {
       dispatch({
@@ -286,37 +291,29 @@ export const fetchCourse = courseId => dispatch => {
   axios
     .get(`api/entrytasks/${courseId}`, tokenObject())
     .then(res => {
-        dispatch({
-          type: FETCH_COURSEENTRYTASK_RECEIVED,
-          payload:
-            res.data.error_message
-              ? null
-              : res.data
-        });
-
+      dispatch({
+        type: FETCH_COURSEENTRYTASK_RECEIVED,
+        payload: res.data.error_message ? null : res.data
+      });
     })
     .catch(() => {
-        dispatch({
-            type: FETCH_COURSEENTRYTASK_ERROR
-        });
+      dispatch({
+        type: FETCH_COURSEENTRYTASK_ERROR
+      });
     });
   axios
-      .get(`api/entrytasks/submission/user/${courseId}`, tokenObject())
-      .then(res => {
-          dispatch({
-              type: FETCH_USERENTRYTASK_RECEIVED,
-              payload:
-                  res.data.error_message
-                      ? null
-                      : res.data
-          });
-
-      })
-      .catch(() => {
-          dispatch({
-              type: FETCH_USERENTRYTASK_ERROR
-          });
+    .get(`api/entrytasks/submission/user/${courseId}`, tokenObject())
+    .then(res => {
+      dispatch({
+        type: FETCH_USERENTRYTASK_RECEIVED,
+        payload: res.data.error_message ? null : res.data
       });
+    })
+    .catch(() => {
+      dispatch({
+        type: FETCH_USERENTRYTASK_ERROR
+      });
+    });
 };
 
 export const applyToCourse = (courseId, object) => dispatch => {
@@ -343,15 +340,15 @@ export const applyToCourse = (courseId, object) => dispatch => {
     });
 };
 
-export const acceptInvitation = (courseId) => dispatch => {
+export const acceptInvitation = courseId => dispatch => {
   axios
-    .put(`api/courses/${courseId}/acceptinvitation`,{}, tokenObject())
+    .put(`api/courses/${courseId}/acceptinvitation`, {}, tokenObject())
     .then(res => {
       dispatch({
         type: ACCEPT_RECEIVED,
         payload: res.data
       });
-      dispatch(fetchMyCourses())
+      dispatch(fetchMyCourses());
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
@@ -361,7 +358,7 @@ export const acceptInvitation = (courseId) => dispatch => {
     });
 };
 
-export const declineInvitation = (courseId) => dispatch => {
+export const declineInvitation = courseId => dispatch => {
   axios
     .delete(`api/courses/${courseId}/declineinvitation`, tokenObject())
     .then(res => {
@@ -369,7 +366,7 @@ export const declineInvitation = (courseId) => dispatch => {
         type: DECLINE_RECEIVED,
         payload: res.data
       });
-      dispatch(fetchMyCourses())      
+      dispatch(fetchMyCourses());
     })
     .catch(err => {
       console.dir(err);
@@ -377,10 +374,15 @@ export const declineInvitation = (courseId) => dispatch => {
         dispatch(push("/login"));
         window.localStorage.removeItem("userToken");
       }
-    });  
+    });
 };
 
-export const fetchBrowseCourses = (sortBy, searchQuery) => dispatch => {
+export const fetchBrowseCourses = (
+  sortBy,
+  searchQuery,
+  offset,
+  limit
+) => dispatch => {
   dispatch({
     type: FETCH_BROWSECOURSES_STARTED
   });
@@ -390,19 +392,20 @@ export const fetchBrowseCourses = (sortBy, searchQuery) => dispatch => {
       "api/courses/" +
         (loggedIn ? "browse" : "public") +
         `?sortBy=${sortBy}` +
-        (searchQuery && searchQuery !== "" ? `&query=${searchQuery}` : ""),
-      loggedIn
-        ? tokenObject()
-        : {}
+        (searchQuery && searchQuery !== "" ? `&query=${searchQuery}` : "") +
+        (offset && offset !== "" ? `&offset=${offset}` : "") +
+        (limit && limit !== "" ? `&limit=${limit}` : ""),
+      loggedIn ? tokenObject() : {}
     )
     .then(res => {
       dispatch({
         type: FETCH_BROWSECOURSES_RECEIVED,
-        payload: res.data
+        payload: res.data,
+        delete: offset === 0
       });
     })
     .catch(err => {
-      if (err.response.data.message === "Invalid Token") {
+      if (err.response && err.response.data.message === "Invalid Token") {
         dispatch(push("/login"));
         window.localStorage.removeItem("userToken");
       }
@@ -432,7 +435,9 @@ export const createCourse = newCourse => dispatch => {
       dispatch({
         type: CREATE_COURSE_ERROR,
         payload: err.response
-          ? err.response.data.error_message[Object.keys(err.response.data.error_message)[0]]
+          ? err.response.data.error_message[
+              Object.keys(err.response.data.error_message)[0]
+            ]
           : "Unknown error"
       });
     });
