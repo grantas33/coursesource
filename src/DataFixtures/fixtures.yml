@@ -12,7 +12,7 @@ App\Entity\User:
         plainPassword: '<password()>'
         password: '<text(50)>'
         resume: '<realText()>'
-        avatar: "<imageUrl(640, 480, 'people')>"
+        avatar: "<imageUrl(480, 480, 'people')>"
 
 App\Entity\Course:
     course{1..50}:

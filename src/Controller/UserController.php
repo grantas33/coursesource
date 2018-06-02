@@ -29,6 +29,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends Controller
 {
@@ -57,25 +58,33 @@ class UserController extends Controller
     private $jwtEncoder;
 
     /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
      * UserController constructor.
      * @param UserManagerInterface $userManager
      * @param EventDispatcherInterface $dispatcher
      * @param AuthorizationCheckerInterface $authorizationChecker
      * @param TokenStorageInterface $tokenStorage
      * @param JWTEncoderInterface $jwtEncoder
+     * @param ValidatorInterface $validator
      */
     public function __construct(
         UserManagerInterface $userManager,
         EventDispatcherInterface $dispatcher,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
-        JWTEncoderInterface $jwtEncoder
+        JWTEncoderInterface $jwtEncoder,
+        ValidatorInterface $validator
     ) {
         $this->userManager = $userManager;
         $this->dispatcher = $dispatcher;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
         $this->jwtEncoder = $jwtEncoder;
+        $this->validator = $validator;
     }
 
 
@@ -182,6 +191,39 @@ class UserController extends Controller
         return new JsonResponse([
             'error_message' => 'Cannot retrieve the user'
         ], Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * @Route("api/user/edit", name="api_user_register", methods="PUT")
+     */
+    public function editUser(Request $request)
+    {
+        $user = $this->getUser();
+
+        $form = $this->createForm(RegistrationType::class, $user);
+        $data = json_decode($request->getContent(), true);
+        $form->submit($data, false);
+
+        if (!($form->isSubmitted() && $form->isValid())) {
+            $errors = $this->validator->validate($user);
+
+            if (count($errors) > 0) {
+                return new JsonResponse([
+                    'error_message' => $errors->get(0)->getMessage(),
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        try {
+            $this->userManager->updateUser($user);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse([
+            'success_message' => 'Successfully updated user'
+        ]);
     }
 
     /**
