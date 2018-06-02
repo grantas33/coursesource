@@ -1,6 +1,18 @@
 parameters:
     role: ['ADMIN', 'TEACHER', 'STUDENT', 'APPLICANT']
     status: ['ACTIVE', 'PENDING', 'INVITED']
+    courses:
+      - 'course'
+      - 'academy'
+      - 'bootcamp'
+      - 'school'
+      - 'seminary'
+      - 'boarding school'
+      - 'crash course'
+      - 'lectures'
+      - 'study group'
+      - 'colloquium'
+      - 'university'
 
 
 App\Entity\User:
@@ -16,7 +28,7 @@ App\Entity\User:
 
 App\Entity\Course:
     course{1..50, 2}:
-        title: '<company()>, <bs()>'
+        title: '<company()> <randomElement($courses)>'
         description: '<realText(1000)>'
         slogan: '<catchPhrase()>, <bs()>, <bs()>'
         creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
@@ -28,7 +40,7 @@ App\Entity\Course:
         schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
         from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
     course{2..50, 2}:
-        title: '<company()>, <bs()>'
+        title: '<company()> <randomElement($courses)>'
         description: '<realText(1000)>'
         slogan: '<catchPhrase()>, <bs()>, <bs()>'
         creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
