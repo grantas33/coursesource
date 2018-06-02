@@ -10,6 +10,7 @@ import "react-select/dist/react-select.css";
 import fetch from "isomorphic-fetch";
 import tokenObject from "../../../tokenObject";
 import swal from "sweetalert2";
+import './UsersManagement.css'
 
 class UsersManagement extends React.Component {
   constructor(props) {
@@ -63,8 +64,8 @@ class UsersManagement extends React.Component {
                       {this.props.users.items.map(user => {
                         return (
                           <tr key={user.user.id}>
-                            <td>
-                              <img src={user.user.avatar} />
+                            <td className='td-user-image'>
+                              <img className='user-image' src={user.user.avatar} />
                             </td>
                             <td>
                               <Link
@@ -95,7 +96,7 @@ class UsersManagement extends React.Component {
               </div>
             </div>
           </div>
-          <div className="row">
+          <div className="row select-bar-padding">
             <div className="col-sm-4 no-padding">
               <Select.Async
                 value={this.state.value}
@@ -134,7 +135,7 @@ class UsersManagement extends React.Component {
                 }
               >
                 <option value={"STUDENT"}>Student</option>
-                <option value={"TEACHER"}>Lector</option>
+                <option value={"TEACHER"}>Teacher</option>
                 <option value={"ADMIN"}>Admin</option>
               </select>
             </div>
