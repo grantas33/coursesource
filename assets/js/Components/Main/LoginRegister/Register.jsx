@@ -8,10 +8,12 @@ class Register extends React.Component {
   componentDidMount = () => {
     document.body.classList.toggle("layout-top-nav", true);
     document.body.classList.toggle("sidebar-collapse", false);
+    document.body.classList.toggle("hide-overflow", true);
   };
 
   componentWillUnmount = () => {
     document.body.classList.toggle("layout-top-nav", false);
+    document.body.classList.toggle("hide-overflow", false);
   };
 
   constructor(props) {

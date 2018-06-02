@@ -16,6 +16,14 @@ class Login extends React.Component {
     };
   }
 
+  componentDidMount = () => {
+    document.body.classList.toggle("hide-overflow", true);
+  };
+
+  componentWillUnmount = () => {
+    document.body.classList.toggle("hide-overflow", false);
+  };
+
   render() {
     return (
       <div className="landingpage">
