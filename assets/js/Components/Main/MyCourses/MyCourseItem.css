@@ -18,6 +18,14 @@
   display:block;
 }
 
+.course-image-center {
+  float: left;;
+  width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
 #course-title {
   margin-left: 0;
 }

@@ -6,10 +6,12 @@ const MyCourseItem = props => (
   <div className="box box-widget widget-user">
     <div className="box box-widget widget-user-2">
       <div className="widget-user-header bg-yellow">
-        <img
-          className="course-image"
-          src={props.courseInfo.course.avatar || "https://www.crimsonsummer.harvard.edu/images/gradhat_600x400.png"}
-        />
+          <div className="course-image-center">
+              <img
+                  className="course-image"
+                  src={props.courseInfo.course.avatar || "https://www.crimsonsummer.harvard.edu/images/gradhat_600x400.png"}
+              />
+          </div>
         <div className="course-text">
           <h3 id="course-title" className="widget-user-username">
             {props.courseInfo.course.title}
