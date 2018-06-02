@@ -194,7 +194,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("api/user/edit", name="api_user_register", methods="PUT")
+     * @Route("api/user/edit", name="api_user_edit", methods="PUT")
      */
     public function editUser(Request $request)
     {
