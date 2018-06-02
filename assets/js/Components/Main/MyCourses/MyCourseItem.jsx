@@ -46,7 +46,7 @@ const MyCourseItem = props => (
           <li>
             {props.courseInfo.status === "INVITED" ? (
               <a>
-                <button onClick={props.accept} className="btn btn-success">Accept invitation</button>
+                <button onClick={props.accept} className="btn btn-success accept-margin">Accept invitation</button>
                 <button onClick={props.decline} className="btn btn-danger">Decline invitation</button>
               </a>
             ) : props.courseInfo.status === "PENDING" ? (

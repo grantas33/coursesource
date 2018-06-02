@@ -129,7 +129,7 @@ class UsersManagement extends React.Component {
 
             <div className="col-sm-2 no-padding">
               <select
-                className="form-control"
+                className="form-control select-bar"
                 onClick={e =>
                   this.setState({ ...this.state, role: e.target.value })
                 }
@@ -148,7 +148,7 @@ class UsersManagement extends React.Component {
                     role: this.state.role
                   });
                 }}
-                className="btn btn-primary"
+                className="btn btn-primary select-bar"
               >
                 Invite new user
               </button>

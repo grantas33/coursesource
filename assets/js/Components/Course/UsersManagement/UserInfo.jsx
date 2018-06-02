@@ -54,6 +54,7 @@ class UserInfo extends React.Component {
                     {user.user.name + " " + user.user.surname}
                   </h3>
                   <p className="text-muted text-center">{user.course.tag}</p>
+                  <p className="text-muted text-center">{user.user.resume}</p>
                 </div>
               </div>
             </div>

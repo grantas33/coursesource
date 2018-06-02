@@ -26,6 +26,10 @@
   justify-content: center
 }
 
+.accept-margin {
+    margin-right: 5px;
+}
+
 #course-title {
   margin-left: 0;
 }
