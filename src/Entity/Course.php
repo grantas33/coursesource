@@ -93,7 +93,7 @@ class Course implements JsonSerializable
      * @ORM\Column(type="datetime", nullable=true)
      * @Assert\DateTime(message="You must enter a valid date")
      * @Assert\Expression(
-     * "value > this.getCurrentDate()",
+     * "value > this.getCurrentDate() or !value",
      *  message="The start date must be in the future!")
      */
     private $start_date;
