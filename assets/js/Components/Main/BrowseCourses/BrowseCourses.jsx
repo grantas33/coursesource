@@ -66,7 +66,7 @@ class BrowseCourses extends React.Component {
               <option value="creationDate">Creation date</option>
               <option value="teacherCount">Teacher count</option>
               <option value="assignmentCount">Assignment count</option>
-              <option value="lecturesCount">Lecture count</option>
+              <option value="lectureCount">Lecture count</option>
             </select>
             <div className="pull-right">
               <div className="has-feedback">
