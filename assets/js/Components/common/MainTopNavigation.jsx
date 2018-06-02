@@ -63,6 +63,10 @@ class MainTopNavigation extends React.Component {
                     <li>
                       <Link to="/main/browse-courses">Browse courses</Link>
                     </li>
+
+                    <li>
+                        <Link to="/main/create-new-course">Create a new course</Link>
+                    </li>
                   </ul>
                 </div>
               )}
