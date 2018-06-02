@@ -13,13 +13,13 @@ class Lectures extends React.Component {
     this.state = {
       filter: {
         showOnlyOwn: false,
-        showPrevious: true
+        showPrevious: false
       }
     };
   }
 
   componentWillMount = () => {
-    this.props.fetchLectures(this.props.match.params.course);
+    this.props.fetchLectures(this.props.match.params.course, false, true);
   };
 
   render() {
@@ -77,14 +77,26 @@ class Lectures extends React.Component {
                           type="checkbox"
                           className="flat-red"
                           style={{ position: "absolute", opacity: 0 }}
-                          onClick={evt => {
+                          onClick= {evt => {
+                            if (!this.state.filter.showPrevious) {
+                                this.props.fetchLectures(
+                                    this.props.match.params.course,
+                                    this.state.filter.showOnlyOwn
+                                );
+                            } else {
+                                this.props.fetchLectures(
+                                    this.props.match.params.course,
+                                    this.state.filter.showOnlyOwn,
+                                    true
+                                );
+                            }
                             this.setState({
-                              filter: {
-                                ...this.state.filter,
-                                showPrevious: !this.state.filter.showPrevious
-                              }
+                                filter: {
+                                    ...this.state.filter,
+                                    showPrevious: !this.state.filter.showPrevious
+                                }
                             });
-                          }}
+                        }}
                         />
 
                         <ins
@@ -124,11 +136,14 @@ class Lectures extends React.Component {
                             if (!this.state.filter.showOnlyOwn) {
                               this.props.fetchLectures(
                                 this.props.match.params.course,
-                                1
+                                1,
+                                this.state.filter.showPrevious
                               );
                             } else {
                               this.props.fetchLectures(
-                                this.props.match.params.course
+                                this.props.match.params.course,
+                                0,
+                                this.state.filter.showPrevious
                               );
                             }
                             this.setState({

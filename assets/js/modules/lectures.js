@@ -65,7 +65,7 @@ export default (state = initialState, action) => {
   }
 };
 
-export const fetchLectures = (courseId, teacherId) => dispatch => {
+export const fetchLectures = (courseId, teacherId, isFuture) => dispatch => {
   dispatch({
     type: FETCH_LECTURES_STARTED
   });
@@ -73,7 +73,8 @@ export const fetchLectures = (courseId, teacherId) => dispatch => {
     .get(
       "api/lectures?course=" +
         courseId +
-        (teacherId ? "&teacher=" + teacherId : ""),
+        (teacherId ? "&teacher=" + teacherId : "") +
+        (isFuture ? "&is_future=" + isFuture : ""),
       tokenObject()
     )
     .then(res => {

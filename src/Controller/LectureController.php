@@ -216,7 +216,7 @@ class LectureController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $lectures = $repository->filter($course, $teacher, $is_future) ;
+        $lectures = $repository->filter($course, $teacher, $is_future, $this->getUser()) ;
 
         return new JsonResponse(
             $lectures

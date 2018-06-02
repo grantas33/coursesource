@@ -47,7 +47,7 @@ class UserInfo extends React.Component {
                 <div className="box-body box-profile">
                   <img
                     className="profile-user-img img-responsive img-circle"
-                    src={user.user.avatar}
+                    src={user.user.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"}
                     alt="User profile picture"
                   />
                   <h3 className="profile-username text-center">
