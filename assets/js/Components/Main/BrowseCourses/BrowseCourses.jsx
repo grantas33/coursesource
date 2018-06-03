@@ -106,9 +106,7 @@ class BrowseCourses extends React.Component {
               threshold={100}
               initialLoad={false}
               loader={
-                <div className="loader" key={0}>
-                  Loading ...
-                </div>
+                ""
               }
             >
               {content}
