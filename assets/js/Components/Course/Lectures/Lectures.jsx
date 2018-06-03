@@ -13,13 +13,13 @@ class Lectures extends React.Component {
     this.state = {
       filter: {
         showOnlyOwn: false,
-        showPrevious: false
+        showPrevious: true
       }
     };
   }
 
   componentWillMount = () => {
-    this.props.fetchLectures(this.props.match.params.course, false, true);
+    this.props.fetchLectures(this.props.match.params.course, false, false);
   };
 
   render() {
@@ -137,13 +137,13 @@ class Lectures extends React.Component {
                               this.props.fetchLectures(
                                 this.props.match.params.course,
                                 1,
-                                this.state.filter.showPrevious
+                                !this.state.filter.showPrevious
                               );
                             } else {
                               this.props.fetchLectures(
                                 this.props.match.params.course,
                                 0,
-                                this.state.filter.showPrevious
+                                !this.state.filter.showPrevious
                               );
                             }
                             this.setState({

@@ -264,7 +264,7 @@ export const fetchMyCourses = () => dispatch => {
     });
 };
 
-export const fetchCourse = courseId => dispatch => {
+export const fetchCourse = (courseId, isCourseInfo) => dispatch => {
   dispatch({
     type: FETCH_COURSE_STARTED
   });
@@ -288,32 +288,34 @@ export const fetchCourse = courseId => dispatch => {
         type: FETCH_COURSE_ERROR
       });
     });
-  axios
-    .get(`api/entrytasks/${courseId}`, tokenObject())
-    .then(res => {
-      dispatch({
-        type: FETCH_COURSEENTRYTASK_RECEIVED,
-        payload: res.data.error_message ? null : res.data
-      });
-    })
-    .catch(() => {
-      dispatch({
-        type: FETCH_COURSEENTRYTASK_ERROR
-      });
-    });
-  axios
-    .get(`api/entrytasks/submission/user/${courseId}`, tokenObject())
-    .then(res => {
-      dispatch({
-        type: FETCH_USERENTRYTASK_RECEIVED,
-        payload: res.data.error_message ? null : res.data
-      });
-    })
-    .catch(() => {
-      dispatch({
-        type: FETCH_USERENTRYTASK_ERROR
-      });
-    });
+  if(isCourseInfo) {
+      axios
+          .get(`api/entrytasks/${courseId}`, tokenObject())
+          .then(res => {
+              dispatch({
+                  type: FETCH_COURSEENTRYTASK_RECEIVED,
+                  payload: res.data.error_message ? null : res.data
+              });
+          })
+          .catch(() => {
+              dispatch({
+                  type: FETCH_COURSEENTRYTASK_ERROR
+              });
+          });
+      axios
+          .get(`api/entrytasks/submission/user/${courseId}`, tokenObject())
+          .then(res => {
+              dispatch({
+                  type: FETCH_USERENTRYTASK_RECEIVED,
+                  payload: res.data.error_message ? null : res.data
+              });
+          })
+          .catch(() => {
+              dispatch({
+                  type: FETCH_USERENTRYTASK_ERROR
+              });
+          });
+  }
 };
 
 export const applyToCourse = (courseId, object) => dispatch => {

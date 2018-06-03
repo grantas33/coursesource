@@ -21,7 +21,7 @@ class CourseInfo extends React.Component {
   }
 
   componentWillMount() {
-      this.props.fetchCourse(this.props.match.params.course);
+      this.props.fetchCourse(this.props.match.params.course, true);
   }
 
   render() {

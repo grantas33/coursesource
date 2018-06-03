@@ -11,8 +11,9 @@ const LectureItem = props => (
       <div className="box box-widget">
         <div className="box-header with-border">
           <div className="user-block">
-            <img className="img-circle" src={user3img} alt="Lecture image" />
-            <span className="username">{props.lecture.teacher == 1 ? 'Alexander Pierce' : 'Walter A. Smith'}</span>
+            <img className="img-circle" src={props.lecture.teacher.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"}
+                 alt="Lecture image" />
+            <span className="username">{props.lecture.teacher.name} {props.lecture.teacher.surname}</span>
             <span className="description">{moment(props.lecture.creation_date).format('YYYY-MM-DD HH:mm')}</span>
           </div>
           {/* /.user-block */}
@@ -47,45 +48,45 @@ const LectureItem = props => (
 
           <p>{props.lecture.description}</p>
 
-          <span className="pull-right text-muted">2 comments</span>
+          {/*<span className="pull-right text-muted">2 comments</span>*/}
         </div>
         {/* /.box-body */}
-        <div className="box-footer box-comments">
-          <div className="box-comment">
-            {/* User image */}
-            <img className="img-circle img-sm" src={user3img} alt="User Image" />
-            <div className="comment-text">
-              <span className="username">
-                Maria Gonzales
-                <span className="text-muted pull-right">8:03 PM Today</span>
-              </span>
-              {/* /.username */}
-              It is a long established fact that a reader will be distracted by the readable content of a page when
-              looking at its layout.
-            </div>
-            {/* /.comment-text */}
-          </div>
-          <div className="box-comment">
-            <img className="img-circle img-sm" src={user3img} alt="User Image" />
-            <div className="comment-text">
-              <span className="username">
-                Nora Havisham
-                <span className="text-muted pull-right">8:03 PM Today</span>
-              </span>
-              The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to
-              using 'Content here, content here', making it look like readable English.
-            </div>
-          </div>
-        </div>
-        <div className="box-footer">
-          <form action="#" method="post">
-            <img className="img-responsive img-circle img-sm" src={user3img} alt="Alt Text" />
-            {/* .img-push is used to add margin to elements next to floating images */}
-            <div className="img-push">
-              <input type="text" className="form-control input-sm" placeholder="Press enter to post comment" />
-            </div>
-          </form>
-        </div>
+        {/*<div className="box-footer box-comments">*/}
+          {/*<div className="box-comment">*/}
+            {/*/!* User image *!/*/}
+            {/*<img className="img-circle img-sm" src={user3img} alt="User Image" />*/}
+            {/*<div className="comment-text">*/}
+              {/*<span className="username">*/}
+                {/*Maria Gonzales*/}
+                {/*<span className="text-muted pull-right">8:03 PM Today</span>*/}
+              {/*</span>*/}
+              {/*/!* /.username *!/*/}
+              {/*It is a long established fact that a reader will be distracted by the readable content of a page when*/}
+              {/*looking at its layout.*/}
+            {/*</div>*/}
+            {/*/!* /.comment-text *!/*/}
+          {/*</div>*/}
+          {/*<div className="box-comment">*/}
+            {/*<img className="img-circle img-sm" src={user3img} alt="User Image" />*/}
+            {/*<div className="comment-text">*/}
+              {/*<span className="username">*/}
+                {/*Nora Havisham*/}
+                {/*<span className="text-muted pull-right">8:03 PM Today</span>*/}
+              {/*</span>*/}
+              {/*The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to*/}
+              {/*using 'Content here, content here', making it look like readable English.*/}
+            {/*</div>*/}
+          {/*</div>*/}
+        {/*</div>*/}
+        {/*<div className="box-footer">*/}
+          {/*<form action="#" method="post">*/}
+            {/*<img className="img-responsive img-circle img-sm" src={user3img} alt="Alt Text" />*/}
+            {/*/!* .img-push is used to add margin to elements next to floating images *!/*/}
+            {/*<div className="img-push">*/}
+              {/*<input type="text" className="form-control input-sm" placeholder="Press enter to post comment" />*/}
+            {/*</div>*/}
+          {/*</form>*/}
+        {/*</div>*/}
       </div>
     </div>
   </div>
