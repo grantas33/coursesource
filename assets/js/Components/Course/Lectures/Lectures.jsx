@@ -14,9 +14,17 @@ class Lectures extends React.Component {
       filter: {
         showOnlyOwn: false,
         showPrevious: true
-      }
+      },
+      teacher: false,
+      isDrawerOpen: false
     };
   }
+
+  onFilterToggle = () => {
+      this.setState({
+                        isDrawerOpen: !this.state.isDrawerOpen
+                    })
+  };
 
   componentWillMount = () => {
     this.props.fetchLectures(this.props.match.params.course, false, false);
@@ -50,20 +58,20 @@ class Lectures extends React.Component {
         <div className="content">
           <div className="row">
             <div className="col-md-12">
-              <div className="box box-default collapsed-box">
+              <div className= {this.state.isDrawerOpen ? 'box box-default' : 'box box-default collapsed-box'}>
                 <div className="box-header with-border ">
                   <h3 className="box-title">Filter</h3>
                   <div className="box-tools pull-right">
                     <button
                       type="button"
                       className="btn btn-box-tool"
-                      data-widget="collapse"
+                      onClick={this.onFilterToggle}
                     >
                       <i className="fa fa-plus" />
                     </button>
                   </div>
                 </div>
-                <div className="box-body" style={{ display: "none" }}>
+                <div className="box-body" style={{ display: this.state.isDrawerOpen ? '' : 'none' }}>
                   <div className="form-group">
                     <label>
                       <div
@@ -119,7 +127,9 @@ class Lectures extends React.Component {
                       Show previous lectures
                     </label>
                   </div>
-                  <div className="form-group">
+                    {!this.props.user.courseRole.loading && (this.props.user.courseRole.item.role === ROLES.ADMIN ||
+                    this.props.user.courseRole.item.role === ROLES.LECTOR) && (
+                    <div className="form-group">
                     <label>
                       <div
                         className={
@@ -174,7 +184,7 @@ class Lectures extends React.Component {
                       </div>
                       Show only own lectures
                     </label>
-                  </div>
+                  </div> )}
                 </div>
               </div>
             </div>
