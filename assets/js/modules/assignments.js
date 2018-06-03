@@ -69,12 +69,14 @@ export default (state = initialState, action) => {
   }
 };
 
-export const fetchAssignments = courseId => dispatch => {
+export const fetchAssignments = (courseId, isFuture) => dispatch => {
   dispatch({
     type: FETCH_ASSIGNMENTS_STARTED
   });
   axios
-    .get("api/assignments?course=" + courseId, tokenObject())
+    .get("api/assignments?course=" + courseId +
+        (isFuture ? "&is_future=" + isFuture : ""),
+         tokenObject())
     .then(res => {
       dispatch({
         type: FETCH_ASSIGNMENTS_RECEIVED,

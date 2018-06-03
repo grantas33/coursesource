@@ -19,7 +19,7 @@ class Assignments extends React.Component {
   }
 
   componentWillMount = () => {
-    this.props.fetchAssignments(this.props.match.params.course)
+    this.props.fetchAssignments(this.props.match.params.course, false)
   }
 
   render() {
@@ -61,12 +61,22 @@ class Assignments extends React.Component {
                           className="flat-red"
                           style={{ position: 'absolute', opacity: 0 }}
                           onClick={evt => {
-                            this.setState({
-                              filter: {
-                                ...this.state.filter,
-                                showPrevious: !this.state.filter.showPrevious,
-                              },
-                            })
+                              if (!this.state.filter.showPrevious) {
+                                  this.props.fetchAssignments(
+                                      this.props.match.params.course,
+                                  );
+                              } else {
+                                  this.props.fetchAssignments(
+                                      this.props.match.params.course,
+                                      true
+                                  );
+                              }
+                              this.setState({
+                                  filter: {
+                                      ...this.state.filter,
+                                      showPrevious: !this.state.filter.showPrevious
+                                  }
+                              });
                           }}
                         />
 
