@@ -137,7 +137,6 @@ class CourseInfo extends React.Component {
                                                 <button
                                                     className="btn btn-primary btn-lg btn-block button-margin"
                                                     onClick={() => {
-                                                        console.log(this.props.course.item);
                                                         if (!window.localStorage.getItem("userToken")) {
                                                             this.props.addRedirect(this.props.match.params.course)
                                                             this.props.history.push(`/register`);

@@ -114,7 +114,6 @@ export default (state = initialState, action) => {
       };
     case FETCH_BROWSECOURSES_RECEIVED:
     {
-      console.log(state.allBrowseCourses.items.length + action.payload.length) 
       return {
         ...state,
         allBrowseCourses: {
