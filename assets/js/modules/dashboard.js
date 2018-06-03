@@ -40,7 +40,7 @@ export const fetchDashboard = () => dispatch => {
       });
     })
     .catch(err => {
-      if (err.reponse && err.response.data.message === "Invalid Token") {
+      if (err.response && err.response.data.message == "Invalid Token") {
         dispatch(push("/login"));
         window.localStorage.removeItem("userToken");
       }
@@ -54,7 +54,7 @@ export const fetchDashboard = () => dispatch => {
       });
     })
     .catch(err => {
-      if (err.reponse && err.response.data.message === "Invalid Token") {
+      if (err.response && err.response.data.message === "Invalid Token") {
         dispatch(push("/login"));
         window.localStorage.removeItem("userToken");
       }

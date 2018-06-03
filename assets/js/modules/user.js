@@ -165,7 +165,13 @@ export const login = object => (dispatch, getState) => {
         type: LOGIN_RECEIVED,
         payload: res.data.token
       });
-      dispatch(push(getState().user.redirect ? `/main/course/${getState().user.redirect}` : "/main/dashboard"));
+      dispatch(
+        push(
+          getState().user.redirect
+            ? `/main/course/${getState().user.redirect}`
+            : "/main/dashboard"
+        )
+      );
       dispatch({
         type: REMOVE_REDIRECT_RECEIVED
       });
@@ -208,12 +214,20 @@ export const register = object => dispatch => {
 };
 
 export const getCurrent = () => dispatch => {
-  axios.get("api/user/current", tokenObject()).then(res => {
-    dispatch({
-      type: CURRENT_USER_RECEIVED,
-      payload: res.data
+  axios
+    .get("api/user/current", tokenObject())
+    .then(res => {
+      dispatch({
+        type: CURRENT_USER_RECEIVED,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      if (err.response && err.response.data.message === "Invalid Token") {
+        dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
+      }
     });
-  });
 };
 
 export const fetchCourseRole = courseId => dispatch => {
@@ -248,9 +262,7 @@ export const signout = object => dispatch => {
 };
 
 export const updateProfile = newUserObject => dispatch => {
-  axios
-    .put(`api/user/edit`,newUserObject, tokenObject())
-    .then(res => {
-      dispatch(getCurrent())
-    })
+  axios.put(`api/user/edit`, newUserObject, tokenObject()).then(res => {
+    dispatch(getCurrent());
+  });
 };
