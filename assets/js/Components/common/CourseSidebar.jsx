@@ -138,17 +138,16 @@ class CourseSidebar extends React.Component {
                     </Link>
                   </li>
                 )}
-
               {!this.props.user.courseRole.loading &&
                 !this.props.user.courseRole.error &&
                 this.props.user.courseRole.item.role === ROLES.ADMIN &&
-                !this.props.course.loading &&
-                this.props.course.is_submittable && (
+                !this.props.course.item.loading &&
+                this.props.course.item.is_submittable && (
                   <li>
                     <Link
                       to={`/course/${
                         this.props.match.params.course
-                      }/users-management`}
+                      }/submissions`}
                       className="navigation-item"
                     >
                       <i className="fas fa-users fa-fw" />{" "}
