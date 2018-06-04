@@ -9,7 +9,7 @@ import axios from "axios";
 import fetch from "isomorphic-fetch";
 import tokenObject from "../../../tokenObject";
 import swal from "sweetalert2";
-import { fetchSubmissions } from "../../../modules/submissions";
+import { fetchSubmissions, acceptSubmission, declineSubmission } from "../../../modules/submissions";
 
 class Submissions extends React.Component {
   constructor(props) {
@@ -21,7 +21,6 @@ class Submissions extends React.Component {
   };
 
   render() {
-    console.log(this.props.submissions);
     if (this.props.submissions.loading === true) {
       return <h3>Loading...</h3>;
     } else if (
@@ -55,34 +54,41 @@ class Submissions extends React.Component {
                         <th />
                         <th>User name</th>
                         <th>Submission</th>
-                        <th>Mark</th>
+                        <th>Score</th>
                         <th />
                       </tr>
                       {this.props.submissions.items.map(sub => {
-                        console.log(sub);
                         return (
-                          <tr key={sub.user.id}>
+                          <tr key={sub.id}>
                             <td className="td-user-image">
                               <img
                                 className="user-image"
                                 src={
-                                  sub.user.avatar ||
+                                  sub.student.avatar ||
                                   "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"
                                 }
                                 alt="User Image"
                               />
                             </td>
-                            <td>{user.user.name + " " + user.user.surname}</td>
-                            <td>{user.user.email}</td>
                             <td>
-                              <input type="text"/>
+                              {sub.student.name + " " + sub.student.surname}
+                            </td>
+                            <td>{sub.submission}</td>
+                            <td>
+                              <input
+                                style={{
+                                  width: 20,
+                                }}
+                                type="number"
+                                defaultValue={sub.score}
+                              />
                             </td>
                             <td>
-                              <span className="label label-success">
-                                {Accept}
+                              <span onClick={() => this.props.acceptSubmission(this.props.match.params.course, {user_id: sub.student.id})} style={{cursor: "pointer"}} className="label label-success">
+                                Accept
                               </span>
-                              <span className="label label-success">
-                                {Decline}
+                              <span onClick={() => this.props.declineSubmission(this.props.match.params.course, {user_id: sub.student.id})} style={{cursor: "pointer"}} className="label label-danger">
+                                Decline
                               </span>
                             </td>
                           </tr>
@@ -92,64 +98,6 @@ class Submissions extends React.Component {
                   </table>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-sm-4 no-padding">
-              <Select.Async
-                value={this.state.value}
-                valueKey="id"
-                loadOptions={(input, callback) => {
-                  if (!input) {
-                    return Promise.resolve({ options: [] });
-                  }
-
-                  return fetch(
-                    `/api/user/get/all?query=${input}`,
-                    tokenObject()
-                  )
-                    .then(response => response.json())
-                    .then(json => {
-                      return {
-                        options: json.map(item => ({
-                          label: item.name + " " + item.surname,
-                          id: item.id
-                        }))
-                      };
-                    });
-                }}
-                filterOptions={(options, filter, currentValues) => {
-                  return options;
-                }}
-                onChange={value => this.setState({ ...this.state, value })}
-              />
-            </div>
-
-            <div className="col-sm-2 no-padding">
-              <select
-                className="form-control"
-                onClick={e =>
-                  this.setState({ ...this.state, role: e.target.value })
-                }
-              >
-                <option value={"STUDENT"}>Student</option>
-                <option value={"TEACHER"}>Lector</option>
-                <option value={"ADMIN"}>Admin</option>
-              </select>
-            </div>
-
-            <div className="col-sm-3 no-padding">
-              <button
-                onClick={() => {
-                  this.props.inviteUser(this.props.match.params.course, {
-                    user_id: this.state.value.id,
-                    role: this.state.role
-                  });
-                }}
-                className="btn btn-primary"
-              >
-                Invite new user
-              </button>
             </div>
           </div>
         </div>
@@ -163,6 +111,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ fetchSubmissions }, dispatch);
+  bindActionCreators({ fetchSubmissions, acceptSubmission, declineSubmission }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Submissions);

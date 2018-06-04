@@ -190,7 +190,7 @@ class CourseInfo extends React.Component {
                                                         }
                                                     }}
                                                 >
-                                                    Submit a solution
+                                                    Apply to course
                                                 </button>
                                             </div>
                                         ) : (
