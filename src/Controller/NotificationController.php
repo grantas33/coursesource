@@ -113,6 +113,42 @@ class NotificationController extends Controller
     }
 
     /**
+     * @Route("api/notifications/readAll", name="api_notifications_readAll", methods="PUT")
+     */
+    public function readNotificationsByUser()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $notifications = $this->getDoctrine()
+            ->getRepository(Notification::class)
+            ->findBy(
+                [
+                    'user' => $this->getUser(),
+                    'isSeen' => false
+                ]
+            );
+
+        foreach ($notifications as $notification) {
+            if (!$notification->getIsAcceptable()) {
+                $notification->setIsSeen(true);
+                $em->persist($notification);
+            }
+        }
+
+        try {
+            $em->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error_message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JSONResponse([
+            'success_message' => 'Successfully read all notifications by user'
+        ]);
+    }
+
+    /**
      * @Route("api/notifications/read/{id}", name="api_notifications_read", methods="PUT")
      */
     public function readNotification(int $id)
