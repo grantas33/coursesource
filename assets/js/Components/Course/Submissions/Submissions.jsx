@@ -6,11 +6,10 @@ import { bindActionCreators } from "redux";
 import { fetchUsers, inviteUser } from "../../../modules/users";
 import Select from "react-select";
 import axios from "axios";
-import "react-select/dist/react-select.css";
 import fetch from "isomorphic-fetch";
 import tokenObject from "../../../tokenObject";
 import swal from "sweetalert2";
-import { fetchSubmissions } from '../../../modules/submissions';
+import { fetchSubmissions } from "../../../modules/submissions";
 
 class Submissions extends React.Component {
   constructor(props) {
@@ -22,11 +21,12 @@ class Submissions extends React.Component {
   };
 
   render() {
-    if (this.props.users.loading === true) {
+    console.log(this.props.submissions);
+    if (this.props.submissions.loading === true) {
       return <h3>Loading...</h3>;
     } else if (
-      this.props.users.loading === false &&
-      this.props.users.error === true
+      this.props.submissions.loading === false &&
+      this.props.submissions.error === true
     ) {
       return <h3>Error</h3>;
     }
@@ -54,34 +54,35 @@ class Submissions extends React.Component {
                       <tr>
                         <th />
                         <th>User name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
+                        <th>Submission</th>
+                        <th>Mark</th>
+                        <th />
                       </tr>
                       {this.props.submissions.items.map(sub => {
+                        console.log(sub);
                         return (
-                          <tr key={user.user.id}>
-                            <td>
-                              <img src={user.user.avatar} />
+                          <tr key={sub.user.id}>
+                            <td className="td-user-image">
+                              <img
+                                className="user-image"
+                                src={
+                                  sub.user.avatar ||
+                                  "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"
+                                }
+                                alt="User Image"
+                              />
                             </td>
-                            <td>
-                              <Link
-                                to={`/course/${
-                                  this.props.match.params.course
-                                }/users-management/${user.id}`}
-                              >
-                                {user.user.name + " " + user.user.surname}
-                              </Link>
-                            </td>
+                            <td>{user.user.name + " " + user.user.surname}</td>
                             <td>{user.user.email}</td>
                             <td>
-                              <span className="label label-success">
-                                {user.role}
-                              </span>
+                              <input type="text"/>
                             </td>
                             <td>
                               <span className="label label-success">
-                                {user.status}
+                                {Accept}
+                              </span>
+                              <span className="label label-success">
+                                {Decline}
                               </span>
                             </td>
                           </tr>
@@ -162,6 +163,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({fetchSubmissions}, dispatch);
+  bindActionCreators({ fetchSubmissions }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Submissions);
