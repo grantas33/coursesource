@@ -134,8 +134,7 @@ class EntryTaskController extends Controller
 
         $submissionsAndGrades = $this->getDoctrine()
             ->getRepository(EntryTaskSubmission::class)
-            ->findOneBy([
-                'student' => $this->getUser(),
+            ->findBy([
                 'course' => $course
             ]);
 
