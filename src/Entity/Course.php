@@ -68,12 +68,12 @@ class Course implements JsonSerializable
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_public = false;
+    private $is_public = true;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_submittable;
+    private $is_submittable = false;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -91,6 +91,10 @@ class Course implements JsonSerializable
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Assert\DateTime(message="You must enter a valid date")
+     * @Assert\Expression(
+     * "value > this.getCurrentDate() or !value",
+     *  message="The start date must be in the future!")
      */
     private $start_date;
 
@@ -361,6 +365,11 @@ class Course implements JsonSerializable
         return false;
     }
 
+    public function getCurrentDate() : ?\DateTimeInterface
+    {
+        return new \DateTime('now');
+    }
+
 
     public function jsonSerialize()
     {
@@ -380,7 +389,7 @@ class Course implements JsonSerializable
             'is_submittable' => $this->is_submittable,
             'avatar' => $this->avatar,
             'location' => $this->location,
-            'start_date' => $this->start_date,
+            'start_date' => $this->start_date ? $this->start_date->format("Y-m-d") : null,
             'schedule_overview' => $this->scheduleOverview
         ];
     }

@@ -15,11 +15,18 @@ class Assignments extends React.Component {
         showSubmitted: true,
         showPrevious: true,
       },
+      isDrawerOpen: false
     }
   }
 
+  onFilterToggle = () => {
+      this.setState({
+          isDrawerOpen: !this.state.isDrawerOpen
+      })
+  };
+
   componentWillMount = () => {
-    this.props.fetchAssignments(this.props.match.params.course)
+    this.props.fetchAssignments(this.props.match.params.course, false)
   }
 
   render() {
@@ -28,7 +35,9 @@ class Assignments extends React.Component {
         <PageHeader
           title={'Assignments'}
           subtitle={
-            !this.props.user.courseRole.loading && (this.props.user.courseRole.item.role === ROLES.ADMIN || this.props.user.courseRole.item.role === ROLES.LECTOR) && <Link to={`/course/${this.props.match.params.course}/create-new-assignment`}> Create a new assignment</Link>
+            !this.props.user.courseRole.loading && (this.props.user.courseRole.item.role === ROLES.ADMIN ||
+                this.props.user.courseRole.item.role === ROLES.LECTOR) &&
+            <Link to={`/course/${this.props.match.params.course}/create-new-assignment`}> Create a new assignment</Link>
           }
           links={[
             {
@@ -40,16 +49,16 @@ class Assignments extends React.Component {
         <div className="content">
           <div className="row">
             <div className="col-md-12">
-              <div className="box box-default collapsed-box">
+              <div className={this.state.isDrawerOpen ? 'box box-default' : 'box box-default collapsed-box'}>
                 <div className="box-header with-border ">
                   <h3 className="box-title">Filter</h3>
                   <div className="box-tools pull-right">
-                    <button type="button" className="btn btn-box-tool" data-widget="collapse">
+                    <button type="button" className="btn btn-box-tool" onClick={this.onFilterToggle}>
                       <i className="fa fa-plus" />
                     </button>
                   </div>
                 </div>
-                <div className="box-body" style={{ display: 'none' }}>
+                <div className="box-body" style={{ display: this.state.isDrawerOpen ? '' : 'none' }}>
                   <div className="form-group">
                     <label>
                       <div
@@ -61,12 +70,22 @@ class Assignments extends React.Component {
                           className="flat-red"
                           style={{ position: 'absolute', opacity: 0 }}
                           onClick={evt => {
-                            this.setState({
-                              filter: {
-                                ...this.state.filter,
-                                showPrevious: !this.state.filter.showPrevious,
-                              },
-                            })
+                              if (!this.state.filter.showPrevious) {
+                                  this.props.fetchAssignments(
+                                      this.props.match.params.course,
+                                  );
+                              } else {
+                                  this.props.fetchAssignments(
+                                      this.props.match.params.course,
+                                      true
+                                  );
+                              }
+                              this.setState({
+                                  filter: {
+                                      ...this.state.filter,
+                                      showPrevious: !this.state.filter.showPrevious
+                                  }
+                              });
                           }}
                         />
 

@@ -5,15 +5,40 @@
 .course-image {
   float: left;
   margin-right: 10px;
+  max-width: 120px;
+  max-height: 90px;
+  width: auto;
+  height: auto;
   clear:both;
 }
 
 .course-text {
-  margin-left: 0px;
+  margin-left: 130px;
   overflow:auto;
   display:block;
 }
 
+.course-image-center {
+  float: left;;
+  width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+.accept-margin {
+    margin-right: 5px;
+}
+
+#empty_page {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%)
+}
+
 #course-title {
-  margin-left: 0px;
+  margin-left: 0;
 }

@@ -1,0 +1,26 @@
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.user-image {
+  max-width: 40px;
+  max-height: 30px;
+  width: auto;
+  height: auto;
+}
+
+.td-user-image {
+  height: 47px;
+  width: 60px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.select-bar {
+  height: 36px !important;
+}
+
+.select-bar-padding {
+  padding-left: 15px;
+}

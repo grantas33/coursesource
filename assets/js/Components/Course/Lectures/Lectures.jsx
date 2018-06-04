@@ -14,12 +14,20 @@ class Lectures extends React.Component {
       filter: {
         showOnlyOwn: false,
         showPrevious: true
-      }
+      },
+      teacher: false,
+      isDrawerOpen: false
     };
   }
 
+  onFilterToggle = () => {
+      this.setState({
+                        isDrawerOpen: !this.state.isDrawerOpen
+                    })
+  };
+
   componentWillMount = () => {
-    this.props.fetchLectures(this.props.match.params.course);
+    this.props.fetchLectures(this.props.match.params.course, false, false);
   };
 
   render() {
@@ -50,20 +58,20 @@ class Lectures extends React.Component {
         <div className="content">
           <div className="row">
             <div className="col-md-12">
-              <div className="box box-default collapsed-box">
+              <div className= {this.state.isDrawerOpen ? 'box box-default' : 'box box-default collapsed-box'}>
                 <div className="box-header with-border ">
                   <h3 className="box-title">Filter</h3>
                   <div className="box-tools pull-right">
                     <button
                       type="button"
                       className="btn btn-box-tool"
-                      data-widget="collapse"
+                      onClick={this.onFilterToggle}
                     >
                       <i className="fa fa-plus" />
                     </button>
                   </div>
                 </div>
-                <div className="box-body" style={{ display: "none" }}>
+                <div className="box-body" style={{ display: this.state.isDrawerOpen ? '' : 'none' }}>
                   <div className="form-group">
                     <label>
                       <div
@@ -77,14 +85,26 @@ class Lectures extends React.Component {
                           type="checkbox"
                           className="flat-red"
                           style={{ position: "absolute", opacity: 0 }}
-                          onClick={evt => {
+                          onClick= {evt => {
+                            if (!this.state.filter.showPrevious) {
+                                this.props.fetchLectures(
+                                    this.props.match.params.course,
+                                    this.state.filter.showOnlyOwn
+                                );
+                            } else {
+                                this.props.fetchLectures(
+                                    this.props.match.params.course,
+                                    this.state.filter.showOnlyOwn,
+                                    true
+                                );
+                            }
                             this.setState({
-                              filter: {
-                                ...this.state.filter,
-                                showPrevious: !this.state.filter.showPrevious
-                              }
+                                filter: {
+                                    ...this.state.filter,
+                                    showPrevious: !this.state.filter.showPrevious
+                                }
                             });
-                          }}
+                        }}
                         />
 
                         <ins
@@ -107,7 +127,9 @@ class Lectures extends React.Component {
                       Show previous lectures
                     </label>
                   </div>
-                  <div className="form-group">
+                    {!this.props.user.courseRole.loading && (this.props.user.courseRole.item.role === ROLES.ADMIN ||
+                    this.props.user.courseRole.item.role === ROLES.LECTOR) && (
+                    <div className="form-group">
                     <label>
                       <div
                         className={
@@ -124,11 +146,14 @@ class Lectures extends React.Component {
                             if (!this.state.filter.showOnlyOwn) {
                               this.props.fetchLectures(
                                 this.props.match.params.course,
-                                1
+                                1,
+                                !this.state.filter.showPrevious
                               );
                             } else {
                               this.props.fetchLectures(
-                                this.props.match.params.course
+                                this.props.match.params.course,
+                                0,
+                                !this.state.filter.showPrevious
                               );
                             }
                             this.setState({
@@ -159,7 +184,7 @@ class Lectures extends React.Component {
                       </div>
                       Show only own lectures
                     </label>
-                  </div>
+                  </div> )}
                 </div>
               </div>
             </div>

@@ -10,18 +10,15 @@ import "react-select/dist/react-select.css";
 import fetch from "isomorphic-fetch";
 import tokenObject from "../../../tokenObject";
 import swal from "sweetalert2";
-import './UsersManagement.css'
+import { fetchSubmissions } from '../../../modules/submissions';
 
-class UsersManagement extends React.Component {
+class Submissions extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      role: "STUDENT"
-    };
   }
 
   componentWillMount = () => {
-    this.props.fetchUsers(this.props.match.params.course);
+    this.props.fetchSubmissions(this.props.match.params.course);
   };
 
   render() {
@@ -36,7 +33,7 @@ class UsersManagement extends React.Component {
     return (
       <div>
         <PageHeader
-          title={"Users management"}
+          title={"Submissions"}
           links={[
             {
               name: "Home",
@@ -49,7 +46,7 @@ class UsersManagement extends React.Component {
             <div className="col-xs-12">
               <div className="box">
                 <div className="box-header">
-                  <h3 className="box-title">Users list</h3>
+                  <h3 className="box-title">Submissions list</h3>
                 </div>
                 <div className="box-body table-responsive no-padding">
                   <table className="table table-hover">
@@ -61,11 +58,11 @@ class UsersManagement extends React.Component {
                         <th>Role</th>
                         <th>Status</th>
                       </tr>
-                      {this.props.users.items.map(user => {
+                      {this.props.submissions.items.map(sub => {
                         return (
                           <tr key={user.user.id}>
-                            <td className='td-user-image'>
-                              <img className='user-image' src={user.user.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"} alt="User Image" />
+                            <td>
+                              <img src={user.user.avatar} />
                             </td>
                             <td>
                               <Link
@@ -96,7 +93,7 @@ class UsersManagement extends React.Component {
               </div>
             </div>
           </div>
-          <div className="row select-bar-padding">
+          <div className="row">
             <div className="col-sm-4 no-padding">
               <Select.Async
                 value={this.state.value}
@@ -129,13 +126,13 @@ class UsersManagement extends React.Component {
 
             <div className="col-sm-2 no-padding">
               <select
-                className="form-control select-bar"
+                className="form-control"
                 onClick={e =>
                   this.setState({ ...this.state, role: e.target.value })
                 }
               >
                 <option value={"STUDENT"}>Student</option>
-                <option value={"TEACHER"}>Teacher</option>
+                <option value={"TEACHER"}>Lector</option>
                 <option value={"ADMIN"}>Admin</option>
               </select>
             </div>
@@ -148,7 +145,7 @@ class UsersManagement extends React.Component {
                     role: this.state.role
                   });
                 }}
-                className="btn btn-primary select-bar"
+                className="btn btn-primary"
               >
                 Invite new user
               </button>
@@ -161,10 +158,10 @@ class UsersManagement extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  users: state.users.allUsers
+  submissions: state.submissions.allSubmissions
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ fetchUsers, inviteUser }, dispatch);
+  bindActionCreators({fetchSubmissions}, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(UsersManagement);
+export default connect(mapStateToProps, mapDispatchToProps)(Submissions);

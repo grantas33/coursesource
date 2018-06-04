@@ -20,7 +20,8 @@ class RegistrationType extends AbstractType
             ->add('surname')
             ->add('email')
             ->add('plainPassword')
-            ->add('avatar');
+            ->add('avatar')
+            ->add('resume');
     }
 
     public function configureOptions(OptionsResolver $resolver)

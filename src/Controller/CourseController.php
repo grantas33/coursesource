@@ -123,7 +123,8 @@ class CourseController extends Controller
                 ->getRepository(CourseUser::class)
                 ->findOneBy(array(
                     'user'=>$this->getUser(),
-                    'course'=>$course));
+                    'course'=>$course,
+                    'status'=>StatusInterface::ACTIVE));
 
             if (!$isCourseVisible) {
                 return new JsonResponse([
@@ -246,9 +247,10 @@ class CourseController extends Controller
 
         $courses = $this->getDoctrine()
             ->getRepository(Course::class)
-            ->findPublicCourses($search, $offset, $limit);
+            ->findPublicCourses($search);
 
         $courses = $this->sortCourses($sort, $courses);
+        $courses = array_slice($courses, $offset, $limit);
 
         return new JSONResponse(
             $courses
@@ -273,9 +275,10 @@ class CourseController extends Controller
 
         $browseCourses = $this->getDoctrine()->
             getRepository(Course::class)
-            ->findBrowseCourses($courses, $search, $offset, $limit);
+            ->findBrowseCourses($courses, $search);
 
         $browseCourses = $this->sortCourses($sort, $browseCourses);
+        $browseCourses = array_slice($browseCourses, $offset, $limit);
 
         return new JsonResponse(
             $browseCourses
@@ -284,13 +287,16 @@ class CourseController extends Controller
 
     private function sortCourses($sort, $courses)
     {
+        $method = 'getCreationDate';
 
         if (in_array($sort, CourseSortInterface::PARAMETERS)) {
             $method = 'get' . ucfirst($sort);
-            usort($courses, function ($a, $b) use ($method) {
-                return $a->$method() < $b->$method();
-            });
         }
+
+        usort($courses, function ($a, $b) use ($method) {
+            return $a->$method() < $b->$method();
+        });
+
 
         return $courses;
     }

@@ -62,7 +62,7 @@ class Lecture implements JsonSerializable
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @Assert\Expression(
-     * "this.getStartDate() < value",
+     * "this.getStartDate() <= value",
      * message="The end date must be after the start date"
      * )
      */

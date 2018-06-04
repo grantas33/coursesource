@@ -14,7 +14,6 @@ class CreateNewAssignment extends React.Component {
       newAssignment: {
         title: '',
         description: '',
-        teacher: '1',
         deadline_date: '',
         is_gradeable: true,
         is_submittable: true,
@@ -35,7 +34,6 @@ class CreateNewAssignment extends React.Component {
         newAssignment: {
           title: '',
           description: '',
-          teacher: '1',
           deadline_date: '',
           is_gradeable: true,
           is_submittable: true,
@@ -190,14 +188,6 @@ class CreateNewAssignment extends React.Component {
                       <span className="help-block">{this.state.validations.description}</span>
                     )}
                 </div>
-
-                <div className="form-group">
-                  <label>Teacher</label>
-                  <select className="form-control" disabled>
-                    <option>Lector 1</option>
-                  </select>
-                </div>
-
                 <div className="form-group">
                   <div className="checkbox">
                     <label>

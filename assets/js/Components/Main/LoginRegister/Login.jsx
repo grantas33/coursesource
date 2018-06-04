@@ -74,7 +74,7 @@ class Login extends React.Component {
                   <span className="glyphicon glyphicon-lock form-control-feedback" />
                 </div>
                 <div className="row">
-                  <div className="col-xs-4 col-xs-offset-8">
+                  <div className="col-xs-5 col-xs-offset-7">
                     <button
                       className="btn btn-primary btn-block btn-flat"
                       onClick={e => {

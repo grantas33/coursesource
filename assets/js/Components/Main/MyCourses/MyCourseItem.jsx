@@ -5,12 +5,13 @@ import "./MyCourseItem.css";
 const MyCourseItem = props => (
   <div className="box box-widget widget-user">
     <div className="box box-widget widget-user-2">
-      {/* Add the bg color to the header using any of the bg-* classes */}
       <div className="widget-user-header bg-yellow">
-        <img
-          className="course-image"
-          src="https://www.designrepublic.com/11094-cart_default/krossing-100x100-cm.jpg"
-        />
+          <div className="course-image-center">
+              <img
+                  className="course-image"
+                  src={props.courseInfo.course.avatar || "https://www.crimsonsummer.harvard.edu/images/gradhat_600x400.png"}
+              />
+          </div>
         <div className="course-text">
           <h3 id="course-title" className="widget-user-username">
             {props.courseInfo.course.title}
@@ -43,15 +44,19 @@ const MyCourseItem = props => (
             </a>
           </li>
           <li>
-            {props.courseInfo.status === "PENDING" ? (
-              <div>
-                <button className="btn btn-success">Accept invitation</button>
-                <button className="btn btn-danger">Decline invitation</button>
-              </div>
+            {props.courseInfo.status === "INVITED" ? (
+              <a>
+                <button onClick={props.accept} className="btn btn-success accept-margin">Accept invitation</button>
+                <button onClick={props.decline} className="btn btn-danger">Decline invitation</button>
+              </a>
+            ) : props.courseInfo.status === "PENDING" ? (
+                <a>
+                  <button className="btn btn-info disabled">Open course</button>
+                </a>
             ) : (
-              <Link to={`/course/${props.courseInfo.course.id}`}>
-                <button className="btn btn-info">Open course</button>
-              </Link>
+                <Link to={`/course/${props.courseInfo.course.id}`}>
+                  <button className="btn btn-info">Open course</button>
+                </Link>
             )}
           </li>
         </ul>

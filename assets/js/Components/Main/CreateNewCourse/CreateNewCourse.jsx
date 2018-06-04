@@ -18,6 +18,9 @@ class CreateNewCourse extends React.Component {
         slogan: "",
         avatar: "",
         is_submittable: false,
+        location: "",
+        start_date: "",
+        schedule_overview: "",
         entry_task_submission: "",
         entry_task_deadline: ""
       },
@@ -88,9 +91,23 @@ class CreateNewCourse extends React.Component {
     ) {
       validations.slogan = "The slogan cannot be longer than 150 characters";
     }
-    if (this.state.newCourse.avatar === "") {
-      validations.avatar = "The image should be valid and under 5MB";
+    if (
+        !isLength(this.state.newCourse.location, {
+            min: undefined,
+            max: 80
+        })
+    ) {
+        validations.location = "The location cannot be longer than 80 characters";
     }
+    if (
+        !isLength(this.state.newCourse.schedule_overview, {
+            min: undefined,
+            max: 200
+        })
+    ) {
+        validations.location = "The schedule overview cannot be longer than 200 characters";
+    }
+
     return validations;
   };
 
@@ -228,7 +245,7 @@ class CreateNewCourse extends React.Component {
                       this.handleUpdateField("slogan", event.target.value)
                     }
                     className={"form-control"}
-                    rows={3}
+                    rows={1}
                     placeholder="Enter ..."
                   />
                   {this.state.editted.slogan &&
@@ -241,7 +258,7 @@ class CreateNewCourse extends React.Component {
                 <div
                   className={
                     "form-group" +
-                    (this.state.validations.slogan ? " has-error" : "")
+                    (this.state.validations.avatar ? " has-error" : "")
                   }
                 >
                   <label>Image</label>
@@ -255,7 +272,7 @@ class CreateNewCourse extends React.Component {
                   <FileBase64
                     multiple={false}
                     onDone={file => {
-                      if (file.type === "image/png") {
+                      if (file.type === "image/png" || file.type === "image/jpeg") {
                         this.handleUpdateField("avatar", file.base64);
                       } else {
                         this.handleUpdateField("avatar", "");
@@ -269,6 +286,93 @@ class CreateNewCourse extends React.Component {
                       }
                     }}
                   />
+                    {this.state.editted.avatar &&
+                    this.state.validations.avatar && (
+                        <span className="help-block">
+                        {this.state.validations.avatar}
+                      </span>
+                    )}
+                </div>
+
+                <div
+                    className={
+                        "form-group" +
+                        (this.state.validations.location ? " has-error" : "")
+                    }
+                >
+                    <label>Location</label>
+                    <textarea
+                        value={this.state.newCourse.location}
+                        onChange={event =>
+                            this.handleUpdateField("location", event.target.value)
+                        }
+                        className={"form-control"}
+                        rows={1}
+                        placeholder="Enter ..."
+                    />
+                    {this.state.editted.location &&
+                    this.state.validations.location && (
+                        <span className="help-block">
+                      {this.state.validations.location}
+                    </span>
+                    )}
+                </div>
+
+                <div
+                    className={
+                        "form-group" +
+                        (this.state.editted.start_date &&
+                        this.state.validations.start_date
+                            ? " has-error"
+                            : "")
+                    }
+                >
+                    <label>Start date</label>
+                    <Datetime
+                        value={this.state.newCourse.start_date}
+                        onChange={momentdate => {
+                            if (momentdate._isValid) {
+                                this.handleUpdateField(
+                                    "start_date",
+                                    new Date(momentdate._d)
+                                );
+                            } else {
+                                this.handleUpdateField("start_date", "");
+                            }
+                        }}
+                        timeFormat={"HH:mm"}
+                        dateFormat={"YYYY-MM-DD"}
+                    />
+                    {this.state.editted.start_date &&
+                    this.state.validations.start_date && (
+                        <span className="help-block">
+                        {this.state.validations.start_date}
+                      </span>
+                    )}
+                </div>
+
+                <div
+                    className={
+                        "form-group" +
+                        (this.state.validations.schedule_overview ? " has-error" : "")
+                    }
+                >
+                    <label>Schedule overview</label>
+                    <textarea
+                        value={this.state.newCourse.schedule_overview}
+                        onChange={event =>
+                            this.handleUpdateField("schedule_overview", event.target.value)
+                        }
+                        className={"form-control"}
+                        rows={2}
+                        placeholder="Enter ..."
+                    />
+                    {this.state.editted.schedule_overview &&
+                    this.state.validations.schedule_overview && (
+                        <span className="help-block">
+                    {this.state.validations.schedule_overview}
+                  </span>
+                    )}
                 </div>
 
                 <button
@@ -389,6 +493,9 @@ class CreateNewCourse extends React.Component {
                             slogan: this.state.newCourse.slogan,
                             is_submittable: this.state.newCourse.is_submittable,
                             avatar: this.state.newCourse.avatar,
+                            location: this.state.newCourse.location,
+                            start_date: this.state.newCourse.start_date,
+                            schedule_overview: this.state.newCourse.schedule_overview,
                             entry_task: {
                               description: this.state.newCourse
                                 .entry_task_submission,
@@ -401,7 +508,10 @@ class CreateNewCourse extends React.Component {
                             description: this.state.newCourse.description,
                             slogan: this.state.newCourse.slogan,
                             is_submittable: this.state.newCourse.is_submittable,
-                            avatar: this.state.newCourse.avatar
+                            avatar: this.state.newCourse.avatar,
+                            location: this.state.newCourse.location,
+                            start_date: this.state.newCourse.start_date,
+                            schedule_overview: this.state.newCourse.schedule_overview
                           }
                     );
                     this.setState({

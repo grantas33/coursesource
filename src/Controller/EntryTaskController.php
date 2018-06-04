@@ -76,6 +76,39 @@ class EntryTaskController extends Controller
     }
 
     /**
+     * @Route("api/entrytasks/submission/user/{courseId}", name="api_entryTasks_submissionForUser", methods="GET")
+     */
+    public function getEntryTaskSubmissionForUser(int $courseId)
+    {
+        $course = $this->getDoctrine()
+            ->getRepository(Course::class)
+            ->find($courseId);
+
+        if (!$course) {
+            return new JSONResponse([
+                'error_message' => 'Course not found'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $submission = $this->getDoctrine()
+            ->getRepository(EntryTaskSubmission::class)
+            ->findOneBy([
+                'student' => $this->getUser(),
+                'course' => $courseId
+            ]);
+
+        if (!$submission) {
+            return new JSONResponse([
+                'error_message' => 'You have not submitted an application to this course yet'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JSONResponse(
+            $submission
+        );
+    }
+
+    /**
      * @Route("api/entrytasks/submission/getall/{courseId}", name="api_entryTasks_submission_getAll", methods="GET")
      */
     public function getEntryTaskSubmissions(int $courseId)

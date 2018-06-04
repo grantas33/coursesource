@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import PageHeader from "../../common/PageHeader";
 import Calendar from "../../Course/Schedule/Calendar/Calendar";
 import { fetchMyCourses } from "../../../modules/courses";
+import moment from "moment";
 
 class Dashboard extends React.Component {
   componentWillMount() {
@@ -14,14 +15,26 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    if (this.props.dashboard.loading === true) {
-      return <h3>Loading...</h3>;
-    } else if (
-      this.props.dashboard.loading === false &&
-      this.props.dashboard.error === true
-    ) {
-      return <h3>Error</h3>;
-    }
+    let events = [
+      ...this.props.dashboard.lectures.map(lecture => ({
+        title: 'Lecture: ' + lecture.lecture.title,
+        start: new Date(lecture.lecture.start_date),
+        end:
+          new Date(lecture.lecture.end_date) ||
+          moment(lecture.lecture.start_date)
+            .add(2, 'hours')
+            .toDate(),
+        hexColor: "0000FF",
+      })),
+      ...this.props.dashboard.assignments.map(assignment => ({
+        title: 'Deadline for ' + assignment.assignment.title,
+        end: new Date(assignment.assignment.deadline_date),
+        start: moment(assignment.assignment.deadline_date)
+          .add(-1, 'hours')
+          .toDate(),
+        hexColor: "FF0000",          
+      })),
+    ]
     return (
       <div>
         <PageHeader
@@ -38,7 +51,7 @@ class Dashboard extends React.Component {
             <div className="col-sm-9">
               <h3>Upcoming events</h3>
               <Calendar
-                events={[]}
+                events={events}
                 view={"week"}
                 views={["month", "week", "day", "agenda"]}
                 toolbar={false}
@@ -49,7 +62,7 @@ class Dashboard extends React.Component {
               <h3>Other info</h3>
               <div className="small-box bg-red">
                 <div className="inner">
-                  <h3>{this.props.courses.items.filter(c => c.status === "PENDING").length}</h3>
+                  <h3>{this.props.courses.items.filter(c => c.status === "INVITED").length}</h3>
                   <p>Pending invites</p>
                 </div>
                 <div className="icon">

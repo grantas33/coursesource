@@ -216,7 +216,7 @@ class LectureController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $lectures = $repository->filter($course, $teacher, $is_future) ;
+        $lectures = $repository->filter($course, $teacher, $is_future, $this->getUser()) ;
 
         return new JsonResponse(
             $lectures
@@ -279,12 +279,9 @@ class LectureController extends Controller
             ->getRepository(CourseUser::class)
             ->findUserLectures($this->getUser());
 
-        usort($userLectures, function ($a, $b) {
-            return $a['lecture']->getStartDate() >  $b['lecture']->getStartDate();
-        });
 
         return new JsonResponse(
-            array_slice($userLectures, 0, 3)
+            $userLectures
         );
     }
 }

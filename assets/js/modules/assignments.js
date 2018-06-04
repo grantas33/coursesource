@@ -1,4 +1,5 @@
 import axios from "axios";
+import tokenObject from "../tokenObject";
 
 export const FETCH_ASSIGNMENTS_STARTED =
   "assignments/FETCH_ASSIGNMENTS_STARTED";
@@ -68,16 +69,14 @@ export default (state = initialState, action) => {
   }
 };
 
-export const fetchAssignments = courseId => dispatch => {
+export const fetchAssignments = (courseId, isFuture) => dispatch => {
   dispatch({
     type: FETCH_ASSIGNMENTS_STARTED
   });
   axios
-    .get("api/assignments?course=" + courseId, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .get("api/assignments?course=" + courseId +
+        (isFuture ? "&is_future=" + isFuture : ""),
+         tokenObject())
     .then(res => {
       dispatch({
         type: FETCH_ASSIGNMENTS_RECEIVED,
@@ -86,8 +85,8 @@ export const fetchAssignments = courseId => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: FETCH_ASSIGNMENTS_ERROR
@@ -100,11 +99,7 @@ export const createAssignment = newAssignment => dispatch => {
     type: CREATE_ASSIGNMENT_STARTED
   });
   axios
-    .post("api/assignments", newAssignment, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .post("api/assignments", newAssignment, tokenObject())
     .then(res => {
       dispatch({
         type: CREATE_ASSIGNMENT_RECEIVED,
@@ -113,8 +108,8 @@ export const createAssignment = newAssignment => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: CREATE_ASSIGNMENT_ERROR,

@@ -1,38 +1,70 @@
 parameters:
     role: ['ADMIN', 'TEACHER', 'STUDENT', 'APPLICANT']
     status: ['ACTIVE', 'PENDING', 'INVITED']
+    courses:
+      - 'course'
+      - 'academy'
+      - 'bootcamp'
+      - 'school'
+      - 'seminary'
+      - 'boarding school'
+      - 'crash course'
+      - 'lectures'
+      - 'study group'
+      - 'colloquium'
+      - 'university'
+
 
 App\Entity\User:
-    user{1..30}:
+    user{1..50}:
         name: '<firstName()>'
         surname: '<lastName()>'
         email:  '<email()>'
         username: '<userName()>'
         plainPassword: '<password()>'
         password: '<text(50)>'
+        resume: '<realText()>'
+        avatar: "<imageUrl(480, 480, 'people')>"
 
 App\Entity\Course:
-    course{1..10}:
-        title: '<sentence()>'
-        description: '<text(1000)>'
-        slogan: '<text(140)>'
-        creationDateByDatetime: "<dateTimeBetween('now', 'now')>"
+    course{1..50, 2}:
+        title: '<company()> <randomElement($courses)>'
+        description: '<realText(1000)>'
+        slogan: '<catchPhrase()>, <bs()>, <bs()>'
+        creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
         is_public: '<boolean()>'
-        is_submittable: '<boolean()>'
+        is_submittable: 1
+        avatar: "<imageUrl(640, 420, 'nature')>"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{2..50, 2}:
+        title: '<company()> <randomElement($courses)>'
+        description: '<realText(1000)>'
+        slogan: '<catchPhrase()>, <bs()>, <bs()>'
+        creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
+        is_public: '<boolean()>'
+        is_submittable: 0
+        avatar: "<imageUrl(640, 420, 'nature')>"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
 
 App\Entity\Assignment:
-    assignment{1..50}:
-        title: '<sentence()>'
-        description: '<paragraph()>'
+    assignment{1..200}:
+        title: '<realText(15)>'
+        description: '<realText(200)>'
         teacher: '@user*'
         course: '@course*'
-        creationDateByDatetime: "<dateTimeBetween('now', 'now')>"
+        creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
         deadline_date: "<dateTimeBetween('now', '+1 month')>"
         is_gradeable: "<boolean()>"
         is_submittable: "<boolean()>"
 
 App\Entity\CourseUser:
-    coursUser{1..100}:
+    coursUser{1..200}:
         user: '@user*'
         course: '@course*'
         role: '<randomElement($role)>'
@@ -41,29 +73,48 @@ App\Entity\CourseUser:
         is_notifiable: '<boolean()>'
 
 App\Entity\Lecture:
-    lecture{1..50}:
-        title: '<sentence()>'
-        description: '<paragraph()>'
+    lecture{1..200}:
+        title: '<realText(15)>'
+        description: '<realText(200)>'
         teacher: '@user*'
         course: '@course*'
-        creationDateByDatetime: "<dateTimeBetween('now', 'now')>"
+        creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
         start_date: "<dateTimeBetween('now', '+1 month')>"
-        preparation_tasks: "<sentences()>"
+        preparation_tasks: "'<realText(50)>'"
         location: "<address()>"
 
 App\Entity\EntryTask:
-    entryTask{1..10}:
+    entryTask{1..50, 2}:
         course: '@course<current()>'
-        description: '<paragraph()>'
+        description: '<realText(200)>'
         deadlineDate: "<dateTimeBetween('now', '+1 month')>"
 
 App\Entity\EntryTaskSubmission:
-    entryTasSubmission{1..30}:
+    entryTasSubmission{1..100}:
         student: '@user*'
         course: '@course*'
-        submission: '<paragraph()>'
+        submission: '<realText(400)>'
         score: '<numberBetween(1, 10)>'
-        date: "<dateTimeBetween('now', 'now')>"
+        date: "<dateTimeBetween('-1 month', 'now')>"
+
+App\Entity\Notification:
+    notification{1..200}:
+        user: '@user*'
+        course: '@course*'
+        message: '<realText(30)>'
+        link: '<url()>'
+        date: "<dateTimeBetween('-1 month', 'now')>"
+        is_seen: '<boolean()>'
+        is_acceptable: '<boolean()>'
+
+App\Entity\AssignmentSubmission:
+    notification{1..200}:
+        student: '@user*'
+        assignment: '@assignment*'
+        submission: '<realText(200)>'
+        score: '<numberBetween(1, 10)>'
+        submissionDate: "<dateTimeBetween('-1 month', 'now')>"
+        gradingDate: "<dateTimeBetween('-1 month', 'now')>"
 
 
 

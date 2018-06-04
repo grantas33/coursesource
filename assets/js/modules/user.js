@@ -1,5 +1,6 @@
 import axios from "axios";
 import { push } from "react-router-redux";
+import tokenObject from "../tokenObject";
 
 export const LOGIN_STARTED = "user/LOGIN_STARTED";
 export const LOGIN_ERROR = "user/LOGIN_ERROR";
@@ -12,6 +13,9 @@ export const REGISTER_RECEIVED = "user/REGISTER_RECEIVED";
 export const FETCH_COURSEROLE_STARTED = "courses/FETCH_COURSEROLE_STARTED";
 export const FETCH_COURSEROLE_ERROR = "courses/FETCH_COURSEROLE_ERROR";
 export const FETCH_COURSEROLE_RECEIVED = "courses/FETCH_COURSEROLE_RECEIVED";
+
+export const ADD_REDIRECT_RECEIVED = "user/ADD_REDIRECT_RECEIVED";
+export const REMOVE_REDIRECT_RECEIVED = "user/REMOVE_REDIRECT_RECEIVED";
 
 export const CURRENT_USER_RECEIVED = "user/CURRENT_USER_RECEIVED";
 export const LOGOUT_RECEIVED = "user/LOGOUT_RECEIVED";
@@ -29,7 +33,8 @@ const initialState = {
     loading: true,
     error: null
   },
-  current: {}
+  current: {},
+  redirect: null
 };
 
 export default (state = initialState, action) => {
@@ -124,13 +129,31 @@ export default (state = initialState, action) => {
           error: null
         }
       };
-
+    case ADD_REDIRECT_RECEIVED: {
+      return {
+        ...state,
+        redirect: action.payload
+      };
+    }
+    case REMOVE_REDIRECT_RECEIVED: {
+      return {
+        ...state,
+        redirect: null
+      };
+    }
     default:
       return state;
   }
 };
 
-export const login = object => dispatch => {
+export const addRedirect = courseId => dispatch => {
+  dispatch({
+    type: ADD_REDIRECT_RECEIVED,
+    payload: courseId
+  });
+};
+
+export const login = object => (dispatch, getState) => {
   dispatch({
     type: LOGIN_STARTED
   });
@@ -142,12 +165,21 @@ export const login = object => dispatch => {
         type: LOGIN_RECEIVED,
         payload: res.data.token
       });
-      dispatch(push("/main/dashboard"));
+      dispatch(
+        push(
+          getState().user.redirect
+            ? `/main/course/${getState().user.redirect}`
+            : "/main/dashboard"
+        )
+      );
+      dispatch({
+        type: REMOVE_REDIRECT_RECEIVED
+      });
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: LOGIN_ERROR,
@@ -171,8 +203,8 @@ export const register = object => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: REGISTER_ERROR,
@@ -183,16 +215,18 @@ export const register = object => dispatch => {
 
 export const getCurrent = () => dispatch => {
   axios
-    .get("api/user/current", {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .get("api/user/current", tokenObject())
     .then(res => {
       dispatch({
         type: CURRENT_USER_RECEIVED,
         payload: res.data
       });
+    })
+    .catch(err => {
+      if (err.response && err.response.data.message === "Invalid Token") {
+        dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
+      }
     });
 };
 
@@ -201,11 +235,7 @@ export const fetchCourseRole = courseId => dispatch => {
     type: FETCH_COURSEROLE_STARTED
   });
   axios
-    .get(`api/courses/${courseId}/current`, {
-      headers: {
-        Authorization: "Bearer " + window.localStorage.getItem("userToken")
-      }
-    })
+    .get(`api/courses/${courseId}/current`, tokenObject())
     .then(res => {
       dispatch({
         type: FETCH_COURSEROLE_RECEIVED,
@@ -214,8 +244,8 @@ export const fetchCourseRole = courseId => dispatch => {
     })
     .catch(err => {
       if (err.response.data.message === "Invalid Token") {
-        window.localStorage.removeItem("userToken");
         dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
       }
       dispatch({
         type: FETCH_COURSEROLE_ERROR
@@ -227,6 +257,12 @@ export const signout = object => dispatch => {
   dispatch({
     type: LOGOUT_RECEIVED
   });
-  window.localStorage.removeItem("userToken");
   dispatch(push("/"));
+  window.localStorage.removeItem("userToken");
+};
+
+export const updateProfile = newUserObject => dispatch => {
+  axios.put(`api/user/edit`, newUserObject, tokenObject()).then(res => {
+    dispatch(getCurrent());
+  });
 };

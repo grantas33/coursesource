@@ -23,7 +23,7 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-    public function findBrowseCourses($courses, $search, $offset, $limit)
+    public function findBrowseCourses($courses, $search)
     {
 
         $query = $this->createQueryBuilder('c');
@@ -39,12 +39,10 @@ class CourseRepository extends ServiceEntityRepository
                 ->setParameter('search', '%'.$search.'%');
         }
 
-        $query = $query->orderBy('c.creation_date', 'DESC')
-            ->setMaxResults($limit)->setFirstResult($offset)->getQuery();
-        return $query->getResult();
+        return $query->getQuery()->getResult();
     }
 
-    public function findPublicCourses($search, $offset, $limit)
+    public function findPublicCourses($search)
     {
 
         $query = $this->createQueryBuilder('c');
@@ -56,9 +54,7 @@ class CourseRepository extends ServiceEntityRepository
                 ->setParameter('search', '%'.$search.'%');
         }
 
-        $query = $query->orderBy('c.creation_date', 'DESC')
-            ->setMaxResults($limit)->setFirstResult($offset)->getQuery();
-        return $query->getResult();
+        return $query->getQuery()->getResult();
     }
 
     public function findAssignmentDiary($course)
@@ -70,11 +66,9 @@ class CourseRepository extends ServiceEntityRepository
             ->innerJoin(AssignmentSubmission::class, 'sub', 'WITH', 'sub.assignment = a.id')
             ->innerJoin(User::class, 'u', 'WITH', 'sub.student = u.id')
             ->andWhere('c.id = :course')
-            ->setParameters(
-                [
+            ->setParameters([
                 'course' => $course
-                ]
-            );
+            ]);
 
         $diary = $qb->getQuery()->getResult();
         foreach ($diary as $key => $stud) {
@@ -94,12 +88,10 @@ class CourseRepository extends ServiceEntityRepository
             ->innerJoin(AssignmentSubmission::class, 'sub', 'WITH', 'sub.assignment = a.id')
             ->andWhere('c.id = :course')
             ->andWhere('sub.student = :student')
-            ->setParameters(
-                [
+            ->setParameters([
                 'course' => $course,
                 'student' => $student
-                ]
-            );
+            ]);
 
         $qbAvg = $this->createQueryBuilder('c')
             ->select('AVG(sub.score) as average_grade')
@@ -107,12 +99,10 @@ class CourseRepository extends ServiceEntityRepository
             ->innerJoin(AssignmentSubmission::class, 'sub', 'WITH', 'sub.assignment = a.id')
             ->andWhere('c.id = :course')
             ->andWhere('sub.student = :student')
-            ->setParameters(
-                [
+            ->setParameters([
                 'course' => $course,
                 'student' => $student
-                ]
-            );
+            ]);
 
           $diary['submissions'] = $qbSubs->getQuery()->getResult();
           $diary = array_merge($diary, $qbAvg->getQuery()->getOneOrNullResult());
@@ -128,12 +118,10 @@ class CourseRepository extends ServiceEntityRepository
             ->innerJoin(AssignmentSubmission::class, 'sub', 'WITH', 'sub.assignment = a.id')
             ->andWhere('c.id = :course')
             ->andWhere('a.teacher = :teacher')
-            ->setParameters(
-                [
+            ->setParameters([
                 'course' => $course,
                 'teacher' => $teacher
-                ]
-            );
+            ]);
 
         return $qbSubs->getQuery()->getResult();
     }
