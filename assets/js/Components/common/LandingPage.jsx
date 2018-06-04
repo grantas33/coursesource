@@ -30,8 +30,7 @@ class LandingPage extends React.Component {
           <div id="landing-header--margin-top" className="container mt-5">
             <h1 className="landing-page-header">CourseSource</h1>
             <p className="tagline">
-              The one and the only multiple courses manager. Just register and
-              start learning today.{" "}
+              We optimise your learning experience.
             </p>
             <Link
               to="/register"
@@ -67,10 +66,9 @@ class LandingPage extends React.Component {
                     <div className="media">
                       <span className="ti-face-smile gradient-fill ti-3x mr-3" />
                       <div className="media-body">
-                        <h4 className="card-title">Simple</h4>
+                        <h4 className="card-title">Unified experience</h4>
                         <p className="card-text">
-                          Use it anytime to check the upcoming lectures or
-                          deadline date for a homework
+                          A single platform for your learning and personal development 
                         </p>
                       </div>
                     </div>
@@ -83,10 +81,9 @@ class LandingPage extends React.Component {
                     <div className="media">
                       <span className="ti-settings gradient-fill ti-3x mr-3" />
                       <div className="media-body">
-                        <h4 className="card-title">Responsive</h4>
+                        <h4 className="card-title">Time management</h4>
                         <p className="card-text">
-                          Looks good on computers, tablets and even mobile
-                          phones
+                          Entire learning plan in a single place
                         </p>
                       </div>
                     </div>
@@ -99,9 +96,9 @@ class LandingPage extends React.Component {
                     <div className="media">
                       <span className="ti-lock gradient-fill ti-3x mr-3" />
                       <div className="media-body">
-                        <h4 className="card-title">Secure</h4>
+                        <h4 className="card-title">Stay engaged</h4>
                         <p className="card-text">
-                          Courses can be made private and hidden from everybody
+                          Be notified about all the events important just to you
                         </p>
                       </div>
                     </div>
