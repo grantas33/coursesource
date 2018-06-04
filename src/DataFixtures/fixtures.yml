@@ -1,6 +1,6 @@
 parameters:
-    role: ['ADMIN', 'TEACHER', 'STUDENT', 'APPLICANT']
-    status: ['ACTIVE', 'PENDING', 'INVITED']
+    role: ['ADMIN', 'TEACHER', 'STUDENT']
+    status: ['ACTIVE', 'INVITED']
     courses:
       - 'course'
       - 'academy'
@@ -14,9 +14,8 @@ parameters:
       - 'colloquium'
       - 'university'
 
-
 App\Entity\User:
-    user{1..50}:
+    user{1..100}:
         name: '<firstName()>'
         surname: '<lastName()>'
         email:  '<email()>'
@@ -27,33 +26,33 @@ App\Entity\User:
         avatar: "<imageUrl(480, 480, 'people')>"
 
 App\Entity\Course:
-    course{1..50, 2}:
+    course{1..50}:
         title: '<company()> <randomElement($courses)>'
         description: '<realText(1000)>'
         slogan: '<catchPhrase()>, <bs()>, <bs()>'
         creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
         is_public: '<boolean()>'
         is_submittable: 1
-        avatar: "<imageUrl(640, 420, 'nature')>"
+        avatar: "<imageUrl(640, 420, 'technics')>"
         location: '<country()>, <city()>'
         start_date: "<dateTimeBetween('now', '+1 month')>"
         schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
         from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
-    course{2..50, 2}:
+    course{51..100}:
         title: '<company()> <randomElement($courses)>'
         description: '<realText(1000)>'
         slogan: '<catchPhrase()>, <bs()>, <bs()>'
         creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
         is_public: '<boolean()>'
         is_submittable: 0
-        avatar: "<imageUrl(640, 420, 'nature')>"
+        avatar: "<imageUrl(640, 420, 'technics')>"
         location: '<country()>, <city()>'
         start_date: "<dateTimeBetween('now', '+1 month')>"
         schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
         from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
 
 App\Entity\Assignment:
-    assignment{1..200}:
+    assignment{1..400}:
         title: '<realText(15)>'
         description: '<realText(200)>'
         teacher: '@user*'
@@ -64,7 +63,7 @@ App\Entity\Assignment:
         is_submittable: "<boolean()>"
 
 App\Entity\CourseUser:
-    coursUser{1..200}:
+    coursUser{1..1000}:
         user: '@user*'
         course: '@course*'
         role: '<randomElement($role)>'
@@ -73,7 +72,7 @@ App\Entity\CourseUser:
         is_notifiable: '<boolean()>'
 
 App\Entity\Lecture:
-    lecture{1..200}:
+    lecture{1..400}:
         title: '<realText(15)>'
         description: '<realText(200)>'
         teacher: '@user*'
@@ -84,7 +83,7 @@ App\Entity\Lecture:
         location: "<address()>"
 
 App\Entity\EntryTask:
-    entryTask{1..50, 2}:
+    entryTask{1..50}:
         course: '@course<current()>'
         description: '<realText(200)>'
         deadlineDate: "<dateTimeBetween('now', '+1 month')>"
@@ -98,7 +97,7 @@ App\Entity\EntryTaskSubmission:
         date: "<dateTimeBetween('-1 month', 'now')>"
 
 App\Entity\Notification:
-    notification{1..200}:
+    notification{1..400}:
         user: '@user*'
         course: '@course*'
         message: '<realText(30)>'
@@ -108,7 +107,7 @@ App\Entity\Notification:
         is_acceptable: '<boolean()>'
 
 App\Entity\AssignmentSubmission:
-    notification{1..200}:
+    notification{1..400}:
         student: '@user*'
         assignment: '@assignment*'
         submission: '<realText(200)>'
