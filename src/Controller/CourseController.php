@@ -673,6 +673,7 @@ class CourseController extends Controller
             $em->persist($user);
             $em->flush();
             $this->dispatcher->dispatch('course.join', new CourseEvent($course, $this->getUser()));
+            $this->dispatcher->dispatch('course.accepted', new CourseEvent($course, $this->getUser()));
         } catch (\Exception $e) {
             return new JsonResponse([
                 'error_message' => $e->getMessage(),

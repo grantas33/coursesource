@@ -170,6 +170,29 @@ class NotificationListener extends Controller
         $this->entityManager->flush();
     }
 
+    public function onCourseAccepted(CourseEvent $event)
+    {
+        $course = $event->getCourse();
+        $user = $event->getUser();
+
+        $notification = $this->entityManager->getRepository(Notification::class)
+            ->findOneBy([
+                'user' => $user,
+                'course' => $course,
+                'message' => ["You are invited to teach in the course ".$course->getTitle()."!",
+                    "You are invited to enroll in the course ".$course->getTitle()."!"]
+            ]);
+
+        if(!$notification) {
+            return;
+        }
+
+        $notification->setIsSeen(true);
+        $this->entityManager->persist($notification);
+        $this->entityManager->flush();
+
+    }
+
     public function onCourseAssignRole(CourseEvent $event)
     {
 

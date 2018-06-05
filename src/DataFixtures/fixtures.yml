@@ -1,6 +1,6 @@
 parameters:
-    role: ['ADMIN', 'TEACHER', 'STUDENT', 'APPLICANT']
-    status: ['ACTIVE', 'PENDING', 'INVITED']
+    role: ['ADMIN', 'TEACHER', 'STUDENT']
+    status: ['ACTIVE', 'INVITED']
     courses:
       - 'course'
       - 'academy'
@@ -14,9 +14,8 @@ parameters:
       - 'colloquium'
       - 'university'
 
-
 App\Entity\User:
-    user{1..50}:
+    user{1..100}:
         name: '<firstName()>'
         surname: '<lastName()>'
         email:  '<email()>'
@@ -27,33 +26,132 @@ App\Entity\User:
         avatar: "<imageUrl(480, 480, 'people')>"
 
 App\Entity\Course:
-    course{1..50, 2}:
+    course{1..92, 2}:
         title: '<company()> <randomElement($courses)>'
         description: '<realText(1000)>'
         slogan: '<catchPhrase()>, <bs()>, <bs()>'
         creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
         is_public: '<boolean()>'
         is_submittable: 1
-        avatar: "<imageUrl(640, 420, 'nature')>"
+        avatar: "<imageUrl(640, 420, 'technics')>"
         location: '<country()>, <city()>'
         start_date: "<dateTimeBetween('now', '+1 month')>"
         schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
         from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
-    course{2..50, 2}:
+    course{2..92, 2}:
         title: '<company()> <randomElement($courses)>'
         description: '<realText(1000)>'
         slogan: '<catchPhrase()>, <bs()>, <bs()>'
         creationDateByDatetime: "<dateTimeBetween('-1 month', 'now')>"
         is_public: '<boolean()>'
         is_submittable: 0
-        avatar: "<imageUrl(640, 420, 'nature')>"
+        avatar: "<imageUrl(640, 420, 'technics')>"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{93}:
+        title: 'Cryptography I'
+        description: 'Cryptography is an indispensable tool for protecting information in computer systems. In this course you will learn the inner workings of cryptographic systems and how to correctly use them in real-world applications. The course begins with a detailed discussion of how two parties who have a shared secret key can communicate securely when a powerful adversary eavesdrops and tampers with traffic. We will examine many deployed protocols and analyze mistakes in existing systems. The second half of the course discusses public-key techniques that let two parties generate a shared secret key. Throughout the course participants will be exposed to many exciting open problems in the field and work on fun (optional) programming projects. In a second course (Crypto II) we will cover more advanced cryptographic tasks such as zero-knowledge, privacy mechanisms, and other forms of encryption.'
+        slogan: 'Cryptography is an indispensable tool for protecting information in computer systems.'
+        creationDateByDatetime: "<dateTimeBetween('now', '+1 hour')>"
+        is_public: true
+        is_submittable: 1
+        avatar: "https://1.bp.blogspot.com/-WGni-pJWhgQ/WNFFa1xgAqI/AAAAAAAAII0/Lh_-05Tm5iYQShF0PX9CVXhfao_fW1nOgCLcB/s640/data-protection.jpg"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{94}:
+        title: 'Programming for Everybody'
+        description: 'This course aims to teach everyone the basics of programming computers using Python. We cover the basics of how one constructs a program from a series of simple instructions in Python.  The course has no pre-requisites and avoids all but the simplest mathematics. Anyone with moderate computer experience should be able to master the materials in this course. This course will cover Chapters 1-5 of the textbook “Python for Everybody”.  Once a student completes this course, they will be ready to take more advanced programming courses. This course covers Python 3.'
+        slogan: 'Basics of programming computers using Python.'
+        creationDateByDatetime: "<dateTimeBetween('now', '+1 hour')>"
+        is_public: true
+        is_submittable: 0
+        avatar: 'https://www.usnews.com/dims4/USNEWS/0852b9f/2147483647/thumbnail/640x420/quality/85/?url=http\%3A\%2F\%2Fmedia.beam.usnews.com\%2F37\%2F17\%2Fe98fa74742d6b663b320d4a3e8fe\%2F150109-html-stock.jpg'
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{95}:
+        title: 'Python Data Structures'
+        description: 'This course will introduce the core data structures of the Python programming language. We will move past the basics of procedural programming and explore how we can use the Python built-in data structures such as lists, dictionaries, and tuples to perform increasingly complex data analysis. This course will cover Chapters 6-10 of the textbook “Python for Everybody”.  This course covers Python 3.'
+        slogan: 'Data structures of the Python programming language.'
+        creationDateByDatetime: "<dateTimeBetween('now', '+1 hour')>"
+        is_public: true
+        is_submittable: 1
+        avatar: "http://greenwingshub.com/courses/images/python.jpg"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{96}:
+        title: 'Algorithms, Part I'
+        description: 'This course covers the essential information that every serious programmer needs to know about algorithms and data structures, with emphasis on applications and scientific performance analysis of Java implementations. Part I covers elementary data structures, sorting, and searching algorithms. Part II focuses on graph- and string-processing algorithms.'
+        slogan: 'Essential information about algorithms and data structures'
+        creationDateByDatetime: "<dateTimeBetween('now', '+1 hour')>"
+        is_public: true
+        is_submittable: 0
+        avatar: "https://www.fiqas.nl/wp-content/uploads/2015/10/Sound-of-Data.jpg"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{97}:
+        title: 'Bitcoin and Cryptocurrency Technologies'
+        description: 'How does Bitcoin work? What makes Bitcoin different? How secure are your Bitcoins?
+                      After this course, you’ll know everything you need to be able to separate fact from fiction when reading claims about Bitcoin and other cryptocurrencies. You’ll have the conceptual foundations you need to engineer secure software that interacts with the Bitcoin network. And you’ll be able to integrate ideas from Bitcoin in your own projects.'
+        slogan: 'How does Bitcoin work?'
+        creationDateByDatetime: "<dateTimeBetween('now', '+1 hour')>"
+        is_public: true
+        is_submittable: 1
+        avatar: "http://cdn2.ubergizmo.com/wp-content/uploads/2014/11/bitcoin-wallet.jpg"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{98}:
+        title: 'Game Theory'
+        description: "Popularized by movies such as 'A Beautiful Mind,' game theory is the mathematical modeling of strategic interaction among rational (and irrational) agents. Beyond what we call `games' in common language, such as chess, poker, soccer, etc., it includes the modeling of conflict among nations, political campaigns, competition among firms, and trading behavior in markets such as the NYSE. How could you begin to model keyword auctions, and peer to peer file-sharing networks, without accounting for the incentives of the people using them? The course will provide the basics: representing games and strategies, the extensive form (which computer scientists call game trees), Bayesian games (modeling things like auctions), repeated and stochastic games, and more. We'll include a variety of examples including classic games and a few applications."
+        slogan: 'Representing games, strategies and the extensive form'
+        creationDateByDatetime: "<dateTimeBetween('now', '+1 hour')>"
+        is_public: true
+        is_submittable: 0
+        avatar: "http://videogamecritic.com/images/2600/chase_the_chuckwagon.png"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{99}:
+        title: 'Buddhism and Modern Psychology'
+        description: 'This course will examine how Buddhism is faring under this scrutiny. Are neuroscientists starting to understand how meditation “works”? Would such an understanding validate meditation—or might physical explanations of meditation undermine the spiritual significance attributed to it? And how are some of the basic Buddhist claims about the human mind holding up? We’ll pay special attention to some highly counterintuitive doctrines: that the self doesn’t exist, and that much of perceived reality is in some sense illusory.'
+        slogan: 'The light of evolutionary psychology'
+        creationDateByDatetime: "<dateTimeBetween('now', '+1 hour')>"
+        is_public: true
+        is_submittable: 1
+        avatar: "http://3.bp.blogspot.com/--OxmGa5V30M/UF8-gr6OrwI/AAAAAAAAAMw/z4IMsXkxwJI/s1600/2012-09-21-16-30-33-505c9629a828a-5.jpg"
+        location: '<country()>, <city()>'
+        start_date: "<dateTimeBetween('now', '+1 month')>"
+        schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
+        from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
+    course{100}:
+        title: 'Introduction to Psychology'
+        description: 'This course will highlight the most interesting experiments within the field of psychology, discussing the implications of those studies for our understanding of the human mind and human behavior.  We will explore the brain and some of the cognitive abilities it supports like memory, learning, attention, perception and consciousness.  We will examine human development - both in terms of growing up and growing old - and will discuss the manner in which the behavior of others affect our own thoughts and behavior.  Finally we will discuss various forms of mental illness and the treatments that are used to help those who suffer from them.'
+        slogan: 'The most interesting experiments within the field of psychology'
+        creationDateByDatetime: "<dateTimeBetween('now', '+1 hour')>"
+        is_public: true
+        is_submittable: 0
+        avatar: "https://www.qhms.com/images-service/psy_intro.jpg"
         location: '<country()>, <city()>'
         start_date: "<dateTimeBetween('now', '+1 month')>"
         schedule_overview: '<numberBetween(10, 13)> to <numberBetween(14, 20)>pm on <dayOfWeek()>,
         from <numberBetween(8, 10)>am for about ~<numberBetween(1, 4)> hours on <dayOfWeek()>'
 
+
+
 App\Entity\Assignment:
-    assignment{1..200}:
+    assignment{1..400}:
         title: '<realText(15)>'
         description: '<realText(200)>'
         teacher: '@user*'
@@ -64,7 +162,7 @@ App\Entity\Assignment:
         is_submittable: "<boolean()>"
 
 App\Entity\CourseUser:
-    coursUser{1..200}:
+    coursUser{1..1000}:
         user: '@user*'
         course: '@course*'
         role: '<randomElement($role)>'
@@ -73,7 +171,7 @@ App\Entity\CourseUser:
         is_notifiable: '<boolean()>'
 
 App\Entity\Lecture:
-    lecture{1..200}:
+    lecture{1..400}:
         title: '<realText(15)>'
         description: '<realText(200)>'
         teacher: '@user*'
@@ -84,7 +182,7 @@ App\Entity\Lecture:
         location: "<address()>"
 
 App\Entity\EntryTask:
-    entryTask{1..50, 2}:
+    entryTask{1..100, 2}:
         course: '@course<current()>'
         description: '<realText(200)>'
         deadlineDate: "<dateTimeBetween('now', '+1 month')>"
@@ -98,7 +196,7 @@ App\Entity\EntryTaskSubmission:
         date: "<dateTimeBetween('-1 month', 'now')>"
 
 App\Entity\Notification:
-    notification{1..200}:
+    notification{1..400}:
         user: '@user*'
         course: '@course*'
         message: '<realText(30)>'
@@ -108,7 +206,7 @@ App\Entity\Notification:
         is_acceptable: '<boolean()>'
 
 App\Entity\AssignmentSubmission:
-    notification{1..200}:
+    notification{1..400}:
         student: '@user*'
         assignment: '@assignment*'
         submission: '<realText(200)>'
