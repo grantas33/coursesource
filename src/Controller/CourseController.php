@@ -558,12 +558,20 @@ class CourseController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        $submission = $this->getDoctrine()
+            ->getRepository(EntryTaskSubmission::class)
+            ->findOneBy([
+                'student'=>$user,
+                'course'=>$course
+            ]);
+
         $courseUser->setRole(RoleInterface::STUDENT);
         $courseUser->setStatus(StatusInterface::ACTIVE);
 
         try {
             $em = $this->getDoctrine()->getManager();
             $em->persist($courseUser);
+            $em->remove($submission);
             $em->flush();
             $this->dispatcher->dispatch('course.join', new CourseEvent($course, $user));
         } catch (\Exception $e) {
@@ -623,8 +631,16 @@ class CourseController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        $submission = $this->getDoctrine()
+            ->getRepository(EntryTaskSubmission::class)
+            ->findOneBy([
+                'student'=>$user,
+                'course'=>$course
+            ]);
+
         try {
             $em = $this->getDoctrine()->getManager();
+            $em->remove($submission);
             $em->remove($courseUser);
             $em->flush();
         } catch (\Exception $e) {
