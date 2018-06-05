@@ -2,7 +2,6 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Switch, Route } from 'react-router-dom'
 
-import Home from './Components/Course/Home/Home'
 import Notifications from './Components/Course/Notifications/Notifications'
 import Schedule from './Components/Course/Schedule/Schedule'
 import Lectures from './Components/Course/Lectures/Lectures'
@@ -47,7 +46,7 @@ class App extends React.Component {
             <PrivateRoute exact path="/main/create-new-course" component={CreateNewCourse} />
             <Route exact path="/main/course/:course" component={CourseInfo} />            
 
-            <PrivateRoute exact path="/course/:course" component={Home} />
+            <PrivateRoute exact path="/course/:course" component={Schedule} />
             <PrivateRoute exact path="/course/:course/assignments-grading" component={AssignmentsGrading} />
             <PrivateRoute path="/course/:course/assignments-grading/:assignment" component={AssignmentGrading} />
             <PrivateRoute exact path="/course/:course/users-management" component={UsersManagement} />

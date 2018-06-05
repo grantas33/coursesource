@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { getCurrent, signout, updateProfile } from "../../modules/user";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchNotifications } from "../../modules/notifications";
+import { fetchNotifications, readAllNotifications } from "../../modules/notifications";
 import FileBase64 from "react-file-base64";
+import NotificationsMenu from "./NotificationsMenu";
 
 class MainTopNavigation extends React.Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class MainTopNavigation extends React.Component {
       }
     };
   }
+
   componentDidMount = () => {
     document.body.classList.toggle("layout-top-nav", true);
     document.body.classList.toggle("sidebar-collapse", false);
@@ -65,7 +67,9 @@ class MainTopNavigation extends React.Component {
                     </li>
 
                     <li>
-                        <Link to="/main/create-new-course">Create a new course</Link>
+                      <Link to="/main/create-new-course">
+                        Create a new course
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -74,58 +78,22 @@ class MainTopNavigation extends React.Component {
               {window.localStorage.getItem("userToken") ? (
                 <div className="navbar-custom-menu">
                   <ul className="nav navbar-nav">
-                    {/* Notifications Menu */}
-                    <li className="dropdown notifications-menu">
-                      {/* Menu toggle button */}
-                      <a
-                        href="#"
-                        className="dropdown-toggle"
-                        data-toggle="dropdown"
-                      >
-                        <i className="fa fa-bell-o" />
-                        {this.props.notifications.items.length > 0 && (
-                          <span className="label label-warning">
-                            {this.props.notifications.items.length}
-                          </span>
-                        )}
-                      </a>
-                      <ul className="dropdown-menu">
-                        <li className="header">
-                          You have {this.props.notifications.items.length}{" "}
-                          notifications
-                        </li>
-                        <li>
-                          <ul className="menu">
-                            {this.props.notifications.items.map(
-                              notification => (
-                                <li key={notification.id}>
-                                  <a>
-                                    <i className="fa fa-users text-aqua" />
-                                    {notification.message}
-                                  </a>
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        </li>
-                      </ul>
-                    </li>
+                    <NotificationsMenu notifications={this.props.notifications} redirect={this.props.history.push} readAllNotifications={this.props.readAllNotifications}/>
 
-                    {/* User Account Menu */}
                     <li className="dropdown user user-menu">
-                      {/* Menu Toggle Button */}
                       <a
                         href="#"
                         className="dropdown-toggle"
                         data-toggle="dropdown"
                       >
-                        {/* The user image in the navbar*/}
                         <img
-                          src={this.props.user.current.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"}
+                          src={
+                            this.props.user.current.avatar ||
+                            "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"
+                          }
                           className="user-image"
                           alt="User Image"
                         />
-                        {/* hidden-xs hides the username on small devices so only the image appears. */}
                         <span className="hidden-xs">
                           {this.props.user.current.name +
                             " " +
@@ -133,10 +101,12 @@ class MainTopNavigation extends React.Component {
                         </span>
                       </a>
                       <ul className="dropdown-menu">
-                        {/* The user image in the menu */}
                         <li className="user-header">
                           <img
-                            src={this.props.user.current.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"}
+                            src={
+                              this.props.user.current.avatar ||
+                              "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"
+                            }
                             className="img-circle"
                             alt="User Image"
                           />
@@ -313,7 +283,10 @@ class MainTopNavigation extends React.Component {
                 <div className="modal-body">
                   <center>
                     <img
-                      src={this.props.user.current.avatar || "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"}
+                      src={
+                        this.props.user.current.avatar ||
+                        "https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png"
+                      }
                       name="aboutme"
                       width={140}
                       height={140}
@@ -390,7 +363,8 @@ const mapDispatchToProps = dispatch =>
       getCurrent,
       signout,
       fetchNotifications,
-      updateProfile
+      updateProfile,
+      readAllNotifications
     },
     dispatch
   );
