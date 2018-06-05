@@ -42,20 +42,26 @@ class AssignmentsGrading extends React.Component {
                         <th>Lector</th>
                         <th>Title</th>
                         <th>Deadline date</th>
-                        <th>Submissions</th>
                         <th>Gradable</th>
                       </tr>
                       {this.props.assignments.items.map(assignment => {
                         return (
-                          <tr key={assignment.id} onClick={() => this.props.history.push(`/course/${this.props.match.params.course}/assignments-grading/${assignment.id}`)}>
-                            <td>Lector name {assignment.teacher}</td>
+                          <tr
+                            key={assignment.id}
+                            onClick={() =>
+                              this.props.history.push(
+                                `/course/${
+                                  this.props.match.params.course
+                                }/assignments-grading/${assignment.id}`
+                              )
+                            }
+                            style={{cursor: "pointer"}}
+                          >
+                            <td>{assignment.teacher.name + " " + assignment.teacher.surname}</td>
                             <td>{assignment.title}</td>
                             <td>{assignment.deadline_date}</td>
                             <td>
-                              {assignment.is_submittable ? "24/30" : "N/A"}
-                            </td>
-                            <td>
-                              {assignment.is_gradable ? (
+                              {assignment.is_gradeable ? (
                                 <span className="label label-success">Yes</span>
                               ) : (
                                 <span className="label label-danger">No</span>
@@ -88,4 +94,7 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(AssignmentsGrading);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AssignmentsGrading);

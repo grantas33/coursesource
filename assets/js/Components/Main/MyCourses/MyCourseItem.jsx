@@ -39,8 +39,8 @@ const MyCourseItem = props => (
           </li>
           <li>
             <a>
-              Unread notifications:
-              <span className="pull-right badge bg-aqua">5</span>
+              Start date:
+              <span className="pull-right badge bg-aqua">{props.courseInfo.course.start_date}</span>
             </a>
           </li>
           <li>

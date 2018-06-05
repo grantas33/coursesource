@@ -259,6 +259,11 @@ class Course implements JsonSerializable
         $this->start_date = $start_date;
     }
 
+    public function setStartDateManually(string $date): void
+    {
+        $this->start_date = \DateTime::createFromFormat("Y-m-d", $date);
+    }
+
     public function getScheduleOverview()
     {
         return $this->scheduleOverview;

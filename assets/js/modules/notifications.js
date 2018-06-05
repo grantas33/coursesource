@@ -4,6 +4,7 @@ import tokenObject from "../tokenObject";
 export const FETCH_NOTIFICATIONS_STARTED = "notifications/FETCH_NOTIFICATIONS_STARTED";
 export const FETCH_NOTIFICATIONS_ERROR = "notifications/FETCH_NOTIFICATIONS_ERROR";
 export const FETCH_NOTIFICATIONS_RECEIVED = "notifications/FETCH_NOTIFICATIONS_RECEIVED";
+export const READ_ALL_RECEIVED = "notifications/READ_ALL_RECEIVED";
 
 axios.defaults.baseURL = "/";
 
@@ -59,5 +60,22 @@ export const fetchNotifications = () => dispatch => {
       dispatch({
         type: FETCH_NOTIFICATIONS_ERROR
       });
+    });
+};
+
+export const readAllNotifications = () => dispatch => {
+  axios
+    .put("api/notifications/readAll",{}, tokenObject())
+    .then(res => {
+      dispatch({
+        type: READ_ALL_RECEIVED,
+      });
+      dispatch(fetchNotifications())
+    })
+    .catch(err => {
+      if (err.response.data.message === "Invalid Token") {
+        dispatch(push("/login"));
+        window.localStorage.removeItem("userToken");
+      }
     });
 };

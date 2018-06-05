@@ -30,8 +30,7 @@ class LandingPage extends React.Component {
           <div id="landing-header--margin-top" className="container mt-5">
             <h1 className="landing-page-header">CourseSource</h1>
             <p className="tagline">
-              The one and the only multiple courses manager. Just register and
-              start learning today.{" "}
+              We optimise your learning experience.
             </p>
             <Link
               to="/register"
@@ -67,10 +66,9 @@ class LandingPage extends React.Component {
                     <div className="media">
                       <span className="ti-face-smile gradient-fill ti-3x mr-3" />
                       <div className="media-body">
-                        <h4 className="card-title">Simple</h4>
+                        <h4 className="card-title">Unified experience</h4>
                         <p className="card-text">
-                          Use it anytime to check the upcoming lectures or
-                          deadline date for a homework
+                          A single platform for your learning and personal development 
                         </p>
                       </div>
                     </div>
@@ -83,10 +81,9 @@ class LandingPage extends React.Component {
                     <div className="media">
                       <span className="ti-settings gradient-fill ti-3x mr-3" />
                       <div className="media-body">
-                        <h4 className="card-title">Responsive</h4>
+                        <h4 className="card-title">Time management</h4>
                         <p className="card-text">
-                          Looks good on computers, tablets and even mobile
-                          phones
+                          Entire learning plan in a single place
                         </p>
                       </div>
                     </div>
@@ -99,9 +96,9 @@ class LandingPage extends React.Component {
                     <div className="media">
                       <span className="ti-lock gradient-fill ti-3x mr-3" />
                       <div className="media-body">
-                        <h4 className="card-title">Secure</h4>
+                        <h4 className="card-title">Stay engaged</h4>
                         <p className="card-text">
-                          Courses can be made private and hidden from everybody
+                          Be notified about all the events important just to you
                         </p>
                       </div>
                     </div>
@@ -125,9 +122,9 @@ class LandingPage extends React.Component {
                   }
                   onClick={() => this.setState({ activeTab: 1 })}
                   data-toggle="tab"
-                  href="#communication"
+                  href="#schedule"
                 >
-                  Communication
+                  Notifications
                 </a>
               </li>
               <li className="nav-item">
@@ -137,9 +134,9 @@ class LandingPage extends React.Component {
                   }
                   onClick={() => this.setState({ activeTab: 2 })}
                   data-toggle="tab"
-                  href="#schedule"
+                  href="#messages"
                 >
-                  Notifications
+                  Mentoring
                 </a>
               </li>
               <li className="nav-item">
@@ -149,18 +146,6 @@ class LandingPage extends React.Component {
                   }
                   onClick={() => this.setState({ activeTab: 3 })}
                   data-toggle="tab"
-                  href="#messages"
-                >
-                  Mentoring
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className={
-                    "nav-link " + (this.state.activeTab === 4 ? "active" : "")
-                  }
-                  onClick={() => this.setState({ activeTab: 4 })}
-                  data-toggle="tab"
                   href="#livechat"
                 >
                   Scheduling
@@ -168,26 +153,7 @@ class LandingPage extends React.Component {
               </li>
             </ul>
             <div className="tab-content">
-              <div className="tab-pane fade active in" id="communication">
-                <div className="d-flex flex-column flex-lg-row">
-                  <div>
-                    <h2>Communicate with ease</h2>
-                    <p className="lead">
-                      Common system for chat, lecture dates and assignment
-                      deadlines.
-                    </p>
-                    <p>
-                      You can use CourseSource to communicate with lectors and
-                      other fellow students.
-                    </p>
-                    <p>
-                      If you have any questions about upcoming lecture, you can
-                      comment and ask about it.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="tab-pane fade" id="schedule">
+              <div className="tab-pane fade active in" id="schedule">
                 <div className="d-flex flex-column flex-lg-row">
                   <div>
                     <h2>Notifications</h2>
@@ -195,13 +161,8 @@ class LandingPage extends React.Component {
                       Get real time notifications about new events
                     </p>
                     <p>
-                      With CourseSource you won't miss any events. You can
-                      toggle on notifications and get information about all new
+                      With CourseSource you won't miss any events. Get information about all new
                       lectures, assignments or even new grades.
-                    </p>
-                    <p>
-                      Should you don't want to be disturbed, you can turn off
-                      notifications in the settings panel.
                     </p>
                   </div>
                 </div>
