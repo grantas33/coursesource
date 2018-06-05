@@ -182,10 +182,37 @@ App\Entity\Lecture:
         location: "<address()>"
 
 App\Entity\EntryTask:
-    entryTask{1..100, 2}:
+    entryTask{1..92, 2}:
         course: '@course<current()>'
         description: '<realText(200)>'
         deadlineDate: "<dateTimeBetween('now', '+1 month')>"
+    entryTask{93}:
+        course: '@course<current()>'
+        description: ' CBC mode is a block cipher mode that allows us to encrypt irregularly-sized messages, despite the fact that a block cipher natively only transforms individual blocks.
+
+                      In CBC mode, each ciphertext block is added to the next plaintext block before the next call to the cipher core.
+
+                      The first plaintext block, which has no associated previous ciphertext block, is added to a "fake 0th ciphertext block" called the initialization vector, or IV.
+
+                      Implement CBC mode by hand by taking the ECB function, making it encrypt instead of decrypt (verify this by decrypting whatever you encrypt to test), and using your XOR function to combine them. '
+        deadlineDate: "<dateTimeBetween('now', '+1 month')>"
+    entryTask{95}:
+        course: '@course<current()>'
+        description: 'What is a Queue, how it is different from stack and how is it implemented?'
+        deadlineDate: "<dateTimeBetween('now', '+1 month')>"
+    entryTask{97}:
+        course: '@course<current()>'
+        description: ' A block cipher transforms a fixed-sized block (usually 8 or 16 bytes) of plaintext into ciphertext. But we almost never want to transform a single block; we encrypt irregularly-sized messages.
+
+                      One way we account for irregularly-sized messages is by padding, creating a plaintext that is an even multiple of the blocksize. The most popular padding scheme is called PKCS#7.
+
+                      So: pad any block to a specific block length, by appending the number of bytes of padding to the end of the block.'
+        deadlineDate: "<dateTimeBetween('now', '+1 month')>"
+    entryTask{99}:
+        course: '@course<current()>'
+        description: 'How many noble truths are there? Explain each in 2 sentences.'
+        deadlineDate: "<dateTimeBetween('now', '+1 month')>"
+
 
 App\Entity\EntryTaskSubmission:
     entryTasSubmission{1..100}:
