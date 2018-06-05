@@ -300,15 +300,6 @@ class MainTopNavigation extends React.Component {
                       <br />
                       <small>{this.props.user.current.email}</small>
                     </h3>
-                    <span>
-                      <strong>Skills: </strong>
-                    </span>
-                    <span className="label label-warning">HTML5/CSS</span>
-                    <span className="label label-info">Adobe CS 5.5</span>
-                    <span className="label label-info">Microsoft Office</span>
-                    <span className="label label-success">
-                      Windows XP, Vista, 7
-                    </span>
                   </center>
                   <hr />
                   <center>
