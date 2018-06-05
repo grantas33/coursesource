@@ -62,7 +62,7 @@ class Dashboard extends React.Component {
               <h3>Other info</h3>
               <div className="small-box bg-red">
                 <div className="inner">
-                  <h3>{this.props.courses.items.filter(c => c.status === "INVITED").length}</h3>
+                  <h3>{this.props.courses.items.filter(c => c.status === "INVITED" || c.status === "PENDING").length}</h3>
                   <p>Pending invites</p>
                 </div>
                 <div className="icon">
