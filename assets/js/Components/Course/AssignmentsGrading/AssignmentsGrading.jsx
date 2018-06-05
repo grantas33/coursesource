@@ -55,6 +55,7 @@ class AssignmentsGrading extends React.Component {
                                 }/assignments-grading/${assignment.id}`
                               )
                             }
+                            style={{cursor: "pointer"}}
                           >
                             <td>{assignment.teacher.name + " " + assignment.teacher.surname}</td>
                             <td>{assignment.title}</td>
