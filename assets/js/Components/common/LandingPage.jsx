@@ -122,9 +122,9 @@ class LandingPage extends React.Component {
                   }
                   onClick={() => this.setState({ activeTab: 1 })}
                   data-toggle="tab"
-                  href="#communication"
+                  href="#schedule"
                 >
-                  Communication
+                  Notifications
                 </a>
               </li>
               <li className="nav-item">
@@ -134,9 +134,9 @@ class LandingPage extends React.Component {
                   }
                   onClick={() => this.setState({ activeTab: 2 })}
                   data-toggle="tab"
-                  href="#schedule"
+                  href="#messages"
                 >
-                  Notifications
+                  Mentoring
                 </a>
               </li>
               <li className="nav-item">
@@ -146,18 +146,6 @@ class LandingPage extends React.Component {
                   }
                   onClick={() => this.setState({ activeTab: 3 })}
                   data-toggle="tab"
-                  href="#messages"
-                >
-                  Mentoring
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className={
-                    "nav-link " + (this.state.activeTab === 4 ? "active" : "")
-                  }
-                  onClick={() => this.setState({ activeTab: 4 })}
-                  data-toggle="tab"
                   href="#livechat"
                 >
                   Scheduling
@@ -165,26 +153,7 @@ class LandingPage extends React.Component {
               </li>
             </ul>
             <div className="tab-content">
-              <div className="tab-pane fade active in" id="communication">
-                <div className="d-flex flex-column flex-lg-row">
-                  <div>
-                    <h2>Communicate with ease</h2>
-                    <p className="lead">
-                      Common system for chat, lecture dates and assignment
-                      deadlines.
-                    </p>
-                    <p>
-                      You can use CourseSource to communicate with lectors and
-                      other fellow students.
-                    </p>
-                    <p>
-                      If you have any questions about upcoming lecture, you can
-                      comment and ask about it.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="tab-pane fade" id="schedule">
+              <div className="tab-pane fade active in" id="schedule">
                 <div className="d-flex flex-column flex-lg-row">
                   <div>
                     <h2>Notifications</h2>
@@ -192,13 +161,8 @@ class LandingPage extends React.Component {
                       Get real time notifications about new events
                     </p>
                     <p>
-                      With CourseSource you won't miss any events. You can
-                      toggle on notifications and get information about all new
+                      With CourseSource you won't miss any events. Get information about all new
                       lectures, assignments or even new grades.
-                    </p>
-                    <p>
-                      Should you don't want to be disturbed, you can turn off
-                      notifications in the settings panel.
                     </p>
                   </div>
                 </div>
