@@ -42,15 +42,6 @@ class CourseSidebar extends React.Component {
               <li className="header">MAIN NAVIGATION</li>
               <li>
                 <Link
-                  to={`/course/${this.props.match.params.course}/notifications`}
-                  className="navigation-item"
-                >
-                  <i className="fas fa-bell fa-fw" /> <span>Notifications</span>
-                </Link>
-              </li>
-
-              <li>
-                <Link
                   to={`/course/${this.props.match.params.course}/schedule`}
                   className="navigation-item"
                 >

@@ -64,7 +64,6 @@ export const fetchNotifications = () => dispatch => {
 };
 
 export const readAllNotifications = () => dispatch => {
-  console.log(3);
   axios
     .put("api/notifications/readAll",{}, tokenObject())
     .then(res => {
